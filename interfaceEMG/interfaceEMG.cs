@@ -7,10 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO.Ports;
 
 namespace interfaceEMG
 {
-    public partial class Form1 : Form
+    public partial class formInterface : Form
     {
         
         static int tamanho = 2000;
@@ -26,13 +27,12 @@ namespace interfaceEMG
         double[] y7 = new double[tamanho];
         double[] y8 = new double[tamanho];
         //TESTE
-        bool[] b = new bool[8];
 
         private readonly Timer timer = new Timer();
 
         //private TabControl tabControl1;
 
-        public Form1()
+        public formInterface(SerialPort serialPort1)
         {
             InitializeComponent();
             //código para sortear os valores de Y dos 8 canais

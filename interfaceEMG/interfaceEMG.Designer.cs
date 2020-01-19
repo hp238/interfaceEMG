@@ -1,6 +1,6 @@
 ﻿namespace interfaceEMG
 {
-    partial class Form1
+    partial class formInterface
     {
         /// <summary>
         /// Variável de designer necessária.
@@ -432,14 +432,14 @@
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // Form1
+            // formInterface
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1264, 811);
             this.Controls.Add(this.tabControl1);
-            this.Name = "Form1";
-            this.Text = "Form1";
+            this.Name = "formInterface";
+            this.Text = "Interface EMG";
             this.canaisTab.ResumeLayout(false);
             this.canaisTab.PerformLayout();
             this.tabControl1.ResumeLayout(false);
