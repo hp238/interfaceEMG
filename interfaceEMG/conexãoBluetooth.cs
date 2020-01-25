@@ -68,14 +68,6 @@ namespace interfaceEMG
             atualizaListaCOMs();
         }
 
-        /*
-        //liberar porta serial ao fechar o form
-        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            if (serialPort1.IsOpen == true)  // se porta aberta
-                serialPort1.Close();         //fecha a porta
-        }
-        */
         private void btmConectar_Click_1(object sender, EventArgs e)
         {
             if (serialPort1.IsOpen == false)
@@ -101,22 +93,7 @@ namespace interfaceEMG
 
                 }
             }
-            /*
-            else
-            {
-
-                try
-                {
-                    serialPort1.Close();
-                    comboBox1.Enabled = true;
-                    btmConectar.Text = "Conectar";
-                }
-                catch
-                {
-                    return;
-                }
-
-            }*/
+            
         }
     }
 }

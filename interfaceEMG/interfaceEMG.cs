@@ -8,59 +8,70 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO.Ports;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace interfaceEMG
 {
     public partial class formInterface : Form
     {
-        
-        static int tamanho = 2000;
-        //eixo x
-        double[] x = new double[tamanho];
+
+        private Boolean[] estado = new Boolean[8];
+        static int tamanho = 600; //tamanho do vetor de teste
+        double[] x = new double[tamanho]; //eixo x
+
         //eixo y dos 8 canais
-        double[] y1 = new double[tamanho];
-        double[] y2 = new double[tamanho];
-        double[] y3 = new double[tamanho];
-        double[] y4 = new double[tamanho];
-        double[] y5 = new double[tamanho];
-        double[] y6 = new double[tamanho];
-        double[] y7 = new double[tamanho];
-        double[] y8 = new double[tamanho];
+        Dictionary<int, Double[]> sinais = new Dictionary<int, double[]>();
+        private Dictionary<int, ZedGraph.ZedGraphControl> zedSinais;
+
         //TESTE
 
         private readonly Timer timer = new Timer();
 
         //private TabControl tabControl1;
 
+        private void gerarCurvas()
+        {
+            //código para sortear os valores de Y dos 8 canais
+            Random numAl = new Random();
+
+            for(int y = 1; y<=8; y++)
+            {
+                Double[] aux = new double[tamanho];
+                for(int i = 0; i < tamanho; i++)
+                {
+                    x[i] = i;
+                    aux[i] = numAl.Next(1, 101);
+                }
+                sinais.Add(y, aux);
+                
+
+            }
+        }
+        //SerialPort serialPort1
         public formInterface(SerialPort serialPort1)
         {
             InitializeComponent();
-            //código para sortear os valores de Y dos 8 canais
-            Random numAl = new Random();
             
+           // serialPort1.ReadExisting();
+            gerarCurvas();
 
-            for (int i = 0; i < tamanho; i++)
+            zedSinais = new Dictionary<int, ZedGraph.ZedGraphControl>()
             {
-                x[i] = i;
-                y1[i] = numAl.Next(1, 101);
-                y2[i] = numAl.Next(1, 101);
-                y3[i] = numAl.Next(1, 101);
-                y4[i] = numAl.Next(1, 101);
-                y5[i] = numAl.Next(1, 101);
-                y6[i] = numAl.Next(1, 101);
-                y7[i] = numAl.Next(1, 101);
-                y8[i] = numAl.Next(1, 101);
-            }
+                {1,g1 },
+                {2,g2 },
+                {3,g3 },
+                {4,g4 },
+                {5,g5 },
+                {6,g6 },
+                {7,g7 },
+                {8,g8 }
+            };
 
             //plot cada canal
-            this.configurarCurvas(g1, 1, y1, x, false);
-            this.configurarCurvas(g2, 2, y2, x, false);
-            this.configurarCurvas(g3, 3, y3, x, false);
-            this.configurarCurvas(g4, 4, y4, x, false);
-            this.configurarCurvas(g5, 5, y5, x, false);
-            this.configurarCurvas(g6, 6, y6, x, false);
-            this.configurarCurvas(g7, 7, y7, x, false);
-            this.configurarCurvas(g8, 8, y8, x, false);
+            for (int i = 1; i <= 8; i++)
+            {
+                this.configurarCurvas(zedSinais[i],1, sinais[i],x,false);
+            }
 
             tabControl1.TabPages.Remove(c1);
             tabControl1.TabPages.Remove(c2);
@@ -74,12 +85,6 @@ namespace interfaceEMG
 
         }
 
-
-
-
-
-
-
         //botão para adicionar novas abas
         //EM TESTE
         private void button1_Click_1(object sender, EventArgs e)
@@ -89,79 +94,49 @@ namespace interfaceEMG
             //verificando cada checkbox
             if (cbCanal1.Checked)
             {
-                novaAba(y1,c1);
+                novaAba(sinais[1], c1);
                 aux = true;
             }
             if (cbCanal2.Checked)
             {
-                novaAba(y2,c2);
+                novaAba(sinais[2], c2);
                 aux = true;
             }
             if (cbCanal3.Checked)
             {
-                novaAba(y3,c3);
+                novaAba(sinais[3], c3);
                 aux = true;
             }
             if (cbCanal4.Checked)
             {
-                novaAba(y4,c4);
+                novaAba(sinais[4], c4);
                 aux = true;
             }
             if (cbCanal5.Checked)
             {
-                novaAba(y5,c5);
+                novaAba(sinais[5], c5);
                 aux = true;
             }
             if (cbCanal6.Checked)
             {
-                novaAba(y6, c6);
+                novaAba(sinais[6], c6);
                 aux = true;
             }
             if (cbCanal7.Checked)
             {
-                novaAba(y7, c7);
+                novaAba(sinais[7], c7);
                 aux = true;
             }
             if (cbCanal8.Checked)
             {
-                novaAba(y8, c8);
+                novaAba(sinais[8], c8);
                 aux = true;
             }
             if (aux == false)
             {
                 MessageBox.Show("Nenhum checkbox foi marcado.");
             }
-            /* objForm?.Close();
-             objForm = new box1
-             {
-                 TopLevel = false,
-                 FormBorderStyle = FormBorderStyle.None,
-                 Dock = DockStyle.Fill
-             };
-             */
-            //Form1.CheckForIllegalCrossThreadCalls();
-            //box1 tb = new box1();
-            //tb.Show();
-            //System.Threading.Tasks.Task.Delay(5000);
-            //timer.Stop();
-            //System.Threading.Thread.Sleep(1000);
             
-            
-            //if()
-            
-            //b = tb.canaisSelecionados();
-            /*
-            b[0] = tb.g1;
-            
-            if (b[0] == true)
-            {
-                MessageBox.Show("TRUE");
-            }
-            else
-            {
-                MessageBox.Show("FALSE");
-            }
-            */
         }
 
         //botão para remover todas as abas adicionadas
@@ -173,12 +148,11 @@ namespace interfaceEMG
         }
 
 
-
+        //b false -> 8 canais
+        //b true -> 1 canal
         private void configurarCurvas(ZedGraph.ZedGraphControl gx, int n, double[] yx, double[] xx, Boolean b)
         {
-
-            gx.GraphPane.AddCurve("minha curva", xx, yx, Color.Black, ZedGraph.SymbolType.None);
-            
+            gx.GraphPane.AddCurve("minha curva", xx, yx, System.Drawing.Color.Black, ZedGraph.SymbolType.None);
             if(b == false)
             {
                 gx.GraphPane.XAxis.IsVisible = false;
@@ -186,15 +160,15 @@ namespace interfaceEMG
                 gx.GraphPane.YAxis.Title.FontSpec.Size = 50;
                 gx.GraphPane.YAxis.Title.Text = "Sinal " + n;
                 gx.GraphPane.Legend.IsVisible = false;
+                gx.GraphPane.AxisChange();
             }
             else
             {
                 gx.GraphPane.YAxis.Title.Text = "Sinal " + n;
+                gx.GraphPane.YAxis.Scale.Min = yx.Min()-10;
+                gx.GraphPane.YAxis.Scale.Max = yx.Max()+10;
+                gx.GraphPane.AxisChange();
             }
-            
-            gx.GraphPane.AxisChange();
-            
-
             gx.Refresh();
         }
 
@@ -203,28 +177,8 @@ namespace interfaceEMG
         {
             String test = c.Name.Substring(1);
             int n = Int16.Parse(test);
-            //string test2 = test.Substring(1);
-            //MessageBox.Show(test2);
-
             tabControl1.TabPages.Add(c);
             configurarCurvas(aba1Graph, n, yx, x, true);
-
-            /*
-            aba1Graph.GraphPane.AddCurve(yx);
-            aba1Graph.Refresh();
-            */
-            //String[] nome = new string[1];
-            
-            /*
-            String nome = gx.Name;
-            TabPage nTab = new TabPage();
-            nTab.Text = nome;
-            tabControl1.TabPages.Add(nTab);
-            tabControl1.SelectTab(nTab);
-
-            gx.Refresh();
-            */
-            //MessageBox.Show(nome);
         }
 
         //TESTES
@@ -238,8 +192,6 @@ namespace interfaceEMG
 
             ZedGraph.ZedGraphControl gn = new ZedGraph.ZedGraphControl();
             gn.Refresh();
-
-
         }
 
         private void g1_Load(object sender, EventArgs e)
