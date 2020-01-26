@@ -61,12 +61,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="conexãoBluetooth.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="conexãoBluetooth.Designer.cs">
-      <DependentUpon>conexãoBluetooth.cs</DependentUpon>
-    </Compile>
     <Compile Include="interfaceEMG.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -75,9 +69,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="conexãoBluetooth.resx">
-      <DependentUpon>conexãoBluetooth.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="interfaceEMG.resx">
       <DependentUpon>interfaceEMG.cs</DependentUpon>
     </EmbeddedResource>

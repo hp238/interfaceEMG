@@ -29,17 +29,20 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.canaisTab = new System.Windows.Forms.TabPage();
-            this.cbCanal8 = new System.Windows.Forms.CheckBox();
-            this.cbCanal7 = new System.Windows.Forms.CheckBox();
-            this.cbCanal6 = new System.Windows.Forms.CheckBox();
-            this.cbCanal5 = new System.Windows.Forms.CheckBox();
-            this.cbCanal4 = new System.Windows.Forms.CheckBox();
-            this.cbCanal3 = new System.Windows.Forms.CheckBox();
-            this.cbCanal2 = new System.Windows.Forms.CheckBox();
-            this.cbCanal1 = new System.Windows.Forms.CheckBox();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.aba8Canais = new System.Windows.Forms.TabPage();
+            this.btmTest = new System.Windows.Forms.Button();
+            this.btmConectar = new System.Windows.Forms.Button();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.cbxCanal8 = new System.Windows.Forms.CheckBox();
+            this.cbxCanal7 = new System.Windows.Forms.CheckBox();
+            this.cbxCanal6 = new System.Windows.Forms.CheckBox();
+            this.cbxCanal5 = new System.Windows.Forms.CheckBox();
+            this.cbxCanal4 = new System.Windows.Forms.CheckBox();
+            this.cbxCanal3 = new System.Windows.Forms.CheckBox();
+            this.cbxCanal2 = new System.Windows.Forms.CheckBox();
+            this.cbxCanal1 = new System.Windows.Forms.CheckBox();
+            this.btmLimpar = new System.Windows.Forms.Button();
+            this.btmAdd = new System.Windows.Forms.Button();
             this.g8 = new ZedGraph.ZedGraphControl();
             this.g7 = new ZedGraph.ZedGraphControl();
             this.g6 = new ZedGraph.ZedGraphControl();
@@ -49,147 +52,198 @@
             this.g2 = new ZedGraph.ZedGraphControl();
             this.g1 = new ZedGraph.ZedGraphControl();
             this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.c1 = new System.Windows.Forms.TabPage();
-            this.aba1Graph = new ZedGraph.ZedGraphControl();
-            this.c2 = new System.Windows.Forms.TabPage();
-            this.c3 = new System.Windows.Forms.TabPage();
-            this.c4 = new System.Windows.Forms.TabPage();
-            this.c5 = new System.Windows.Forms.TabPage();
-            this.c6 = new System.Windows.Forms.TabPage();
-            this.c7 = new System.Windows.Forms.TabPage();
-            this.c8 = new System.Windows.Forms.TabPage();
+            this.abaCanal1 = new System.Windows.Forms.TabPage();
+            this.zedAba1 = new ZedGraph.ZedGraphControl();
+            this.abaCanal2 = new System.Windows.Forms.TabPage();
+            this.zedAba2 = new ZedGraph.ZedGraphControl();
+            this.abaCanal3 = new System.Windows.Forms.TabPage();
+            this.zedAba3 = new ZedGraph.ZedGraphControl();
+            this.abaCanal4 = new System.Windows.Forms.TabPage();
+            this.zedAba4 = new ZedGraph.ZedGraphControl();
+            this.abaCanal5 = new System.Windows.Forms.TabPage();
+            this.zedAba5 = new ZedGraph.ZedGraphControl();
+            this.abaCanal6 = new System.Windows.Forms.TabPage();
+            this.zedAba6 = new ZedGraph.ZedGraphControl();
+            this.abaCanal7 = new System.Windows.Forms.TabPage();
+            this.zedAba7 = new ZedGraph.ZedGraphControl();
+            this.abaCanal8 = new System.Windows.Forms.TabPage();
+            this.zedAba8 = new ZedGraph.ZedGraphControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.canaisTab.SuspendLayout();
+            this.serialPort2 = new System.IO.Ports.SerialPort(this.components);
+            this.aba8Canais.SuspendLayout();
             this.tabControl1.SuspendLayout();
-            this.c1.SuspendLayout();
+            this.abaCanal1.SuspendLayout();
+            this.abaCanal2.SuspendLayout();
+            this.abaCanal3.SuspendLayout();
+            this.abaCanal4.SuspendLayout();
+            this.abaCanal5.SuspendLayout();
+            this.abaCanal6.SuspendLayout();
+            this.abaCanal7.SuspendLayout();
+            this.abaCanal8.SuspendLayout();
             this.SuspendLayout();
             // 
-            // canaisTab
+            // aba8Canais
             // 
-            this.canaisTab.Controls.Add(this.cbCanal8);
-            this.canaisTab.Controls.Add(this.cbCanal7);
-            this.canaisTab.Controls.Add(this.cbCanal6);
-            this.canaisTab.Controls.Add(this.cbCanal5);
-            this.canaisTab.Controls.Add(this.cbCanal4);
-            this.canaisTab.Controls.Add(this.cbCanal3);
-            this.canaisTab.Controls.Add(this.cbCanal2);
-            this.canaisTab.Controls.Add(this.cbCanal1);
-            this.canaisTab.Controls.Add(this.button2);
-            this.canaisTab.Controls.Add(this.button1);
-            this.canaisTab.Controls.Add(this.g8);
-            this.canaisTab.Controls.Add(this.g7);
-            this.canaisTab.Controls.Add(this.g6);
-            this.canaisTab.Controls.Add(this.g5);
-            this.canaisTab.Controls.Add(this.g4);
-            this.canaisTab.Controls.Add(this.g3);
-            this.canaisTab.Controls.Add(this.g2);
-            this.canaisTab.Controls.Add(this.g1);
-            this.canaisTab.Location = new System.Drawing.Point(4, 22);
-            this.canaisTab.Name = "canaisTab";
-            this.canaisTab.Padding = new System.Windows.Forms.Padding(3);
-            this.canaisTab.Size = new System.Drawing.Size(1232, 794);
-            this.canaisTab.TabIndex = 0;
-            this.canaisTab.Text = "8 CANAIS";
-            this.canaisTab.UseVisualStyleBackColor = true;
+            this.aba8Canais.Controls.Add(this.btmTest);
+            this.aba8Canais.Controls.Add(this.btmConectar);
+            this.aba8Canais.Controls.Add(this.comboBox1);
+            this.aba8Canais.Controls.Add(this.cbxCanal8);
+            this.aba8Canais.Controls.Add(this.cbxCanal7);
+            this.aba8Canais.Controls.Add(this.cbxCanal6);
+            this.aba8Canais.Controls.Add(this.cbxCanal5);
+            this.aba8Canais.Controls.Add(this.cbxCanal4);
+            this.aba8Canais.Controls.Add(this.cbxCanal3);
+            this.aba8Canais.Controls.Add(this.cbxCanal2);
+            this.aba8Canais.Controls.Add(this.cbxCanal1);
+            this.aba8Canais.Controls.Add(this.btmLimpar);
+            this.aba8Canais.Controls.Add(this.btmAdd);
+            this.aba8Canais.Controls.Add(this.g8);
+            this.aba8Canais.Controls.Add(this.g7);
+            this.aba8Canais.Controls.Add(this.g6);
+            this.aba8Canais.Controls.Add(this.g5);
+            this.aba8Canais.Controls.Add(this.g4);
+            this.aba8Canais.Controls.Add(this.g3);
+            this.aba8Canais.Controls.Add(this.g2);
+            this.aba8Canais.Controls.Add(this.g1);
+            this.aba8Canais.Location = new System.Drawing.Point(4, 22);
+            this.aba8Canais.Name = "aba8Canais";
+            this.aba8Canais.Padding = new System.Windows.Forms.Padding(3);
+            this.aba8Canais.Size = new System.Drawing.Size(1232, 794);
+            this.aba8Canais.TabIndex = 0;
+            this.aba8Canais.Text = "8 CANAIS";
+            this.aba8Canais.UseVisualStyleBackColor = true;
             // 
-            // cbCanal8
+            // btmTest
             // 
-            this.cbCanal8.AutoSize = true;
-            this.cbCanal8.Location = new System.Drawing.Point(3, 774);
-            this.cbCanal8.Name = "cbCanal8";
-            this.cbCanal8.Size = new System.Drawing.Size(15, 14);
-            this.cbCanal8.TabIndex = 15;
-            this.cbCanal8.UseVisualStyleBackColor = true;
+            this.btmTest.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btmTest.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btmTest.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btmTest.Location = new System.Drawing.Point(709, 1);
+            this.btmTest.Name = "btmTest";
+            this.btmTest.Size = new System.Drawing.Size(107, 22);
+            this.btmTest.TabIndex = 18;
+            this.btmTest.Text = "Testar";
+            this.btmTest.UseVisualStyleBackColor = true;
+            this.btmTest.Click += new System.EventHandler(this.btmTest_Click);
             // 
-            // cbCanal7
+            // btmConectar
             // 
-            this.cbCanal7.AutoSize = true;
-            this.cbCanal7.Location = new System.Drawing.Point(3, 679);
-            this.cbCanal7.Name = "cbCanal7";
-            this.cbCanal7.Size = new System.Drawing.Size(15, 14);
-            this.cbCanal7.TabIndex = 14;
-            this.cbCanal7.UseVisualStyleBackColor = true;
+            this.btmConectar.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btmConectar.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btmConectar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btmConectar.Location = new System.Drawing.Point(1119, 3);
+            this.btmConectar.Name = "btmConectar";
+            this.btmConectar.Size = new System.Drawing.Size(107, 22);
+            this.btmConectar.TabIndex = 17;
+            this.btmConectar.Text = "Conectar";
+            this.btmConectar.UseVisualStyleBackColor = true;
+            this.btmConectar.Click += new System.EventHandler(this.btmConectar_Click);
             // 
-            // cbCanal6
+            // comboBox1
             // 
-            this.cbCanal6.AutoSize = true;
-            this.cbCanal6.Location = new System.Drawing.Point(3, 584);
-            this.cbCanal6.Name = "cbCanal6";
-            this.cbCanal6.Size = new System.Drawing.Size(15, 14);
-            this.cbCanal6.TabIndex = 13;
-            this.cbCanal6.UseVisualStyleBackColor = true;
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(991, 3);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(121, 21);
+            this.comboBox1.TabIndex = 16;
             // 
-            // cbCanal5
+            // cbxCanal8
             // 
-            this.cbCanal5.AutoSize = true;
-            this.cbCanal5.Location = new System.Drawing.Point(3, 489);
-            this.cbCanal5.Name = "cbCanal5";
-            this.cbCanal5.Size = new System.Drawing.Size(15, 14);
-            this.cbCanal5.TabIndex = 12;
-            this.cbCanal5.UseVisualStyleBackColor = true;
+            this.cbxCanal8.AutoSize = true;
+            this.cbxCanal8.Location = new System.Drawing.Point(3, 774);
+            this.cbxCanal8.Name = "cbxCanal8";
+            this.cbxCanal8.Size = new System.Drawing.Size(15, 14);
+            this.cbxCanal8.TabIndex = 15;
+            this.cbxCanal8.UseVisualStyleBackColor = true;
             // 
-            // cbCanal4
+            // cbxCanal7
             // 
-            this.cbCanal4.AutoSize = true;
-            this.cbCanal4.Location = new System.Drawing.Point(3, 394);
-            this.cbCanal4.Name = "cbCanal4";
-            this.cbCanal4.Size = new System.Drawing.Size(15, 14);
-            this.cbCanal4.TabIndex = 11;
-            this.cbCanal4.UseVisualStyleBackColor = true;
+            this.cbxCanal7.AutoSize = true;
+            this.cbxCanal7.Location = new System.Drawing.Point(3, 679);
+            this.cbxCanal7.Name = "cbxCanal7";
+            this.cbxCanal7.Size = new System.Drawing.Size(15, 14);
+            this.cbxCanal7.TabIndex = 14;
+            this.cbxCanal7.UseVisualStyleBackColor = true;
             // 
-            // cbCanal3
+            // cbxCanal6
             // 
-            this.cbCanal3.AutoSize = true;
-            this.cbCanal3.Location = new System.Drawing.Point(3, 299);
-            this.cbCanal3.Name = "cbCanal3";
-            this.cbCanal3.Size = new System.Drawing.Size(15, 14);
-            this.cbCanal3.TabIndex = 10;
-            this.cbCanal3.UseVisualStyleBackColor = true;
+            this.cbxCanal6.AutoSize = true;
+            this.cbxCanal6.Location = new System.Drawing.Point(3, 584);
+            this.cbxCanal6.Name = "cbxCanal6";
+            this.cbxCanal6.Size = new System.Drawing.Size(15, 14);
+            this.cbxCanal6.TabIndex = 13;
+            this.cbxCanal6.UseVisualStyleBackColor = true;
             // 
-            // cbCanal2
+            // cbxCanal5
             // 
-            this.cbCanal2.AutoSize = true;
-            this.cbCanal2.Location = new System.Drawing.Point(3, 204);
-            this.cbCanal2.Name = "cbCanal2";
-            this.cbCanal2.Size = new System.Drawing.Size(15, 14);
-            this.cbCanal2.TabIndex = 9;
-            this.cbCanal2.UseVisualStyleBackColor = true;
+            this.cbxCanal5.AutoSize = true;
+            this.cbxCanal5.Location = new System.Drawing.Point(3, 489);
+            this.cbxCanal5.Name = "cbxCanal5";
+            this.cbxCanal5.Size = new System.Drawing.Size(15, 14);
+            this.cbxCanal5.TabIndex = 12;
+            this.cbxCanal5.UseVisualStyleBackColor = true;
             // 
-            // cbCanal1
+            // cbxCanal4
             // 
-            this.cbCanal1.AutoSize = true;
-            this.cbCanal1.Location = new System.Drawing.Point(3, 109);
-            this.cbCanal1.Name = "cbCanal1";
-            this.cbCanal1.Size = new System.Drawing.Size(15, 14);
-            this.cbCanal1.TabIndex = 8;
-            this.cbCanal1.UseVisualStyleBackColor = true;
-            this.cbCanal1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            this.cbxCanal4.AutoSize = true;
+            this.cbxCanal4.Location = new System.Drawing.Point(3, 394);
+            this.cbxCanal4.Name = "cbxCanal4";
+            this.cbxCanal4.Size = new System.Drawing.Size(15, 14);
+            this.cbxCanal4.TabIndex = 11;
+            this.cbxCanal4.UseVisualStyleBackColor = true;
             // 
-            // button2
+            // cbxCanal3
             // 
-            this.button2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.button2.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button2.Location = new System.Drawing.Point(116, 6);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(107, 22);
-            this.button2.TabIndex = 7;
-            this.button2.Text = "Limpar Abas";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.cbxCanal3.AutoSize = true;
+            this.cbxCanal3.Location = new System.Drawing.Point(3, 299);
+            this.cbxCanal3.Name = "cbxCanal3";
+            this.cbxCanal3.Size = new System.Drawing.Size(15, 14);
+            this.cbxCanal3.TabIndex = 10;
+            this.cbxCanal3.UseVisualStyleBackColor = true;
             // 
-            // button1
+            // cbxCanal2
             // 
-            this.button1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.button1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Location = new System.Drawing.Point(3, 6);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(107, 22);
-            this.button1.TabIndex = 6;
-            this.button1.Text = "Add Abas";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            this.cbxCanal2.AutoSize = true;
+            this.cbxCanal2.Location = new System.Drawing.Point(3, 204);
+            this.cbxCanal2.Name = "cbxCanal2";
+            this.cbxCanal2.Size = new System.Drawing.Size(15, 14);
+            this.cbxCanal2.TabIndex = 9;
+            this.cbxCanal2.UseVisualStyleBackColor = true;
+            // 
+            // cbxCanal1
+            // 
+            this.cbxCanal1.AutoSize = true;
+            this.cbxCanal1.Location = new System.Drawing.Point(3, 109);
+            this.cbxCanal1.Name = "cbxCanal1";
+            this.cbxCanal1.Size = new System.Drawing.Size(15, 14);
+            this.cbxCanal1.TabIndex = 8;
+            this.cbxCanal1.UseVisualStyleBackColor = true;
+            // 
+            // btmLimpar
+            // 
+            this.btmLimpar.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btmLimpar.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btmLimpar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btmLimpar.Location = new System.Drawing.Point(116, 6);
+            this.btmLimpar.Name = "btmLimpar";
+            this.btmLimpar.Size = new System.Drawing.Size(107, 22);
+            this.btmLimpar.TabIndex = 7;
+            this.btmLimpar.Text = "Limpar Abas";
+            this.btmLimpar.UseVisualStyleBackColor = true;
+            this.btmLimpar.Click += new System.EventHandler(this.btmLimpar_Click_1);
+            // 
+            // btmAdd
+            // 
+            this.btmAdd.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btmAdd.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btmAdd.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btmAdd.Location = new System.Drawing.Point(3, 6);
+            this.btmAdd.Name = "btmAdd";
+            this.btmAdd.Size = new System.Drawing.Size(107, 22);
+            this.btmAdd.TabIndex = 6;
+            this.btmAdd.Text = "Add Abas";
+            this.btmAdd.UseVisualStyleBackColor = true;
+            this.btmAdd.Click += new System.EventHandler(this.btmAdd_Click);
             // 
             // g8
             // 
@@ -318,118 +372,231 @@
             this.g1.Size = new System.Drawing.Size(1240, 95);
             this.g1.TabIndex = 0;
             this.g1.UseExtendedPrintDialog = true;
-            this.g1.Load += new System.EventHandler(this.g1_Load_1);
             // 
             // tabControl1
             // 
             this.tabControl1.AccessibleName = "";
             this.tabControl1.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
-            this.tabControl1.Controls.Add(this.canaisTab);
-            this.tabControl1.Controls.Add(this.c1);
-            this.tabControl1.Controls.Add(this.c2);
-            this.tabControl1.Controls.Add(this.c3);
-            this.tabControl1.Controls.Add(this.c4);
-            this.tabControl1.Controls.Add(this.c5);
-            this.tabControl1.Controls.Add(this.c6);
-            this.tabControl1.Controls.Add(this.c7);
-            this.tabControl1.Controls.Add(this.c8);
+            this.tabControl1.Controls.Add(this.aba8Canais);
+            this.tabControl1.Controls.Add(this.abaCanal1);
+            this.tabControl1.Controls.Add(this.abaCanal2);
+            this.tabControl1.Controls.Add(this.abaCanal3);
+            this.tabControl1.Controls.Add(this.abaCanal4);
+            this.tabControl1.Controls.Add(this.abaCanal5);
+            this.tabControl1.Controls.Add(this.abaCanal6);
+            this.tabControl1.Controls.Add(this.abaCanal7);
+            this.tabControl1.Controls.Add(this.abaCanal8);
             this.tabControl1.Location = new System.Drawing.Point(-1, 1);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(1240, 820);
             this.tabControl1.TabIndex = 0;
             // 
-            // c1
+            // abaCanal1
             // 
-            this.c1.Controls.Add(this.aba1Graph);
-            this.c1.Location = new System.Drawing.Point(4, 22);
-            this.c1.Name = "c1";
-            this.c1.Size = new System.Drawing.Size(1232, 794);
-            this.c1.TabIndex = 1;
-            this.c1.Text = "Canal 1";
-            this.c1.UseVisualStyleBackColor = true;
+            this.abaCanal1.Controls.Add(this.zedAba1);
+            this.abaCanal1.Location = new System.Drawing.Point(4, 22);
+            this.abaCanal1.Name = "abaCanal1";
+            this.abaCanal1.Size = new System.Drawing.Size(1232, 794);
+            this.abaCanal1.TabIndex = 1;
+            this.abaCanal1.Text = "Canal 1";
+            this.abaCanal1.UseVisualStyleBackColor = true;
             // 
-            // aba1Graph
+            // zedAba1
             // 
-            this.aba1Graph.Location = new System.Drawing.Point(15, 4);
-            this.aba1Graph.Name = "aba1Graph";
-            this.aba1Graph.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.aba1Graph.ScrollGrace = 0D;
-            this.aba1Graph.ScrollMaxX = 0D;
-            this.aba1Graph.ScrollMaxY = 0D;
-            this.aba1Graph.ScrollMaxY2 = 0D;
-            this.aba1Graph.ScrollMinX = 0D;
-            this.aba1Graph.ScrollMinY = 0D;
-            this.aba1Graph.ScrollMinY2 = 0D;
-            this.aba1Graph.Size = new System.Drawing.Size(1234, 794);
-            this.aba1Graph.TabIndex = 0;
-            this.aba1Graph.UseExtendedPrintDialog = true;
+            this.zedAba1.EditButtons = System.Windows.Forms.MouseButtons.Middle;
+            this.zedAba1.Location = new System.Drawing.Point(15, 4);
+            this.zedAba1.Name = "zedAba1";
+            this.zedAba1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.zedAba1.ScrollGrace = 0D;
+            this.zedAba1.ScrollMaxX = 0D;
+            this.zedAba1.ScrollMaxY = 0D;
+            this.zedAba1.ScrollMaxY2 = 0D;
+            this.zedAba1.ScrollMinX = 0D;
+            this.zedAba1.ScrollMinY = 0D;
+            this.zedAba1.ScrollMinY2 = 0D;
+            this.zedAba1.Size = new System.Drawing.Size(1234, 794);
+            this.zedAba1.TabIndex = 0;
+            this.zedAba1.UseExtendedPrintDialog = true;
             // 
-            // c2
+            // abaCanal2
             // 
-            this.c2.Location = new System.Drawing.Point(4, 22);
-            this.c2.Name = "c2";
-            this.c2.Size = new System.Drawing.Size(1232, 794);
-            this.c2.TabIndex = 2;
-            this.c2.Text = "Canal 2";
-            this.c2.UseVisualStyleBackColor = true;
+            this.abaCanal2.Controls.Add(this.zedAba2);
+            this.abaCanal2.Location = new System.Drawing.Point(4, 22);
+            this.abaCanal2.Name = "abaCanal2";
+            this.abaCanal2.Size = new System.Drawing.Size(1232, 794);
+            this.abaCanal2.TabIndex = 2;
+            this.abaCanal2.Text = "Canal 2";
+            this.abaCanal2.UseVisualStyleBackColor = true;
             // 
-            // c3
+            // zedAba2
             // 
-            this.c3.Location = new System.Drawing.Point(4, 22);
-            this.c3.Name = "c3";
-            this.c3.Size = new System.Drawing.Size(1232, 794);
-            this.c3.TabIndex = 3;
-            this.c3.Text = "Canal 3";
-            this.c3.UseVisualStyleBackColor = true;
+            this.zedAba2.Location = new System.Drawing.Point(0, 3);
+            this.zedAba2.Name = "zedAba2";
+            this.zedAba2.ScrollGrace = 0D;
+            this.zedAba2.ScrollMaxX = 0D;
+            this.zedAba2.ScrollMaxY = 0D;
+            this.zedAba2.ScrollMaxY2 = 0D;
+            this.zedAba2.ScrollMinX = 0D;
+            this.zedAba2.ScrollMinY = 0D;
+            this.zedAba2.ScrollMinY2 = 0D;
+            this.zedAba2.Size = new System.Drawing.Size(1234, 794);
+            this.zedAba2.TabIndex = 0;
+            this.zedAba2.UseExtendedPrintDialog = true;
             // 
-            // c4
+            // abaCanal3
             // 
-            this.c4.Location = new System.Drawing.Point(4, 22);
-            this.c4.Name = "c4";
-            this.c4.Size = new System.Drawing.Size(1232, 794);
-            this.c4.TabIndex = 4;
-            this.c4.Text = "Canal 4";
-            this.c4.UseVisualStyleBackColor = true;
+            this.abaCanal3.Controls.Add(this.zedAba3);
+            this.abaCanal3.Location = new System.Drawing.Point(4, 22);
+            this.abaCanal3.Name = "abaCanal3";
+            this.abaCanal3.Size = new System.Drawing.Size(1232, 794);
+            this.abaCanal3.TabIndex = 3;
+            this.abaCanal3.Text = "Canal 3";
+            this.abaCanal3.UseVisualStyleBackColor = true;
             // 
-            // c5
+            // zedAba3
             // 
-            this.c5.Location = new System.Drawing.Point(4, 22);
-            this.c5.Name = "c5";
-            this.c5.Size = new System.Drawing.Size(1232, 794);
-            this.c5.TabIndex = 5;
-            this.c5.Text = "Canal 5";
-            this.c5.UseVisualStyleBackColor = true;
+            this.zedAba3.Location = new System.Drawing.Point(3, 3);
+            this.zedAba3.Name = "zedAba3";
+            this.zedAba3.ScrollGrace = 0D;
+            this.zedAba3.ScrollMaxX = 0D;
+            this.zedAba3.ScrollMaxY = 0D;
+            this.zedAba3.ScrollMaxY2 = 0D;
+            this.zedAba3.ScrollMinX = 0D;
+            this.zedAba3.ScrollMinY = 0D;
+            this.zedAba3.ScrollMinY2 = 0D;
+            this.zedAba3.Size = new System.Drawing.Size(1234, 794);
+            this.zedAba3.TabIndex = 0;
+            this.zedAba3.UseExtendedPrintDialog = true;
             // 
-            // c6
+            // abaCanal4
             // 
-            this.c6.Location = new System.Drawing.Point(4, 22);
-            this.c6.Name = "c6";
-            this.c6.Size = new System.Drawing.Size(1232, 794);
-            this.c6.TabIndex = 6;
-            this.c6.Text = "Canal 6";
-            this.c6.UseVisualStyleBackColor = true;
+            this.abaCanal4.Controls.Add(this.zedAba4);
+            this.abaCanal4.Location = new System.Drawing.Point(4, 22);
+            this.abaCanal4.Name = "abaCanal4";
+            this.abaCanal4.Size = new System.Drawing.Size(1232, 794);
+            this.abaCanal4.TabIndex = 4;
+            this.abaCanal4.Text = "Canal 4";
+            this.abaCanal4.UseVisualStyleBackColor = true;
             // 
-            // c7
+            // zedAba4
             // 
-            this.c7.Location = new System.Drawing.Point(4, 22);
-            this.c7.Name = "c7";
-            this.c7.Size = new System.Drawing.Size(1232, 794);
-            this.c7.TabIndex = 7;
-            this.c7.Text = "Canal 7";
-            this.c7.UseVisualStyleBackColor = true;
+            this.zedAba4.Location = new System.Drawing.Point(0, 3);
+            this.zedAba4.Name = "zedAba4";
+            this.zedAba4.ScrollGrace = 0D;
+            this.zedAba4.ScrollMaxX = 0D;
+            this.zedAba4.ScrollMaxY = 0D;
+            this.zedAba4.ScrollMaxY2 = 0D;
+            this.zedAba4.ScrollMinX = 0D;
+            this.zedAba4.ScrollMinY = 0D;
+            this.zedAba4.ScrollMinY2 = 0D;
+            this.zedAba4.Size = new System.Drawing.Size(1234, 794);
+            this.zedAba4.TabIndex = 0;
+            this.zedAba4.UseExtendedPrintDialog = true;
             // 
-            // c8
+            // abaCanal5
             // 
-            this.c8.Location = new System.Drawing.Point(4, 22);
-            this.c8.Name = "c8";
-            this.c8.Size = new System.Drawing.Size(1232, 794);
-            this.c8.TabIndex = 8;
-            this.c8.Text = "Canal 8";
-            this.c8.UseVisualStyleBackColor = true;
+            this.abaCanal5.Controls.Add(this.zedAba5);
+            this.abaCanal5.Location = new System.Drawing.Point(4, 22);
+            this.abaCanal5.Name = "abaCanal5";
+            this.abaCanal5.Size = new System.Drawing.Size(1232, 794);
+            this.abaCanal5.TabIndex = 5;
+            this.abaCanal5.Text = "Canal 5";
+            this.abaCanal5.UseVisualStyleBackColor = true;
+            // 
+            // zedAba5
+            // 
+            this.zedAba5.Location = new System.Drawing.Point(3, 3);
+            this.zedAba5.Name = "zedAba5";
+            this.zedAba5.ScrollGrace = 0D;
+            this.zedAba5.ScrollMaxX = 0D;
+            this.zedAba5.ScrollMaxY = 0D;
+            this.zedAba5.ScrollMaxY2 = 0D;
+            this.zedAba5.ScrollMinX = 0D;
+            this.zedAba5.ScrollMinY = 0D;
+            this.zedAba5.ScrollMinY2 = 0D;
+            this.zedAba5.Size = new System.Drawing.Size(1234, 794);
+            this.zedAba5.TabIndex = 0;
+            this.zedAba5.UseExtendedPrintDialog = true;
+            // 
+            // abaCanal6
+            // 
+            this.abaCanal6.Controls.Add(this.zedAba6);
+            this.abaCanal6.Location = new System.Drawing.Point(4, 22);
+            this.abaCanal6.Name = "abaCanal6";
+            this.abaCanal6.Size = new System.Drawing.Size(1232, 794);
+            this.abaCanal6.TabIndex = 6;
+            this.abaCanal6.Text = "Canal 6";
+            this.abaCanal6.UseVisualStyleBackColor = true;
+            // 
+            // zedAba6
+            // 
+            this.zedAba6.Location = new System.Drawing.Point(3, 3);
+            this.zedAba6.Name = "zedAba6";
+            this.zedAba6.ScrollGrace = 0D;
+            this.zedAba6.ScrollMaxX = 0D;
+            this.zedAba6.ScrollMaxY = 0D;
+            this.zedAba6.ScrollMaxY2 = 0D;
+            this.zedAba6.ScrollMinX = 0D;
+            this.zedAba6.ScrollMinY = 0D;
+            this.zedAba6.ScrollMinY2 = 0D;
+            this.zedAba6.Size = new System.Drawing.Size(1234, 794);
+            this.zedAba6.TabIndex = 0;
+            this.zedAba6.UseExtendedPrintDialog = true;
+            // 
+            // abaCanal7
+            // 
+            this.abaCanal7.Controls.Add(this.zedAba7);
+            this.abaCanal7.Location = new System.Drawing.Point(4, 22);
+            this.abaCanal7.Name = "abaCanal7";
+            this.abaCanal7.Size = new System.Drawing.Size(1232, 794);
+            this.abaCanal7.TabIndex = 7;
+            this.abaCanal7.Text = "Canal 7";
+            this.abaCanal7.UseVisualStyleBackColor = true;
+            // 
+            // zedAba7
+            // 
+            this.zedAba7.Location = new System.Drawing.Point(3, 3);
+            this.zedAba7.Name = "zedAba7";
+            this.zedAba7.ScrollGrace = 0D;
+            this.zedAba7.ScrollMaxX = 0D;
+            this.zedAba7.ScrollMaxY = 0D;
+            this.zedAba7.ScrollMaxY2 = 0D;
+            this.zedAba7.ScrollMinX = 0D;
+            this.zedAba7.ScrollMinY = 0D;
+            this.zedAba7.ScrollMinY2 = 0D;
+            this.zedAba7.Size = new System.Drawing.Size(1234, 794);
+            this.zedAba7.TabIndex = 0;
+            this.zedAba7.UseExtendedPrintDialog = true;
+            // 
+            // abaCanal8
+            // 
+            this.abaCanal8.Controls.Add(this.zedAba8);
+            this.abaCanal8.Location = new System.Drawing.Point(4, 22);
+            this.abaCanal8.Name = "abaCanal8";
+            this.abaCanal8.Size = new System.Drawing.Size(1232, 794);
+            this.abaCanal8.TabIndex = 8;
+            this.abaCanal8.Text = "Canal 8";
+            this.abaCanal8.UseVisualStyleBackColor = true;
+            // 
+            // zedAba8
+            // 
+            this.zedAba8.Location = new System.Drawing.Point(3, 3);
+            this.zedAba8.Name = "zedAba8";
+            this.zedAba8.ScrollGrace = 0D;
+            this.zedAba8.ScrollMaxX = 0D;
+            this.zedAba8.ScrollMaxY = 0D;
+            this.zedAba8.ScrollMaxY2 = 0D;
+            this.zedAba8.ScrollMinX = 0D;
+            this.zedAba8.ScrollMinY = 0D;
+            this.zedAba8.ScrollMinY2 = 0D;
+            this.zedAba8.Size = new System.Drawing.Size(1234, 794);
+            this.zedAba8.TabIndex = 0;
+            this.zedAba8.UseExtendedPrintDialog = true;
             // 
             // timer1
             // 
+            this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // formInterface
@@ -440,10 +607,17 @@
             this.Controls.Add(this.tabControl1);
             this.Name = "formInterface";
             this.Text = "Interface EMG";
-            this.canaisTab.ResumeLayout(false);
-            this.canaisTab.PerformLayout();
+            this.aba8Canais.ResumeLayout(false);
+            this.aba8Canais.PerformLayout();
             this.tabControl1.ResumeLayout(false);
-            this.c1.ResumeLayout(false);
+            this.abaCanal1.ResumeLayout(false);
+            this.abaCanal2.ResumeLayout(false);
+            this.abaCanal3.ResumeLayout(false);
+            this.abaCanal4.ResumeLayout(false);
+            this.abaCanal5.ResumeLayout(false);
+            this.abaCanal6.ResumeLayout(false);
+            this.abaCanal7.ResumeLayout(false);
+            this.abaCanal8.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -458,27 +632,38 @@
         private ZedGraph.ZedGraphControl g2;
         private ZedGraph.ZedGraphControl g1;
         private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button btmAdd;
+        private System.Windows.Forms.Button btmLimpar;
         private System.Windows.Forms.Timer timer1;
-        private System.Windows.Forms.CheckBox cbCanal2;
-        private System.Windows.Forms.CheckBox cbCanal1;
-        private System.Windows.Forms.CheckBox cbCanal8;
-        private System.Windows.Forms.CheckBox cbCanal7;
-        private System.Windows.Forms.CheckBox cbCanal6;
-        private System.Windows.Forms.CheckBox cbCanal5;
-        private System.Windows.Forms.CheckBox cbCanal4;
-        private System.Windows.Forms.CheckBox cbCanal3;
-        private System.Windows.Forms.TabPage c1;
-        private System.Windows.Forms.TabPage c2;
-        private ZedGraph.ZedGraphControl aba1Graph;
-        private System.Windows.Forms.TabPage c3;
-        private System.Windows.Forms.TabPage c4;
-        private System.Windows.Forms.TabPage c5;
-        private System.Windows.Forms.TabPage c6;
-        private System.Windows.Forms.TabPage c7;
-        private System.Windows.Forms.TabPage c8;
-        private System.Windows.Forms.TabPage canaisTab;
+        private System.Windows.Forms.CheckBox cbxCanal2;
+        private System.Windows.Forms.CheckBox cbxCanal1;
+        private System.Windows.Forms.CheckBox cbxCanal8;
+        private System.Windows.Forms.CheckBox cbxCanal7;
+        private System.Windows.Forms.CheckBox cbxCanal6;
+        private System.Windows.Forms.CheckBox cbxCanal5;
+        private System.Windows.Forms.CheckBox cbxCanal4;
+        private System.Windows.Forms.CheckBox cbxCanal3;
+        private System.Windows.Forms.TabPage abaCanal1;
+        private System.Windows.Forms.TabPage abaCanal2;
+        private ZedGraph.ZedGraphControl zedAba1;
+        private System.Windows.Forms.TabPage abaCanal3;
+        private System.Windows.Forms.TabPage abaCanal4;
+        private System.Windows.Forms.TabPage abaCanal5;
+        private System.Windows.Forms.TabPage abaCanal6;
+        private System.Windows.Forms.TabPage abaCanal7;
+        private System.Windows.Forms.TabPage abaCanal8;
+        private System.Windows.Forms.TabPage aba8Canais;
+        private ZedGraph.ZedGraphControl zedAba2;
+        private ZedGraph.ZedGraphControl zedAba3;
+        private ZedGraph.ZedGraphControl zedAba4;
+        private ZedGraph.ZedGraphControl zedAba5;
+        private ZedGraph.ZedGraphControl zedAba6;
+        private ZedGraph.ZedGraphControl zedAba7;
+        private ZedGraph.ZedGraphControl zedAba8;
+        private System.IO.Ports.SerialPort serialPort2;
+        private System.Windows.Forms.Button btmConectar;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Button btmTest;
     }
 }
 

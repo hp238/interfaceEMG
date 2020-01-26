@@ -16,8 +16,7 @@ namespace interfaceEMG
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new formConexão());
-            //Application.Run(new formInterface());
+            Application.Run(new formInterface());
         }
     }
 }
