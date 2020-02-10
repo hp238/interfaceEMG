@@ -150,6 +150,8 @@ namespace interfaceEMG
             progressBar1.Value = 0;
             serialPort2.ReadLine(); //teste
             serialPort2.ReadLine(); //teste
+            Random numAl = new Random();    //teste
+
             //ler valores de cada canal
             for (int i = 0; i< tamanho; i++)
             {
@@ -159,7 +161,7 @@ namespace interfaceEMG
                     try
                     {
                         double aux = Convert.ToDouble(serialPort2.ReadLine())/100;
-                        sinais[y][i] = aux;
+                        sinais[y][i] = aux* numAl.Next(1, 101);
                     }
                     catch
                     {
@@ -176,7 +178,7 @@ namespace interfaceEMG
             {
                 maxs[y-1] = sinais[y].Max();
             }
-            double offset = maxs.Max()/2;
+            double offset = maxs.Max();
             double offsetInic = offset;
 
             //varrer canais para adicionar um offset aos sinais para o posicionamento da tela
@@ -185,7 +187,7 @@ namespace interfaceEMG
                 double[] ret = new double[tamanho];
                 for (int i = 0; i < tamanho; i++)
                 {
-                    sinais[y][i] += offsetInic * (7-y) + offsetInic / 2;
+                    sinais[y][i] += offsetInic * (8 - y) + offsetInic ;
                     ret[i] = offset;
                     
                 }
@@ -246,7 +248,7 @@ namespace interfaceEMG
             Dictionary<int, System.Drawing.Color> cores = new Dictionary<int, System.Drawing.Color>()
             {
                 {1,System.Drawing.Color.Aqua },
-                {2,System.Drawing.Color.ForestGreen },
+                {2,System.Drawing.Color.Yellow },
                 {3,System.Drawing.Color.Coral },
                 {4,System.Drawing.Color.Green },
                 {5,System.Drawing.Color.HotPink },

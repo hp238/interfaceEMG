@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(formInterface));
             this.serialPort2 = new System.IO.Ports.SerialPort(this.components);
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.btmConectar = new System.Windows.Forms.Button();
@@ -53,7 +54,7 @@
             // comboBox1
             // 
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(928, 12);
+            this.comboBox1.Location = new System.Drawing.Point(915, 10);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(82, 21);
             this.comboBox1.TabIndex = 1;
@@ -64,7 +65,7 @@
             this.btmConectar.FlatAppearance.BorderColor = System.Drawing.Color.Red;
             this.btmConectar.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Yellow;
             this.btmConectar.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.btmConectar.Location = new System.Drawing.Point(1030, 10);
+            this.btmConectar.Location = new System.Drawing.Point(1017, 8);
             this.btmConectar.Name = "btmConectar";
             this.btmConectar.Size = new System.Drawing.Size(75, 23);
             this.btmConectar.TabIndex = 2;
@@ -74,16 +75,18 @@
             // 
             // tabControl1
             // 
+            this.tabControl1.Appearance = System.Windows.Forms.TabAppearance.Buttons;
             this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Location = new System.Drawing.Point(12, 24);
+            this.tabControl1.Location = new System.Drawing.Point(12, 39);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1240, 634);
+            this.tabControl1.Size = new System.Drawing.Size(1240, 619);
             this.tabControl1.TabIndex = 0;
             // 
             // tabPage1
             // 
-            this.tabPage1.BackColor = System.Drawing.Color.Aqua;
+            this.tabPage1.BackColor = System.Drawing.Color.White;
+            this.tabPage1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.tabPage1.Controls.Add(this.textBox8);
             this.tabPage1.Controls.Add(this.textBox7);
             this.tabPage1.Controls.Add(this.textBox6);
@@ -93,16 +96,17 @@
             this.tabPage1.Controls.Add(this.textBox2);
             this.tabPage1.Controls.Add(this.textBox1);
             this.tabPage1.Controls.Add(this.graphCanais);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.tabPage1.Location = new System.Drawing.Point(4, 25);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1232, 608);
+            this.tabPage1.Size = new System.Drawing.Size(1232, 590);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Sinais";
             // 
             // textBox8
             // 
-            this.textBox8.BackColor = System.Drawing.Color.Aqua;
+            this.textBox8.BackColor = System.Drawing.Color.White;
             this.textBox8.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox8.Location = new System.Drawing.Point(6, 266);
             this.textBox8.Name = "textBox8";
@@ -112,7 +116,7 @@
             // 
             // textBox7
             // 
-            this.textBox7.BackColor = System.Drawing.Color.Aqua;
+            this.textBox7.BackColor = System.Drawing.Color.White;
             this.textBox7.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox7.Location = new System.Drawing.Point(6, 556);
             this.textBox7.Name = "textBox7";
@@ -122,7 +126,7 @@
             // 
             // textBox6
             // 
-            this.textBox6.BackColor = System.Drawing.Color.Aqua;
+            this.textBox6.BackColor = System.Drawing.Color.White;
             this.textBox6.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox6.Location = new System.Drawing.Point(6, 486);
             this.textBox6.Name = "textBox6";
@@ -132,7 +136,7 @@
             // 
             // textBox5
             // 
-            this.textBox5.BackColor = System.Drawing.Color.Aqua;
+            this.textBox5.BackColor = System.Drawing.Color.White;
             this.textBox5.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox5.Location = new System.Drawing.Point(6, 413);
             this.textBox5.Name = "textBox5";
@@ -142,7 +146,7 @@
             // 
             // textBox4
             // 
-            this.textBox4.BackColor = System.Drawing.Color.Aqua;
+            this.textBox4.BackColor = System.Drawing.Color.White;
             this.textBox4.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox4.Location = new System.Drawing.Point(6, 337);
             this.textBox4.Name = "textBox4";
@@ -152,7 +156,7 @@
             // 
             // textBox3
             // 
-            this.textBox3.BackColor = System.Drawing.Color.Aqua;
+            this.textBox3.BackColor = System.Drawing.Color.White;
             this.textBox3.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox3.Location = new System.Drawing.Point(6, 189);
             this.textBox3.Name = "textBox3";
@@ -162,7 +166,7 @@
             // 
             // textBox2
             // 
-            this.textBox2.BackColor = System.Drawing.Color.Aqua;
+            this.textBox2.BackColor = System.Drawing.Color.White;
             this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox2.Location = new System.Drawing.Point(6, 116);
             this.textBox2.Name = "textBox2";
@@ -172,7 +176,7 @@
             // 
             // textBox1
             // 
-            this.textBox1.BackColor = System.Drawing.Color.Aqua;
+            this.textBox1.BackColor = System.Drawing.Color.White;
             this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox1.Location = new System.Drawing.Point(6, 44);
             this.textBox1.Name = "textBox1";
@@ -182,6 +186,7 @@
             // 
             // graphCanais
             // 
+            this.graphCanais.BackColor = System.Drawing.Color.RosyBrown;
             this.graphCanais.Location = new System.Drawing.Point(49, 10);
             this.graphCanais.Name = "graphCanais";
             this.graphCanais.ScrollGrace = 0D;
@@ -201,7 +206,7 @@
             // 
             // btmTeste
             // 
-            this.btmTeste.Location = new System.Drawing.Point(826, 12);
+            this.btmTeste.Location = new System.Drawing.Point(815, 10);
             this.btmTeste.Name = "btmTeste";
             this.btmTeste.Size = new System.Drawing.Size(75, 23);
             this.btmTeste.TabIndex = 3;
@@ -215,19 +220,22 @@
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(121, 23);
             this.progressBar1.TabIndex = 4;
-            this.progressBar1.Click += new System.EventHandler(this.progressBar1_Click);
             // 
             // formInterface
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.ClientSize = new System.Drawing.Size(1264, 661);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.btmTeste);
             this.Controls.Add(this.btmConectar);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.tabControl1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "formInterface";
             this.Text = "Interface EMG";
             this.tabControl1.ResumeLayout(false);
