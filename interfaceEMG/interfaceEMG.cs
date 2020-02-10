@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO.Ports;
 using DocumentFormat.OpenXml.Spreadsheet;
+using System.Threading;
+using System.IO;
 
 namespace interfaceEMG
 {
@@ -16,94 +18,41 @@ namespace interfaceEMG
     {
 
         private Boolean[] estado = new Boolean[8];
-        static int tamanho = 600; //tamanho do vetor de teste
+        static int tamanho = 100; //tamanho do vetor de teste
         private double[] x = new double[tamanho]; //eixo x
 
-        
-        private Dictionary<int, Double[]> sinais = new Dictionary<int, double[]>(); //eixo y dos 8 canais
-        private Dictionary<int, ZedGraph.ZedGraphControl> zedSinais;    //zedgraph dos 8 canais
-        private Dictionary<int, ZedGraph.ZedGraphControl> zedCanais;    //zedgraph de cada aba
-        private Dictionary<int, CheckBox> cbxCanais;    //checkbox de cana canal
-        private Dictionary<int, TabPage> tabCanais;     //tab de cada canal
-        //private SerialPort serialPort1;
-        int valor;
 
-        //TESTE
-        private readonly Timer timer = new Timer();
-        String RxString;
-
+        private Dictionary<int, Double[]> sinais = new Dictionary<int, double[]>()
+        {
+            {1, new double[tamanho] },
+            {2, new double[tamanho] },
+            {3, new double[tamanho] },
+            {4, new double[tamanho] },
+            {5, new double[tamanho] },
+            {6, new double[tamanho] },
+            {7, new double[tamanho] },
+            {8, new double[tamanho] },
+        }; //eixo y dos 8 canais
+        private Dictionary<int, Double[]> retas = new Dictionary<int, double[]>();  //retas entre canais
 
         public formInterface()
         {
-
             InitializeComponent();
             this.configurarInterface();
-            timer1.Enabled = true;
-
+            timer2.Enabled = true;
+            //this.atualizaListaCOMs();
         }
 
+        //configuração inicial da tela
         private void configurarInterface()
         {
-            zedSinais = new Dictionary<int, ZedGraph.ZedGraphControl>()
-            {
-                {1,g1 },
-                {2,g2 },
-                {3,g3 },
-                {4,g4 },
-                {5,g5 },
-                {6,g6 },
-                {7,g7 },
-                {8,g8 }
-            };
-
-            zedCanais = new Dictionary<int, ZedGraph.ZedGraphControl>()
-            {
-                {1,zedAba1},
-                {2,zedAba2 },
-                {3,zedAba3 },
-                {4,zedAba4 },
-                {5,zedAba5 },
-                {6,zedAba6 },
-                {7,zedAba7 },
-                {8,zedAba8 }
-            };
-
-            cbxCanais = new Dictionary<int, CheckBox>()
-            {
-                {1,cbxCanal1 },
-                {2,cbxCanal2 },
-                {3,cbxCanal3 },
-                {4,cbxCanal4 },
-                {5,cbxCanal5 },
-                {6,cbxCanal6 },
-                {7,cbxCanal7 },
-                {8,cbxCanal8 }
-            };
-
-            tabCanais = new Dictionary<int, TabPage>()
-            {
-                {1,abaCanal1 },
-                {2,abaCanal2 },
-                {3,abaCanal3 },
-                {4,abaCanal4 },
-                {5,abaCanal5 },
-                {6,abaCanal6 },
-                {7,abaCanal7 },
-                {8,abaCanal8 }
-            };
-
-            for(int i = 1; i <= 8; i++)
-            {
-                tabControl1.TabPages.Remove(tabCanais[i]);
-            }
+            graphCanais.GraphPane.XAxis.IsVisible = false;
+            graphCanais.GraphPane.YAxis.IsVisible = false;
+            graphCanais.GraphPane.Title.IsVisible = false;
+            graphCanais.GraphPane.Margin.All = 0;
         }
 
-
-        /// <summary>
-        /// CONEXÃO
-        /// </summary>
-        /// 
-
+        //atualiza listas de portas conectadas
         private void atualizaListaCOMs()
         {
             int i;
@@ -147,48 +96,7 @@ namespace interfaceEMG
             comboBox1.SelectedIndex = 0;
         }
 
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            atualizaListaCOMs();
-            /*
-            if (serialPort2.IsOpen==true)
-            {
-                valor = (int)(Math.Round(Convert.ToDecimal(serialPort2.ReadLine()), 0));
-                MessageBox.Show(valor.ToString());
-                MessageBox.Show(serialPort2.ReadExisting());
-                MessageBox.Show("22");
-            }
-            */
-
-            if (serialPort2.IsOpen == true)
-            {
-                //String a = serialPort2.ReadExisting();
-                //MessageBox.Show(a);
-
-                String a = serialPort2.ReadLine();
-                MessageBox.Show(a);
-            }
-
-
-
-
-        }
-
-        private void serialPort1_DataReceived(object sender, SerialDataReceivedEventArgs e)
-        {
-            RxString = serialPort2.ReadExisting();              //le o dado disponível na serial
-            valor = (int)(Math.Round(Convert.ToDecimal(serialPort2.ReadLine()), 0));
-            MessageBox.Show(valor.ToString());
-            MessageBox.Show(serialPort2.ReadExisting());
-        }
-
-
-
-        /// <summary>
-        /// BOTÕES
-        /// </summary>
-        /// 
-
+        //botão conectar
         private void btmConectar_Click(object sender, EventArgs e)
         {
             if (serialPort2.IsOpen == false)
@@ -208,7 +116,7 @@ namespace interfaceEMG
                 {
                     btmConectar.Text = "Desconectar";
                     comboBox1.Enabled = false;
-                    
+
                 }
             }
             else
@@ -226,121 +134,161 @@ namespace interfaceEMG
                 }
 
             }
+
+            if (serialPort2.IsOpen == true)
+            {
+                this.lerDados();
+                this.configurarCurvas();
+            }
         }
 
-        private void btmTest_Click(object sender, EventArgs e)
+        //ler dados da porta serial
+        private void lerDados()
         {
-            if (!serialPort2.IsOpen)
+            progressBar1.Visible = true;    //barra de progresso
+            progressBar1.Maximum = tamanho;
+            progressBar1.Value = 0;
+            serialPort2.ReadLine(); //teste
+            serialPort2.ReadLine(); //teste
+            //ler valores de cada canal
+            for (int i = 0; i< tamanho; i++)
             {
-                gerarCurvas();
-
-                //plot cada canal
-                for (int i = 1; i <= 8; i++)
+                x[i] = i;
+                for (int y = 1; y <= 8; y++)
                 {
-                    this.configurarCurvas(zedSinais[i], i, sinais[i], x, false);
-                }    
-            }
-            else
-            {
-                MessageBox.Show("Conectado a porta serial.");
-            }
-            
-        }
-
-        private void btmAdd_Click(object sender, EventArgs e)
-        {
-            Boolean aux = false;     //variável para avaliar se nenhum box foi marcado
-            //verificando cada checkbox
-            for (int i = 1; i <= 8; i++)
-            {
-                if (cbxCanais[i].Checked && !estado[i - 1])
-                {
-                    novaAba(sinais[i], tabCanais[i], i);
-                    aux = true;
-                    estado[i - 1] = true;
-                    cbxCanais[i].Enabled = false;   //desabilitar textbox marcado
+                    try
+                    {
+                        double aux = Convert.ToDouble(serialPort2.ReadLine())/100;
+                        sinais[y][i] = aux;
+                    }
+                    catch
+                    {
+                        y--;
+                    }
                 }
+                progressBar1.Value = i;
             }
-            if (aux == false)
+            progressBar1.Value = tamanho;
+
+            //calculando os valores de máximo dos sinais para determinar a posição das linhas horizontais
+            double[] maxs = new double[8];
+            for (int y = 1; y <= 8; y++)
             {
-                MessageBox.Show("Nenhum checkbox foi marcado.");
+                maxs[y-1] = sinais[y].Max();
+            }
+            double offset = maxs.Max()/2;
+            double offsetInic = offset;
+
+            //varrer canais para adicionar um offset aos sinais para o posicionamento da tela
+            for (int y = 1; y <= 8; y++)
+            {
+                double[] ret = new double[tamanho];
+                for (int i = 0; i < tamanho; i++)
+                {
+                    sinais[y][i] += offsetInic * (7-y) + offsetInic / 2;
+                    ret[i] = offset;
+                    
+                }
+                offset +=  offsetInic;
+                if (y != 1)
+                {
+                    retas.Add(y, ret);
+                }
+                
             }
         }
 
-        private void btmLimpar_Click_1(object sender, EventArgs e)
-        {
-            tabControl1.TabPages.Clear();
-            tabControl1.TabPages.Add(aba8Canais);
-            for (int i = 1; i <= 8; i++)
-            {
-                cbxCanais[i].Enabled = true;
-                estado[i - 1] = false;
-            }
-        }
 
 
-        /// <summary>
-        /// TESTAR CURVAS
-        /// </summary>
-        /// 
-
+        //gerar curvas aleatoriamente para testes
         private void gerarCurvas()
         {
             //código para sortear os valores de Y dos 8 canais
             Random numAl = new Random();
+            double max = 0;
 
             for (int y = 1; y <= 8; y++)
             {
                 Double[] aux = new double[tamanho];
+                
                 for (int i = 0; i < tamanho; i++)
                 {
-                    x[i] = i;
-                    aux[i] = numAl.Next(1, 101);
+                    try
+                    {
+                        x[i] = i;
+                        aux[i] = numAl.Next(1, 101)+max;
+                    }
+                    catch
+                    {
+                        i--;
+                    }
+                    
                 }
-                sinais.Add(y, aux);
 
+                sinais[y] =  aux;
+
+                max = sinais[y].Max() + 5;
+                double[] ret = new double[tamanho];
+                for (int i = 0; i < tamanho; i++)
+                {
+                    ret[i] = max;
+                }
+
+                retas.Add(y, ret);
 
             }
         }
 
-        //nova aba
-        private void novaAba(double[] yx, TabPage c, int n)
+        //configurar plot
+        private void configurarCurvas()
         {
-            String test = c.Name.Substring(1);
-            //int n = Int16.Parse(test);
-            tabControl1.TabPages.Add(c);
-            configurarCurvas(zedCanais[n], n, yx, x, true);
+            //Cores das curvas
+            Dictionary<int, System.Drawing.Color> cores = new Dictionary<int, System.Drawing.Color>()
+            {
+                {1,System.Drawing.Color.Aqua },
+                {2,System.Drawing.Color.ForestGreen },
+                {3,System.Drawing.Color.Coral },
+                {4,System.Drawing.Color.Green },
+                {5,System.Drawing.Color.HotPink },
+                {6,System.Drawing.Color.Maroon },
+                {7,System.Drawing.Color.Red },
+                {8,System.Drawing.Color.Tomato }
+            };
+            //adicionar cada curva
+            for (int i = 1 ; i <= 8; i++)
+            {
+                graphCanais.GraphPane.AddCurve("minha curva", x, sinais[i], cores[i], ZedGraph.SymbolType.None);
+                if (i != 1)
+                {
+                    graphCanais.GraphPane.AddCurve("minha curva", x, retas[i], System.Drawing.Color.Black, ZedGraph.SymbolType.None);
+                }
+                
+                graphCanais.GraphPane.Legend.IsVisible = false;
+            }
+            //configurando limites
+            graphCanais.GraphPane.YAxis.Scale.Max = sinais[1].Max() + 10;
+            graphCanais.GraphPane.YAxis.Scale.Min = sinais[8].Min() - 10;
+            graphCanais.GraphPane.XAxis.Scale.Max = x.Length;
+            graphCanais.GraphPane.AxisChange();
+            graphCanais.Refresh();
         }
 
-
-        //b false -> 8 canais
-        //b true -> 1 canal
-        private void configurarCurvas(ZedGraph.ZedGraphControl gx, int n, double[] yx, double[] xx, Boolean b)
+        //botão para gerar curvas aleatoriamente
+        private void btmTeste_Click(object sender, EventArgs e)
         {
-            gx.GraphPane.AddCurve("minha curva", xx, yx, System.Drawing.Color.Black, ZedGraph.SymbolType.None);
-            if (b == false)
-            {
-                gx.GraphPane.XAxis.IsVisible = false;
-                gx.GraphPane.Title.IsVisible = false;
-                gx.GraphPane.YAxis.Title.FontSpec.Size = 50;
-                gx.GraphPane.YAxis.Title.Text = "Sinal";
+            this.gerarCurvas();
 
-                gx.GraphPane.Legend.IsVisible = false;
-                gx.GraphPane.AxisChange();
-            }
-            else
-            {
-                gx.GraphPane.YAxis.Title.Text = "Sinal " + n;
-                gx.GraphPane.Title.IsVisible = false;
-                gx.GraphPane.Legend.IsVisible = false;
-                gx.GraphPane.YAxis.Scale.Min = yx.Min() - 10;
-                gx.GraphPane.YAxis.Scale.Max = yx.Max() + 10;
-                gx.GraphPane.AxisChange();
-            }
-            gx.Refresh();
+            //String a = serialPort2.ReadLine();
+            //MessageBox.Show("a");
+            this.configurarCurvas();
         }
 
-        
+        //timer
+        private void timer2_Tick(object sender, EventArgs e)
+        {
+            atualizaListaCOMs();
+        }
     }
+
 }
 
