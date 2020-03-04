@@ -11,6 +11,9 @@ using System.IO.Ports;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System.Threading;
 using System.IO;
+using System.Diagnostics;
+using System.Collections;
+
 
 namespace interfaceEMG
 {
@@ -21,6 +24,7 @@ namespace interfaceEMG
         static int tamanho = 100; //tamanho do vetor de teste
         private double[] x = new double[tamanho]; //eixo x
 
+        private ArrayList[] signals = new ArrayList[8]; // 8 canais
 
         private Dictionary<int, Double[]> sinais = new Dictionary<int, double[]>()
         {
@@ -33,6 +37,7 @@ namespace interfaceEMG
             {7, new double[tamanho] },
             {8, new double[tamanho] },
         }; //eixo y dos 8 canais
+
         private Dictionary<int, Double[]> retas = new Dictionary<int, double[]>();  //retas entre canais
 
         public formInterface()
@@ -50,6 +55,15 @@ namespace interfaceEMG
             graphCanais.GraphPane.YAxis.IsVisible = false;
             graphCanais.GraphPane.Title.IsVisible = false;
             graphCanais.GraphPane.Margin.All = 0;
+        }
+
+        // Eixo X  
+        private void inicializaVetor()
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                this.x[i] = i;
+            }
         }
 
         //atualiza listas de portas conectadas
@@ -99,6 +113,7 @@ namespace interfaceEMG
         //botão conectar
         private void btmConectar_Click(object sender, EventArgs e)
         {
+
             if (serialPort2.IsOpen == false)
             {
                 try
@@ -137,8 +152,146 @@ namespace interfaceEMG
 
             if (serialPort2.IsOpen == true)
             {
-                this.lerDados();
-                this.configurarCurvas();
+                //this.lerDados();
+                //this.configurarCurvas();
+
+                // -------------------
+
+                this.inicializaVetor();
+                while (true)
+                {
+                    Thread.Sleep(1000);
+                    //this.ler8Dados();
+                    this.read();
+                    this.configurarCurvas();
+                }
+            }
+        }
+
+        // Leitura dos canais na porta serial bluetooth
+        private void read()
+        {
+            //Console.WriteLine("Oi gente");
+
+            //Permitir atualização do gráfico
+            retas.Clear();
+            graphCanais.GraphPane.CurveList.Clear();
+            graphCanais.GraphPane.GraphObjList.Clear();
+
+            //Código para sortear os valores de Y dos 8 canais
+            Random numAl = new Random();
+            double max = 0;
+            Double[] aux = new double[tamanho];
+            
+            for (int y = 8; y >= 1; y--)
+            {
+                // Backup dos valores dos sinais
+                aux = sinais[y];
+
+                for (int i = 0; i < tamanho; i++)
+                {
+                    try
+                    {
+                        // Setamos sinais[y][99] e shiftamos os restantes
+                        if (i == 99)
+                        {
+                            //aux[i] = Convert.ToDouble(serialPort2.ReadLine()) / 100;
+                            aux[i] = numAl.Next(0, 101) + max;
+                        }
+                        else
+                        {
+                            // Se o valor for zero, damos um offset 
+                            if (aux[i+1] == 0)
+                            {
+                                aux[i] = max;
+                            }
+                            // Caso contrário, apenas damos shift
+                            else
+                            {
+                                aux[i] = aux[i + 1];
+                            }
+                            //Console.WriteLine(i + " " + aux[i] + " = " + aux[i+1] + "\n");
+                            //Console.WriteLine(max + "\n");
+                        }
+                        
+                    }
+                    catch
+                    {
+                        i--;
+                    }
+                }
+                // Atualizando os sinais
+                sinais[y] = aux;
+
+                // Offset entre os graficos
+                max = sinais[y].Max() + 5;
+                double[] ret = new double[tamanho];
+
+                for (int i = 0; i < tamanho; i++)
+                {
+                    ret[i] = max;
+                }
+                retas.Add(y, ret);
+            }
+        }
+
+        // Lê 8 dados da porta serial bluetooth
+        private void ler8Dados()
+        {
+            //Permitir atualização do gráfico
+            retas.Clear();
+            graphCanais.GraphPane.CurveList.Clear();
+            graphCanais.GraphPane.GraphObjList.Clear();
+
+            progressBar1.Visible = true;    //barra de progresso
+            progressBar1.Maximum = tamanho;
+            progressBar1.Value = 0;
+            serialPort2.ReadLine(); //teste
+            serialPort2.ReadLine(); //teste
+            Random numAl = new Random();    //teste
+            //ler valores de cada canal
+            for (int y = 1; y <= 8; y++)
+            {
+                try
+                {
+                    double aux = Convert.ToDouble(serialPort2.ReadLine()) / 100;
+                    //MessageBox.Show(Convert.ToString(aux));
+                    /*for(int j = 0; j<99; j++)
+                    {
+                        sinais[y][j] = sinais[y][j + 1];
+                    }*/
+                    sinais[y][99] = aux * numAl.Next(1, 101);
+                    Console.WriteLine(sinais[y][99] + "\n");
+                }
+                catch
+                {
+                    y--;
+                }
+            }
+
+            progressBar1.Value = tamanho;
+            //calculando os valores de máximo dos sinais para determinar a posição das linhas horizontais
+            double[] maxs = new double[8];
+            for (int y = 1; y <= 8; y++)
+            {
+                maxs[y - 1] = sinais[y].Max();
+            }
+            double offset = maxs.Max();
+            double offsetInic = offset;
+            //varrer canais para adicionar um offset aos sinais para o posicionamento da tela
+            for (int y = 1; y <= 8; y++)
+            {
+                double[] ret = new double[tamanho];
+                for (int i = 0; i < tamanho; i++)
+                {
+                    sinais[y][i] += offsetInic * (8 - y) + offsetInic;
+                    ret[i] = offset;
+                }
+                offset += offsetInic;
+                if (y != 1)
+                {
+                    retas.Add(y, ret);
+                }
             }
         }
 
@@ -153,7 +306,7 @@ namespace interfaceEMG
             Random numAl = new Random();    //teste
 
             //ler valores de cada canal
-            for (int i = 0; i< tamanho; i++)
+            for (int i = 0; i < tamanho; i++)
             {
                 x[i] = i;
                 for (int y = 1; y <= 8; y++)
@@ -205,6 +358,12 @@ namespace interfaceEMG
         //gerar curvas aleatoriamente para testes
         private void gerarCurvas()
         {
+
+            //Permitir atualização do gráfico
+            retas.Clear();
+            graphCanais.GraphPane.CurveList.Clear();
+            graphCanais.GraphPane.GraphObjList.Clear();
+
             //código para sortear os valores de Y dos 8 canais
             Random numAl = new Random();
             double max = 0;
@@ -244,6 +403,7 @@ namespace interfaceEMG
         //configurar plot
         private void configurarCurvas()
         {
+            Console.WriteLine("Oi config");
             //Cores das curvas
             Dictionary<int, System.Drawing.Color> cores = new Dictionary<int, System.Drawing.Color>()
             {
@@ -278,18 +438,23 @@ namespace interfaceEMG
         //botão para gerar curvas aleatoriamente
         private void btmTeste_Click(object sender, EventArgs e)
         {
-            this.gerarCurvas();
+            Console.WriteLine("Teste");
 
+           
             //String a = serialPort2.ReadLine();
             //MessageBox.Show("a");
+            this.gerarCurvas();
             this.configurarCurvas();
+            
         }
 
         //timer
         private void timer2_Tick(object sender, EventArgs e)
         {
+            //Console.WriteLine("Timer 2");
             atualizaListaCOMs();
         }
+
     }
 
 }
