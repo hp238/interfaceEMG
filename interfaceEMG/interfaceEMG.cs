@@ -11,13 +11,19 @@ using System.IO.Ports;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System.Threading;
 using System.IO;
+
 namespace interfaceEMG
 {
     public partial class formInterface : Form
     {
+
         private Boolean[] estado = new Boolean[8];
-        static int tamanho = 100; //tamanho do vetor de teste
+        static int tamanho = 1000; //tamanho do vetor de teste
         private double[] x = new double[tamanho]; //eixo x
+        private int taxa = 100;
+        private int janela = 2;
+        private int auxJan = 0;
+
         private void inicializaVetor()
         {
             for (int i = 0; i < 100; i++)
@@ -37,6 +43,7 @@ namespace interfaceEMG
             {8, new double[tamanho] },
         }; //eixo y dos 8 canais
         private Dictionary<int, Double[]> retas = new Dictionary<int, double[]>();  //retas entre canais
+
         public formInterface()
         {
             InitializeComponent();
@@ -44,6 +51,7 @@ namespace interfaceEMG
             timer2.Enabled = true;
             //this.atualizaListaCOMs();
         }
+
         //configuração inicial da tela
         private void configurarInterface()
         {
@@ -52,13 +60,16 @@ namespace interfaceEMG
             graphCanais.GraphPane.Title.IsVisible = false;
             graphCanais.GraphPane.Margin.All = 0;
         }
+
         //atualiza listas de portas conectadas
         private void atualizaListaCOMs()
         {
             int i;
             bool quantDiferente; //flag para sinalizar que a quantidade de portas mudou
+
             i = 0;
             quantDiferente = false;
+
 
             //se a quantidade de portas mudou
             if (comboBox1.Items.Count == SerialPort.GetPortNames().Length)
@@ -75,13 +86,16 @@ namespace interfaceEMG
             {
                 quantDiferente = true;
             }
+
             //Se não foi detectado diferença
             if (quantDiferente == false)
             {
                 return;                     //retorna
             }
+
             //limpa comboBox
             comboBox1.Items.Clear();
+
             //adiciona todas as COM diponíveis na lista
             foreach (string s in SerialPort.GetPortNames())
             {
@@ -90,28 +104,37 @@ namespace interfaceEMG
             //seleciona a primeira posição da lista
             comboBox1.SelectedIndex = 0;
         }
+
         //botão conectar
         private void btmConectar_Click(object sender, EventArgs e)
         {
+            for (int i = 0; i < tamanho; i++)
+            {
+                x[i] = i;
+            }
             if (serialPort2.IsOpen == false)
             {
                 try
                 {
                     serialPort2.PortName = comboBox1.Items[comboBox1.SelectedIndex].ToString();
                     serialPort2.Open();
+
                 }
                 catch
                 {
                     return;
+
                 }
                 if (serialPort2.IsOpen)
                 {
                     btmConectar.Text = "Desconectar";
                     comboBox1.Enabled = false;
+
                 }
             }
             else
             {
+
                 try
                 {
                     serialPort2.Close();
@@ -122,7 +145,9 @@ namespace interfaceEMG
                 {
                     return;
                 }
+
             }
+
             if (serialPort2.IsOpen == true)
             {
                 this.inicializaVetor();
@@ -137,6 +162,7 @@ namespace interfaceEMG
                 //this.configurarCurvas();
             }
         }
+
         //ler dados da porta serial
         private void lerDados()
         {
@@ -169,6 +195,7 @@ namespace interfaceEMG
                 progressBar1.Value = i;
             }
             progressBar1.Value = tamanho;
+
             //calculando os valores de máximo dos sinais para determinar a posição das linhas horizontais
             double[] maxs = new double[8];
             for (int y = 1; y <= 8; y++)
@@ -177,6 +204,7 @@ namespace interfaceEMG
             }
             double offset = maxs.Max();
             double offsetInic = offset;
+
             //varrer canais para adicionar um offset aos sinais para o posicionamento da tela
             for (int y = 1; y <= 8; y++)
             {
@@ -195,6 +223,7 @@ namespace interfaceEMG
 
             }
         }
+
         private void ler8Dados()
         {
             retas.Clear();
@@ -211,8 +240,10 @@ namespace interfaceEMG
             {
                 try
                 {
+
                     double aux = Convert.ToDouble(serialPort2.ReadLine()) / 100;
                     //MessageBox.Show(Convert.ToString(aux));
+
                     /*for(int j = 0; j<99; j++)
                     {
                         sinais[y][j] = sinais[y][j + 1];
@@ -227,6 +258,7 @@ namespace interfaceEMG
             }
 
             progressBar1.Value = tamanho;
+
             //calculando os valores de máximo dos sinais para determinar a posição das linhas horizontais
             double[] maxs = new double[8];
             for (int y = 1; y <= 8; y++)
@@ -235,6 +267,7 @@ namespace interfaceEMG
             }
             double offset = maxs.Max();
             double offsetInic = offset;
+
             //varrer canais para adicionar um offset aos sinais para o posicionamento da tela
             for (int y = 1; y <= 8; y++)
             {
@@ -243,14 +276,17 @@ namespace interfaceEMG
                 {
                     sinais[y][i] += offsetInic * (8 - y) + offsetInic;
                     ret[i] = offset;
+
                 }
                 offset += offsetInic;
                 if (y != 1)
                 {
                     retas.Add(y, ret);
                 }
+
             }
         }
+
         //
         private void read()
         {
@@ -261,48 +297,49 @@ namespace interfaceEMG
             //código para sortear os valores de Y dos 8 canais
             Random numAl = new Random();
             double max = 0;
+
             Double[] aux = new double[tamanho];
+
             for (int y = 8; y >= 1; y--)
             {
                 aux = sinais[y];
-                for (int i = 0; i < tamanho; i++)
+                for (int k = 0; k < tamanho - taxa; k++)
+                {
+                    aux[k] = aux[k + 100];
+                }
+                for (int i = tamanho - taxa; i < tamanho; i++)
                 {
                     try
                     {
-                        x[i] = i;
-                        //aux[i] = numAl.Next(1, 101)+max;
-                        if (i == 99) aux[i] = numAl.Next(0, 101) + max;
-                        else
-                        {
+                        //aux[i] = numAl.Next(1, 101)
 
-                            if (aux[i] == 0)
-                            {
-                                aux[i] = max;
-                            }
-                            else
-                            {
-                                aux[i] = aux[i + 1];
-                            }
-                            //Console.WriteLine(i + " " + aux[i] + " = " + aux[i+1] + "\n");
-                            Console.WriteLine(max + "\n");
-                        }
+                        aux[i] = (Convert.ToDouble(serialPort2.ReadLine()) / 100) * numAl.Next(1, 101) + max;
+                        //Console.WriteLine(i + " " + aux[i] + " = " + aux[i+1] + "\n");
+                        Console.WriteLine(max + "\n");
+
                         //aux[99] = Convert.ToDouble(serialPort2.ReadLine()) / 100;
                     }
                     catch
                     {
                         i--;
                     }
+
                 }
+
                 sinais[y] = aux;
+
                 max = sinais[y].Max() + 5;
                 double[] ret = new double[tamanho];
                 for (int i = 0; i < tamanho; i++)
                 {
                     ret[i] = max;
                 }
+
                 retas.Add(y, ret);
+
             }
         }
+
         //gerar curvas aleatoriamente para testes
         private void gerarCurvas()
         {
@@ -331,16 +368,22 @@ namespace interfaceEMG
                     }
 
                 }
+
                 sinais[y] = aux;
+
                 max = sinais[y].Max() + 5;
                 double[] ret = new double[tamanho];
                 for (int i = 0; i < tamanho; i++)
                 {
                     ret[i] = max;
                 }
+                //
+
                 retas.Add(y, ret);
+
             }
         }
+
         //configurar plot
         private void configurarCurvas()
         {
@@ -374,18 +417,23 @@ namespace interfaceEMG
             graphCanais.GraphPane.AxisChange();
             graphCanais.Refresh();
         }
+
         //botão para gerar curvas aleatoriamente
         private void btmTeste_Click(object sender, EventArgs e)
         {
             this.gerarCurvas();
+
             //String a = serialPort2.ReadLine();
             //MessageBox.Show("a");
             this.configurarCurvas();
         }
+
         //timer
         private void timer2_Tick(object sender, EventArgs e)
         {
             atualizaListaCOMs();
         }
     }
+
 }
+
