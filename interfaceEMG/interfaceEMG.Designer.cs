@@ -1,4 +1,4 @@
-﻿namespace interfaceEMG
+namespace interfaceEMG
 {
     partial class formInterface
     {

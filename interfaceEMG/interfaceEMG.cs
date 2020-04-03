@@ -108,7 +108,7 @@ namespace interfaceEMG
                 quantDiferente = true;
             }
 
-            //Se não foi detectado diferença
+            // Se não foi detectado diferença
             if (quantDiferente == false)
             {
                 return;                     //retorna
