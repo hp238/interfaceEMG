@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -18,10 +18,19 @@ namespace interfaceEMG
     {
 
         private Boolean[] estado = new Boolean[8];
-        static int tamanho = 100; //tamanho do vetor de teste
+        static int tamanho = 1000; //tamanho do vetor de teste
         private double[] x = new double[tamanho]; //eixo x
+        private int taxa = 100;
+        private int janela = 2;
+        private int auxJan = 0;
 
-
+        private void inicializaVetor()
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                this.x[i] = i;
+            }
+        }
         private Dictionary<int, Double[]> sinais = new Dictionary<int, double[]>()
         {
             {1, new double[tamanho] },
@@ -99,6 +108,10 @@ namespace interfaceEMG
         //botão conectar
         private void btmConectar_Click(object sender, EventArgs e)
         {
+            for (int i = 0; i < tamanho; i++)
+            {
+                x[i] = i;
+            }
             if (serialPort2.IsOpen == false)
             {
                 try
@@ -137,31 +150,42 @@ namespace interfaceEMG
 
             if (serialPort2.IsOpen == true)
             {
-                this.lerDados();
-                this.configurarCurvas();
+                this.inicializaVetor();
+                while (true)
+                {
+                    Thread.Sleep(1000);
+                    //this.ler8Dados();
+                    this.read();
+                    this.configurarCurvas();
+                }
+                //this.lerDados();
+                //this.configurarCurvas();
             }
         }
 
         //ler dados da porta serial
         private void lerDados()
         {
+            MessageBox.Show("t1");
             progressBar1.Visible = true;    //barra de progresso
             progressBar1.Maximum = tamanho;
             progressBar1.Value = 0;
             serialPort2.ReadLine(); //teste
             serialPort2.ReadLine(); //teste
             Random numAl = new Random();    //teste
-
+            MessageBox.Show("t2");
             //ler valores de cada canal
-            for (int i = 0; i< tamanho; i++)
+            for (int i = 0; i < tamanho; i++)
             {
                 x[i] = i;
                 for (int y = 1; y <= 8; y++)
                 {
                     try
                     {
-                        double aux = Convert.ToDouble(serialPort2.ReadLine())/100;
-                        sinais[y][i] = aux* numAl.Next(1, 101);
+
+                        double aux = Convert.ToDouble(serialPort2.ReadLine()) / 100;
+                        //MessageBox.Show(Convert.ToString(aux));
+                        sinais[y][i] = aux;
                     }
                     catch
                     {
@@ -176,7 +200,7 @@ namespace interfaceEMG
             double[] maxs = new double[8];
             for (int y = 1; y <= 8; y++)
             {
-                maxs[y-1] = sinais[y].Max();
+                maxs[y - 1] = sinais[y].Max();
             }
             double offset = maxs.Max();
             double offsetInic = offset;
@@ -187,47 +211,122 @@ namespace interfaceEMG
                 double[] ret = new double[tamanho];
                 for (int i = 0; i < tamanho; i++)
                 {
-                    sinais[y][i] += offsetInic * (8 - y) + offsetInic ;
+                    sinais[y][i] += offsetInic * (8 - y) + offsetInic;
                     ret[i] = offset;
-                    
+
                 }
-                offset +=  offsetInic;
+                offset += offsetInic;
                 if (y != 1)
                 {
                     retas.Add(y, ret);
                 }
-                
+
             }
         }
 
-
-
-        //gerar curvas aleatoriamente para testes
-        private void gerarCurvas()
+        private void ler8Dados()
         {
+            retas.Clear();
+            graphCanais.GraphPane.CurveList.Clear();
+            graphCanais.GraphPane.GraphObjList.Clear();
+            progressBar1.Visible = true;    //barra de progresso
+            progressBar1.Maximum = tamanho;
+            progressBar1.Value = 0;
+            serialPort2.ReadLine(); //teste
+            serialPort2.ReadLine(); //teste
+            Random numAl = new Random();    //teste
+            //ler valores de cada canal
+            for (int y = 1; y <= 8; y++)
+            {
+                try
+                {
+
+                    double aux = Convert.ToDouble(serialPort2.ReadLine()) / 100;
+                    //MessageBox.Show(Convert.ToString(aux));
+
+                    /*for(int j = 0; j<99; j++)
+                    {
+                        sinais[y][j] = sinais[y][j + 1];
+                    }*/
+                    sinais[y][99] = aux * numAl.Next(1, 101);
+                    Console.WriteLine(sinais[y][99] + "\n");
+                }
+                catch
+                {
+                    y--;
+                }
+            }
+
+            progressBar1.Value = tamanho;
+
+            //calculando os valores de máximo dos sinais para determinar a posição das linhas horizontais
+            double[] maxs = new double[8];
+            for (int y = 1; y <= 8; y++)
+            {
+                maxs[y - 1] = sinais[y].Max();
+            }
+            double offset = maxs.Max();
+            double offsetInic = offset;
+
+            //varrer canais para adicionar um offset aos sinais para o posicionamento da tela
+            for (int y = 1; y <= 8; y++)
+            {
+                double[] ret = new double[tamanho];
+                for (int i = 0; i < tamanho; i++)
+                {
+                    sinais[y][i] += offsetInic * (8 - y) + offsetInic;
+                    ret[i] = offset;
+
+                }
+                offset += offsetInic;
+                if (y != 1)
+                {
+                    retas.Add(y, ret);
+                }
+
+            }
+        }
+
+        //
+        private void read()
+        {
+            retas.Clear();
+            graphCanais.GraphPane.CurveList.Clear();
+            graphCanais.GraphPane.GraphObjList.Clear();
+            //Permitir atualização do gráfico
             //código para sortear os valores de Y dos 8 canais
             Random numAl = new Random();
             double max = 0;
 
-            for (int y = 1; y <= 8; y++)
+            Double[] aux = new double[tamanho];
+
+            for (int y = 8; y >= 1; y--)
             {
-                Double[] aux = new double[tamanho];
-                
-                for (int i = 0; i < tamanho; i++)
+                aux = sinais[y];
+                for (int k = 0; k < tamanho - taxa; k++)
+                {
+                    aux[k] = aux[k + 100];
+                }
+                for (int i = tamanho - taxa; i < tamanho; i++)
                 {
                     try
                     {
-                        x[i] = i;
-                        aux[i] = numAl.Next(1, 101)+max;
+                        //aux[i] = numAl.Next(1, 101)
+
+                        aux[i] = (Convert.ToDouble(serialPort2.ReadLine()) / 100) * numAl.Next(1, 101) + max;
+                        //Console.WriteLine(i + " " + aux[i] + " = " + aux[i+1] + "\n");
+                        Console.WriteLine(max + "\n");
+
+                        //aux[99] = Convert.ToDouble(serialPort2.ReadLine()) / 100;
                     }
                     catch
                     {
                         i--;
                     }
-                    
+
                 }
 
-                sinais[y] =  aux;
+                sinais[y] = aux;
 
                 max = sinais[y].Max() + 5;
                 double[] ret = new double[tamanho];
@@ -235,6 +334,50 @@ namespace interfaceEMG
                 {
                     ret[i] = max;
                 }
+
+                retas.Add(y, ret);
+
+            }
+        }
+
+        //gerar curvas aleatoriamente para testes
+        private void gerarCurvas()
+        {
+            retas.Clear();
+            graphCanais.GraphPane.CurveList.Clear();
+            graphCanais.GraphPane.GraphObjList.Clear();
+            //Permitir atualização do gráfico
+            //código para sortear os valores de Y dos 8 canais
+            Random numAl = new Random();
+            double max = 0;
+
+            for (int y = 8; y >= 1; y--)
+            {
+                Double[] aux = new double[tamanho];
+
+                for (int i = 0; i < tamanho; i++)
+                {
+                    try
+                    {
+                        x[i] = i;
+                        aux[i] = numAl.Next(1, 101) + max;
+                    }
+                    catch
+                    {
+                        i--;
+                    }
+
+                }
+
+                sinais[y] = aux;
+
+                max = sinais[y].Max() + 5;
+                double[] ret = new double[tamanho];
+                for (int i = 0; i < tamanho; i++)
+                {
+                    ret[i] = max;
+                }
+                //
 
                 retas.Add(y, ret);
 
@@ -257,14 +400,14 @@ namespace interfaceEMG
                 {8,System.Drawing.Color.Tomato }
             };
             //adicionar cada curva
-            for (int i = 1 ; i <= 8; i++)
+            for (int i = 1; i <= 8; i++)
             {
                 graphCanais.GraphPane.AddCurve("minha curva", x, sinais[i], cores[i], ZedGraph.SymbolType.None);
                 if (i != 1)
                 {
                     graphCanais.GraphPane.AddCurve("minha curva", x, retas[i], System.Drawing.Color.Black, ZedGraph.SymbolType.None);
                 }
-                
+
                 graphCanais.GraphPane.Legend.IsVisible = false;
             }
             //configurando limites
@@ -293,4 +436,3 @@ namespace interfaceEMG
     }
 
 }
-
