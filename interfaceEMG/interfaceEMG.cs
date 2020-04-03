@@ -63,6 +63,7 @@ namespace interfaceEMG
         {
             InitializeComponent();
             this.configurarInterface();
+            this.addBiofeedbackTab();
             timer2.Enabled = true;
             //this.atualizaListaCOMs();
         }
@@ -74,6 +75,11 @@ namespace interfaceEMG
             graphCanais.GraphPane.YAxis.IsVisible = false;
             graphCanais.GraphPane.Title.IsVisible = false;
             graphCanais.GraphPane.Margin.All = 0;
+        }
+
+        private void addBiofeedbackTab()
+        {
+            tabControl1.TabPages.Add("Biofeedback");
         }
 
         // Atualiza listas de portas conectadas
