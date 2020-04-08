@@ -1,4 +1,4 @@
-namespace interfaceEMG
+﻿namespace interfaceEMG
 {
     partial class formInterface
     {
@@ -44,11 +44,17 @@ namespace interfaceEMG
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.graphCanais = new ZedGraph.ZedGraphControl();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.textBox9 = new System.Windows.Forms.TextBox();
+            this.textBox10 = new System.Windows.Forms.TextBox();
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.btmTeste = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.zedGraphControl1 = new ZedGraph.ZedGraphControl();
+            this.zedGraphControl2 = new ZedGraph.ZedGraphControl();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
             this.SuspendLayout();
             // 
             // comboBox1
@@ -77,6 +83,7 @@ namespace interfaceEMG
             // 
             this.tabControl1.Appearance = System.Windows.Forms.TabAppearance.Buttons;
             this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Location = new System.Drawing.Point(12, 39);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -200,6 +207,42 @@ namespace interfaceEMG
             this.graphCanais.TabIndex = 0;
             this.graphCanais.UseExtendedPrintDialog = true;
             // 
+            // tabPage2
+            // 
+            this.tabPage2.BackColor = System.Drawing.Color.White;
+            this.tabPage2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tabPage2.Controls.Add(this.zedGraphControl2);
+            this.tabPage2.Controls.Add(this.zedGraphControl1);
+            this.tabPage2.Controls.Add(this.textBox9);
+            this.tabPage2.Controls.Add(this.textBox10);
+            this.tabPage2.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.tabPage2.Location = new System.Drawing.Point(4, 25);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(1232, 590);
+            this.tabPage2.TabIndex = 0;
+            this.tabPage2.Text = "Biofeedback";
+            // 
+            // textBox9
+            // 
+            this.textBox9.BackColor = System.Drawing.Color.White;
+            this.textBox9.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox9.Location = new System.Drawing.Point(6, 413);
+            this.textBox9.Name = "textBox9";
+            this.textBox9.Size = new System.Drawing.Size(39, 13);
+            this.textBox9.TabIndex = 9;
+            this.textBox9.Text = "FFT";
+            // 
+            // textBox10
+            // 
+            this.textBox10.BackColor = System.Drawing.Color.White;
+            this.textBox10.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox10.Location = new System.Drawing.Point(6, 189);
+            this.textBox10.Name = "textBox10";
+            this.textBox10.Size = new System.Drawing.Size(39, 13);
+            this.textBox10.TabIndex = 10;
+            this.textBox10.Text = "Barras";
+            // 
             // timer2
             // 
             this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
@@ -221,6 +264,38 @@ namespace interfaceEMG
             this.progressBar1.Size = new System.Drawing.Size(121, 23);
             this.progressBar1.TabIndex = 4;
             // 
+            // zedGraphControl1
+            // 
+            this.zedGraphControl1.BackColor = System.Drawing.Color.RosyBrown;
+            this.zedGraphControl1.Location = new System.Drawing.Point(40, 3);
+            this.zedGraphControl1.Name = "zedGraphControl1";
+            this.zedGraphControl1.ScrollGrace = 0D;
+            this.zedGraphControl1.ScrollMaxX = 0D;
+            this.zedGraphControl1.ScrollMaxY = 0D;
+            this.zedGraphControl1.ScrollMaxY2 = 0D;
+            this.zedGraphControl1.ScrollMinX = 0D;
+            this.zedGraphControl1.ScrollMinY = 0D;
+            this.zedGraphControl1.ScrollMinY2 = 0D;
+            this.zedGraphControl1.Size = new System.Drawing.Size(1165, 291);
+            this.zedGraphControl1.TabIndex = 11;
+            this.zedGraphControl1.UseExtendedPrintDialog = true;
+            // 
+            // zedGraphControl2
+            // 
+            this.zedGraphControl2.BackColor = System.Drawing.Color.RosyBrown;
+            this.zedGraphControl2.Location = new System.Drawing.Point(39, 300);
+            this.zedGraphControl2.Name = "zedGraphControl2";
+            this.zedGraphControl2.ScrollGrace = 0D;
+            this.zedGraphControl2.ScrollMaxX = 0D;
+            this.zedGraphControl2.ScrollMaxY = 0D;
+            this.zedGraphControl2.ScrollMaxY2 = 0D;
+            this.zedGraphControl2.ScrollMinX = 0D;
+            this.zedGraphControl2.ScrollMinY = 0D;
+            this.zedGraphControl2.ScrollMinY2 = 0D;
+            this.zedGraphControl2.Size = new System.Drawing.Size(1165, 289);
+            this.zedGraphControl2.TabIndex = 12;
+            this.zedGraphControl2.UseExtendedPrintDialog = true;
+            // 
             // formInterface
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -241,6 +316,8 @@ namespace interfaceEMG
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -251,18 +328,23 @@ namespace interfaceEMG
         private System.Windows.Forms.Button btmConectar;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage tabPage2;
         private ZedGraph.ZedGraphControl graphCanais;
         private System.Windows.Forms.Timer timer2;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.TextBox textBox8;
+        private System.Windows.Forms.TextBox textBox9;
+        private System.Windows.Forms.TextBox textBox10;
         private System.Windows.Forms.TextBox textBox7;
         private System.Windows.Forms.TextBox textBox6;
         private System.Windows.Forms.TextBox textBox5;
         private System.Windows.Forms.TextBox textBox4;
         private System.Windows.Forms.Button btmTeste;
         private System.Windows.Forms.ProgressBar progressBar1;
+        private ZedGraph.ZedGraphControl zedGraphControl2;
+        private ZedGraph.ZedGraphControl zedGraphControl1;
     }
 }
 
