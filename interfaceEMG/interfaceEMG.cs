@@ -11,6 +11,9 @@ using System.IO.Ports;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System.Threading;
 using System.IO;
+using System.Numerics;
+using MathNet.Numerics.IntegralTransforms;
+using MathNet.Numerics;
 
 namespace interfaceEMG
 {
@@ -24,6 +27,7 @@ namespace interfaceEMG
         private int janela = 2;
         private int auxJan = 0;
         private int taxaAmostragem = 2000;              // Taxa de amostragem do circuito
+        private int graphIndexBiofeedback = 3;          // Gráfico que será usado no biofeedback
 
         private void inicializaVetor()
         {
@@ -81,8 +85,8 @@ namespace interfaceEMG
             graphBars.GraphPane.Title.IsVisible = false;
             graphBars.GraphPane.Margin.All = 0;
 
-            graphFFT.GraphPane.XAxis.IsVisible = false;
-            graphFFT.GraphPane.YAxis.IsVisible = false;
+            graphFFT.GraphPane.XAxis.IsVisible = true;
+            graphFFT.GraphPane.YAxis.IsVisible = true;
             graphFFT.GraphPane.Title.IsVisible = false;
             graphFFT.GraphPane.Margin.All = 0;
         }
@@ -442,6 +446,33 @@ namespace interfaceEMG
             }
         }
 
+        // Fast Fourier Transform 
+        private (double[], double[]) FFT(double[] sinal)
+        {
+            double[] mag = new double[tamanho];         // Magnitude
+            double[] freq = new double[tamanho];        // Frequencia
+            Complex[] aux = new Complex[tamanho];
+
+            // Transformando o sinal em número complexo
+            for (int i = 0; i < tamanho; i++)
+            {
+                aux[i] = new Complex(sinal[i], 0);
+            }
+
+            // FFT
+            Fourier.Forward(aux, FourierOptions.NoScaling);
+
+            for (int i = 0; i < tamanho; i++)
+            {
+                mag[i] = (Math.Abs(Math.Sqrt(Math.Pow(aux[i].Real, 2) + Math.Pow(aux[i].Imaginary, 2))));
+            }
+
+            freq = x;
+
+            return (freq, mag); 
+        }
+
+
         // Configurar plot
         private void configurarCurvas()
         {
@@ -458,7 +489,7 @@ namespace interfaceEMG
                 {8,System.Drawing.Color.Tomato }
             };
 
-            // Adicionar cada curva
+            // Adicionar cada curva na tela principal
             for (int i = 1; i <= 8; i++)
             {
                 graphCanais.GraphPane.AddCurve("minha curva", x, sinais[i], cores[i], ZedGraph.SymbolType.None);
@@ -470,11 +501,15 @@ namespace interfaceEMG
                 graphCanais.GraphPane.Legend.IsVisible = false;
             }
 
-            // Testando relação entre as abas 
-            graphBars.GraphPane.AddCurve("Barras", x, sinais[2], cores[2], ZedGraph.SymbolType.None);
+            // Biofeedback
+
+            // Sinal com transformada de Fourier
+            (double[] frequencia, double[] mag) fft = FFT(sinais[graphIndexBiofeedback]);
+
+            graphBars.GraphPane.AddCurve("Barras", x, sinais[graphIndexBiofeedback], cores[graphIndexBiofeedback], ZedGraph.SymbolType.None);
             graphBars.GraphPane.Legend.IsVisible = false;
 
-            graphFFT.GraphPane.AddCurve("FFT", x, sinais[2], cores[2], ZedGraph.SymbolType.None);
+            graphFFT.GraphPane.AddCurve("FFT", fft.Item1, fft.Item2, cores[graphIndexBiofeedback], ZedGraph.SymbolType.None);
             graphFFT.GraphPane.Legend.IsVisible = false;
 
             // Configurando limites
@@ -484,18 +519,17 @@ namespace interfaceEMG
             graphCanais.GraphPane.AxisChange();
             graphCanais.Refresh();
 
-            graphBars.GraphPane.YAxis.Scale.Max = sinais[2].Max() + 10;
-            graphBars.GraphPane.YAxis.Scale.Min = sinais[2].Min() - 10;
+            graphBars.GraphPane.YAxis.Scale.Max = sinais[graphIndexBiofeedback].Max() + 10;
+            graphBars.GraphPane.YAxis.Scale.Min = sinais[graphIndexBiofeedback].Min() - 10;
             graphBars.GraphPane.XAxis.Scale.Max = x.Length;
             graphBars.GraphPane.AxisChange();
             graphBars.Refresh();
 
-            graphFFT.GraphPane.YAxis.Scale.Max = sinais[2].Max() + 10;
-            graphFFT.GraphPane.YAxis.Scale.Min = sinais[2].Min() - 10;
-            graphFFT.GraphPane.XAxis.Scale.Max = x.Length;
+            graphFFT.GraphPane.YAxis.Scale.Max = fft.Item2.Max() + 10;
+            graphFFT.GraphPane.YAxis.Scale.Min = fft.Item2.Min() - 10;
+            graphFFT.GraphPane.XAxis.Scale.Max = fft.Item1.Length;
             graphFFT.GraphPane.AxisChange();
             graphFFT.Refresh();
-
 
         }
 
