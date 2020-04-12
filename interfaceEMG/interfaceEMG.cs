@@ -23,18 +23,20 @@ namespace interfaceEMG
         private Boolean[] estado = new Boolean[8];
         static int tamanho = 1000;                      // Tamanho do vetor de teste
         private double[] x = new double[tamanho];       // Eixo x
-        private int taxa = 100;
+        private int taxaPorCanal;
         private int janela = 2;
         private int auxJan = 0;
-        private int taxaAmostragem = 2000;              // Taxa de amostragem do circuito
+        private int taxaAmostragem = 2000;              // Taxa de amostragem do circuito (pontos/segundo)
         private int graphIndexBiofeedback = 3;          // Gráfico que será usado no biofeedback
 
         private void inicializaVetor()
         {
-            for (int i = 0; i < 100; i++)
+            for ( int i = 0; i < tamanho ; i++ )
             {
                 this.x[i] = i;
             }
+
+            taxaPorCanal = taxaAmostragem / 8;
         }
         private Dictionary<int, Double[]> sinais = new Dictionary<int, double[]>()
         {
@@ -242,9 +244,7 @@ namespace interfaceEMG
             progressBar1.Maximum = tamanho;
             progressBar1.Value = 0;
 
-            int taxa = taxaAmostragem / 8;
-
-            for (int i = 0; i < taxa; i++)
+            for (int i = 0; i < taxaPorCanal; i++)
             {
                 for (int y = 1; y < 9; y++)
                 {
@@ -252,7 +252,7 @@ namespace interfaceEMG
                 }
             }
 
-            for (int i = taxa; i < tamanho; i++)
+            for (int i = taxaPorCanal; i < tamanho; i++)
             {
                 for (int y = 1; y < 9; y++)
                 {
@@ -366,11 +366,11 @@ namespace interfaceEMG
             for (int y = 8; y >= 1; y--)
             {
                 aux = sinais[y];
-                for (int k = 0; k < tamanho - taxa; k++)
+                for (int k = 0; k < tamanho - taxaPorCanal; k++)
                 {
                     aux[k] = aux[k + 100];
                 }
-                for (int i = tamanho - taxa; i < tamanho; i++)
+                for (int i = tamanho - taxaPorCanal; i < tamanho; i++)
                 {
                     try
                     {
@@ -448,7 +448,7 @@ namespace interfaceEMG
 
         // Fast Fourier Transform 
         private (double[], double[]) FFT(double[] sinal)
-        {
+        {   
             double[] mag = new double[tamanho];         // Magnitude
             double[] freq = new double[tamanho];        // Frequencia
             Complex[] aux = new Complex[tamanho];
@@ -462,12 +462,15 @@ namespace interfaceEMG
             // FFT
             Fourier.Forward(aux, FourierOptions.NoScaling);
 
+            // Magnitude do sinal
             for (int i = 0; i < tamanho; i++)
             {
                 mag[i] = (Math.Abs(Math.Sqrt(Math.Pow(aux[i].Real, 2) + Math.Pow(aux[i].Imaginary, 2))));
             }
 
-            freq = x;
+            // Frequência 
+
+            freq = x;   // teste 
 
             return (freq, mag); 
         }
