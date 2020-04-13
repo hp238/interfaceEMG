@@ -420,6 +420,7 @@ namespace interfaceEMG
                     {
                         x[i] = i;
                         aux[i] = numAl.Next(1, 101) + max;
+                        archiveData[y][i] = aux[i] - max;
                     }
                     catch
                     {
@@ -496,6 +497,57 @@ namespace interfaceEMG
             graphFFT.GraphPane.AxisChange();
             graphFFT.Refresh();
 
+        }
+
+
+        private void savePoints(int start)
+        {
+
+            // Nome do arquivo - salvo em interfaceEMG\bin\Debug\Sinais.csv
+            string fileName = "Sinais.csv";
+
+            // Criando arquivo
+            if (!System.IO.File.Exists(fileName))
+            {
+                using (System.IO.FileStream fs = System.IO.File.Create(fileName))
+                {
+                    Console.WriteLine("Arquivo {0} criado!", fileName);
+                }
+            }
+            else
+            {
+                Console.WriteLine("O arquivo {0} já existe!", fileName);
+            }
+
+            // Console.WriteLine(Path.GetFullPath(fileName));   // Diretorio completo do arquivo
+
+            // Cabeçalho
+            if (start == 0)
+            {
+                using (TextWriter tw = new StreamWriter(fileName, false, Encoding.Default))
+                {
+                    tw.Write("Sinal 1;Sinal 2;Sinal 3;Sinal 4; Sinal 5;Sinal 6;Sinal 7;Sinal 8;");
+                    tw.Write("\n");
+                    tw.Close();
+                }
+            }
+
+            // Escrever dados no arquivo
+            using (TextWriter tw = new StreamWriter(fileName, true, Encoding.Default))
+            {
+                for (int i = start ; i < tamanho ; i++)
+                {
+                    string line = "";
+
+                    for (int y = 1; y < 9; y++)
+                    {
+                        string aux = String.Format("{0};", archiveData[y][i]);
+                        line += aux;
+                    }
+                    tw.Write(line + "\n");
+                }
+                tw.Close();
+            }
 
         }
 
@@ -504,6 +556,7 @@ namespace interfaceEMG
         {
             this.gerarCurvas();
             this.configurarCurvas();
+            this.savePoints(0);
 
             //String a = serialPort2.ReadLine();
             //MessageBox.Show("a");
