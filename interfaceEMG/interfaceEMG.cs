@@ -11,6 +11,7 @@ using System.IO.Ports;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System.Threading;
 using System.IO;
+using System.Web.Caching;
 
 namespace interfaceEMG
 {
@@ -179,16 +180,17 @@ namespace interfaceEMG
                 this.inicializaVetor();
                 this.getFirstPoints();
                 this.configurarCurvas();
-                //this.savePoints(0)
+                this.savePoints(0);
 
                 while (true)
                 {
                     //Thread.Sleep(1000);           
                     //this.read();                   
-                    //this.savePoints(taxaAmostragem/8);
 
                     this.readData();
                     this.configurarCurvas();
+                    this.savePoints(taxaAmostragem / 8);
+
                 }
 
             }
@@ -500,6 +502,7 @@ namespace interfaceEMG
         }
 
 
+        // Salva pontos no arquivo CSV
         private void savePoints(int start)
         {
 
@@ -548,6 +551,44 @@ namespace interfaceEMG
                 }
                 tw.Close();
             }
+        }
+
+        // Ler os pontos de um arquivo CSV
+        private void readCSV()
+        {
+            string fileName = ((fileTextBox.Text == "") ? "Sinais.csv" : fileTextBox.Text);
+
+            // Arquivo inexistente
+            if (!System.IO.File.Exists(fileName))
+            {
+                MessageBox.Show("Arquivo não encontrado.", "Erro");
+                return; 
+            }
+
+            // Leitura do arquivo 
+            using (TextReader tr = new StreamReader(fileName, Encoding.Default))
+            {
+                string line = null;
+
+                while( ( line = tr.ReadLine() ) != null )
+                {
+                    string[] lineSplit = line.Split(';');
+                    string print = "";
+
+                    for( int i = 0 ; i < lineSplit.Length ; i++)
+                    {
+                        if(i != 0)
+                        {
+                            print += " ";
+                        }
+
+                        print += lineSplit[i];    
+                    }
+                    Console.WriteLine(print);
+                }
+
+                tr.Close();
+            }
 
         }
 
@@ -556,8 +597,8 @@ namespace interfaceEMG
         {
             this.gerarCurvas();
             this.configurarCurvas();
-            this.savePoints(0);
-
+            
+            //this.savePoints(0);
             //String a = serialPort2.ReadLine();
             //MessageBox.Show("a");
         }
@@ -566,6 +607,18 @@ namespace interfaceEMG
         private void timer2_Tick(object sender, EventArgs e)
         {
             atualizaListaCOMs();
+        }
+
+        // Botão para ler arquivo
+        private void readFileButton_Click(object sender, EventArgs e)
+        {
+            readCSV();
+        }
+
+        // Text Box do arquivo a ser lido
+        private void fileTextBox_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 
