@@ -403,7 +403,7 @@ namespace interfaceEMG
             {
 
                 graphCanais.GraphPane.AddCurve("minha curva", x, sinais[i], cores[i], ZedGraph.SymbolType.None);
-                
+
                 //if (i != 1)
                 //{
                 //    graphCanais.GraphPane.AddCurve("minha curva", x, retas[i], System.Drawing.Color.Black, ZedGraph.SymbolType.None);
@@ -455,17 +455,8 @@ namespace interfaceEMG
                 {
                     Console.WriteLine("Arquivo {0} criado!", fileName);
                 }
-            }
-            else
-            {
-                Console.WriteLine("O arquivo {0} já existe!", fileName);
-            }
 
-            // Console.WriteLine(Path.GetFullPath(fileName));   // Diretorio completo do arquivo
-
-            // Cabeçalho
-            if (start == 0)
-            {
+                // Cabeçalho
                 using (TextWriter tw = new StreamWriter(fileName, false, Encoding.Default))
                 {
                     tw.Write("Sinal 1;Sinal 2;Sinal 3;Sinal 4; Sinal 5;Sinal 6;Sinal 7;Sinal 8;");
@@ -473,6 +464,12 @@ namespace interfaceEMG
                     tw.Close();
                 }
             }
+            else
+            {
+                Console.WriteLine("O arquivo {0} já existe!", fileName);
+            }
+
+            // Console.WriteLine(Path.GetFullPath(fileName));   // Diretorio completo do arquivo
 
             // Escrever dados no arquivo
             using (TextWriter tw = new StreamWriter(fileName, true, Encoding.Default))
@@ -525,6 +522,7 @@ namespace interfaceEMG
                 progressBar1.Maximum = tamanho;
                 progressBar1.Value = 0;
 
+                // Primeiros pontos do arquivo 
                 while ((line = tr.ReadLine()) != null && index < tamanho)
                 {
                     string[] lineSplit = line.Split(';');
@@ -538,7 +536,6 @@ namespace interfaceEMG
                 }
                 progressBar1.Value = tamanho;
 
-                ////------Pontos restantes------
                 //line = null;
                 //int taxa = taxaAmostragem / 8;
 
@@ -546,8 +543,13 @@ namespace interfaceEMG
                 //progressBar1.Maximum = tamanho;
                 //progressBar1.Value = 0;
 
+                //// Pontos restantes
                 //while ((line = tr.ReadLine()) != null)
                 //{
+                //    // Delay de 1s
+                //    Thread.Sleep(1000);
+
+
                 //    string[] lineSplit = line.Split(';');
 
                 //    // Shift dos pontos
@@ -604,13 +606,6 @@ namespace interfaceEMG
         {
             this.readCSV();
             this.configurarCurvas();
-
-            for (int j = 0; j < tamanho; j++)
-            {
-                Console.WriteLine(sinais[8][j]);
-            }
-
-
         }
 
         // Text Box do arquivo a ser lido
