@@ -175,6 +175,7 @@ namespace interfaceEMG
             if (serialPort2.IsOpen == true)
             {
                 this.inicializaVetor();
+
                 this.readFirstPoints();
                 this.configurarCurvas();
                 this.savePoints(0);
@@ -183,7 +184,7 @@ namespace interfaceEMG
                 {
                     this.readPoints();
                     this.configurarCurvas();
-                    this.savePoints(taxaAmostragem / 8);
+                    this.savePoints(tamanho - (taxaAmostragem / 8));
                 }
             }
         }
@@ -233,8 +234,9 @@ namespace interfaceEMG
             progressBar1.Value = 0;
 
             int taxa = taxaAmostragem / 8;
+            int limit = tamanho - taxa;
 
-            for (int i = 0; i < taxa; i++)
+            for (int i = 0; i < limit; i++)
             {
                 for (int y = 1; y < 9; y++)
                 {
@@ -242,7 +244,7 @@ namespace interfaceEMG
                 }
             }
 
-            for (int i = taxa; i < tamanho; i++)
+            for (int i = limit; i < tamanho; i++)
             {
                 for (int y = 1; y < 9; y++)
                 {
@@ -492,14 +494,6 @@ namespace interfaceEMG
         // Ler os pontos de um arquivo CSV
         private void readCSV()
         {
-            // Permitir atualização do gráfico
-            graphCanais.GraphPane.CurveList.Clear();
-            graphCanais.GraphPane.GraphObjList.Clear();
-            graphBars.GraphPane.CurveList.Clear();
-            graphBars.GraphPane.GraphObjList.Clear();
-            graphFFT.GraphPane.CurveList.Clear();
-            graphFFT.GraphPane.GraphObjList.Clear();
-
             string fileName = ((fileTextBox.Text == "") ? "Sinais.csv" : fileTextBox.Text);
 
             // Arquivo inexistente
@@ -529,55 +523,74 @@ namespace interfaceEMG
 
                     for (int y = 0; y < lineSplit.Length - 1; y++)
                     {
-                        sinais[y + 1][index] = Convert.ToDouble(lineSplit[y]);
+                        sinais[y + 1][index] = Convert.ToDouble(lineSplit[y]) + (7 - y)*100;
                     }
                     progressBar1.Value = index;
                     index++;
                 }
                 progressBar1.Value = tamanho;
 
-                //line = null;
-                //int taxa = taxaAmostragem / 8;
+                // Plot 
+                this.configurarCurvas();
 
-                //progressBar1.Visible = true;
-                //progressBar1.Maximum = tamanho;
-                //progressBar1.Value = 0;
+                line = null;
+                int taxa = taxaAmostragem / 8;
+                int limit = tamanho - taxa;
+                bool finish = false;
 
-                //// Pontos restantes
-                //while ((line = tr.ReadLine()) != null)
-                //{
-                //    // Delay de 1s
-                //    Thread.Sleep(1000);
+                progressBar1.Visible = true;
+                progressBar1.Maximum = tamanho;
+                progressBar1.Value = 0;
 
+                // Pontos restantes
+                while (!finish)
+                {
+                    // Delay de 1s
+                    Thread.Sleep(1000);
 
-                //    string[] lineSplit = line.Split(';');
+                    // Permitir atualização do gráfico
+                    graphCanais.GraphPane.CurveList.Clear();
+                    graphCanais.GraphPane.GraphObjList.Clear();
+                    graphBars.GraphPane.CurveList.Clear();
+                    graphBars.GraphPane.GraphObjList.Clear();
+                    graphFFT.GraphPane.CurveList.Clear();
+                    graphFFT.GraphPane.GraphObjList.Clear();
 
-                //    // Shift dos pontos
-                //    for (int i = 0; i < taxa; i++)
-                //    {
-                //        for (int y = 1; y < 9; y++)
-                //        {
-                //            sinais[y][i] = sinais[y][i + 1];
-                //        }
+                    // Shift dos pontos
+                    for (int i = 0; i < limit; i++)
+                    {
+                        for (int y = 1; y < 9; y++)
+                        {
+                            sinais[y][i] = sinais[y][i + 1];
+                        }
 
-                //        progressBar1.Value = i;
-                //    }
+                        progressBar1.Value = i;
+                    }
 
-                //    // Leitura dos pontos 
-                //    for (int i = taxa; i < tamanho; i++)
-                //    {
-                //        for (int y = 0; y < lineSplit.Length - 1; y++)
-                //        {
+                    index = limit;
 
-                //            sinais[y + 1][i] = Convert.ToDouble(lineSplit[y]);
-                //        }
-                //        progressBar1.Value = i;
-                //    }
-                //    progressBar1.Value = tamanho;
+                    while((line = tr.ReadLine()) != null && index < tamanho)
+                    {
+                        string[] lineSplit = line.Split(';');
 
-                //    // Plot
-                //    this.configurarCurvas();
-                //}
+                        // Leitura dos pontos 
+                        for (int y = 0; y < lineSplit.Length - 1; y++)
+                        {
+                            sinais[y + 1][index] = Convert.ToDouble(lineSplit[y]) + (7 - y) * 100;
+                        }
+                        progressBar1.Value = index;
+                        index++;
+                    }
+                    progressBar1.Value = tamanho;
+
+                    if (line == null)
+                    {
+                        finish = true;
+                    }
+
+                    // Plot
+                    this.configurarCurvas();
+                }
 
                 tr.Close();
             }
@@ -605,7 +618,6 @@ namespace interfaceEMG
         private void readFileButton_Click(object sender, EventArgs e)
         {
             this.readCSV();
-            this.configurarCurvas();
         }
 
         // Text Box do arquivo a ser lido
