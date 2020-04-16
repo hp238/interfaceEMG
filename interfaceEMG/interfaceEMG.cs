@@ -12,6 +12,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using System.Threading;
 using System.IO;
 using System.Web.Caching;
+using DocumentFormat.OpenXml.EMMA;
 
 namespace interfaceEMG
 {
@@ -57,7 +58,7 @@ namespace interfaceEMG
             {8, new double[tamanho] },
         }; // Dados para salvar no arquivo
 
-        private Dictionary<int, Double[]> retas = new Dictionary<int, double[]>();  //retas entre canais
+        private Dictionary<int, Double[]> retas = new Dictionary<int, double[]>(); // Retas entre canais
 
         public formInterface()
         {
@@ -145,23 +146,19 @@ namespace interfaceEMG
                 {
                     serialPort2.PortName = comboBox1.Items[comboBox1.SelectedIndex].ToString();
                     serialPort2.Open();
-
                 }
                 catch
                 {
                     return;
-
                 }
                 if (serialPort2.IsOpen)
                 {
                     btmConectar.Text = "Desconectar";
                     comboBox1.Enabled = false;
-
                 }
             }
             else
             {
-
                 try
                 {
                     serialPort2.Close();
@@ -178,26 +175,21 @@ namespace interfaceEMG
             if (serialPort2.IsOpen == true)
             {
                 this.inicializaVetor();
-                this.getFirstPoints();
+                this.readFirstPoints();
                 this.configurarCurvas();
                 this.savePoints(0);
 
                 while (true)
                 {
-                    //Thread.Sleep(1000);           
-                    //this.read();                   
-
-                    this.readData();
+                    this.readPoints();
                     this.configurarCurvas();
                     this.savePoints(taxaAmostragem / 8);
-
                 }
-
             }
         }
 
-        // Ler os primeiros 1000 pontos de cada canal
-        private void getFirstPoints()
+        // Ler os primeiros (tamanho) pontos de cada canal
+        private void readFirstPoints()
         {
             progressBar1.Visible = true;
             progressBar1.Maximum = tamanho;
@@ -225,7 +217,7 @@ namespace interfaceEMG
         }
 
         // Ler os pontos dos 8 canais de acordo com a taxa de amostragem
-        private void readData()
+        private void readPoints()
         {
             // Permitir atualização do gráfico
             retas.Clear();
@@ -256,7 +248,6 @@ namespace interfaceEMG
                 {
                     try
                     {
-
                         double aux = Convert.ToDouble(serialPort2.ReadLine()) / 100;
                         sinais[y][i] = aux + (8 - y) * 100;
                         archiveData[y][i] = aux;
@@ -301,7 +292,6 @@ namespace interfaceEMG
                 {
                     try
                     {
-
                         double aux = Convert.ToDouble(serialPort2.ReadLine()) / 100;
                         //MessageBox.Show(Convert.ToString(aux));
                         sinais[y][i] = aux;
@@ -339,59 +329,6 @@ namespace interfaceEMG
                 {
                     retas.Add(y, ret);
                 }
-
-            }
-        }
-
-        // Leitura dos dados
-        private void read()
-        {
-            // Permitir atualização do gráfico
-            retas.Clear();
-            graphCanais.GraphPane.CurveList.Clear();
-            graphCanais.GraphPane.GraphObjList.Clear();
-            graphBars.GraphPane.CurveList.Clear();
-            graphBars.GraphPane.GraphObjList.Clear();
-            graphFFT.GraphPane.CurveList.Clear();
-            graphFFT.GraphPane.GraphObjList.Clear();
-
-            // Código para sortear os valores de Y dos 8 canais
-            Random numAl = new Random();
-            double max = 0;
-
-            Double[] aux = new double[tamanho];
-
-            for (int y = 8; y >= 1; y--)
-            {
-                aux = sinais[y];
-                for (int k = 0; k < tamanho - taxa; k++)
-                {
-                    aux[k] = aux[k + 100];
-                }
-                for (int i = tamanho - taxa; i < tamanho; i++)
-                {
-                    try
-                    {
-                        aux[i] = (Convert.ToDouble(serialPort2.ReadLine()) / 100) * numAl.Next(1, 101) + max;
-                        Console.WriteLine(max + "\n");
-                    }
-                    catch
-                    {
-                        i--;
-                    }
-
-                }
-
-                sinais[y] = aux;
-
-                max = sinais[y].Max() + 5;
-                double[] ret = new double[tamanho];
-                for (int i = 0; i < tamanho; i++)
-                {
-                    ret[i] = max;
-                }
-
-                retas.Add(y, ret);
 
             }
         }
@@ -462,13 +399,15 @@ namespace interfaceEMG
             };
 
             // Adicionar cada curva
-            for (int i = 1; i <= 8; i++)
+            for (int i = 1 ; i <= 8 ; i++)
             {
+
                 graphCanais.GraphPane.AddCurve("minha curva", x, sinais[i], cores[i], ZedGraph.SymbolType.None);
-                if (i != 1)
-                {
-                    graphCanais.GraphPane.AddCurve("minha curva", x, retas[i], System.Drawing.Color.Black, ZedGraph.SymbolType.None);
-                }
+                
+                //if (i != 1)
+                //{
+                //    graphCanais.GraphPane.AddCurve("minha curva", x, retas[i], System.Drawing.Color.Black, ZedGraph.SymbolType.None);
+                //}
 
                 graphCanais.GraphPane.Legend.IsVisible = false;
             }
@@ -480,7 +419,7 @@ namespace interfaceEMG
             graphFFT.GraphPane.AddCurve("FFT", x, sinais[2], cores[2], ZedGraph.SymbolType.None);
             graphFFT.GraphPane.Legend.IsVisible = false;
 
-            // Configurando limites
+            // Configurando limites            
             graphCanais.GraphPane.YAxis.Scale.Max = sinais[1].Max() + 10;
             graphCanais.GraphPane.YAxis.Scale.Min = sinais[8].Min() - 10;
             graphCanais.GraphPane.XAxis.Scale.Max = x.Length;
@@ -556,6 +495,14 @@ namespace interfaceEMG
         // Ler os pontos de um arquivo CSV
         private void readCSV()
         {
+            // Permitir atualização do gráfico
+            graphCanais.GraphPane.CurveList.Clear();
+            graphCanais.GraphPane.GraphObjList.Clear();
+            graphBars.GraphPane.CurveList.Clear();
+            graphBars.GraphPane.GraphObjList.Clear();
+            graphFFT.GraphPane.CurveList.Clear();
+            graphFFT.GraphPane.GraphObjList.Clear();
+
             string fileName = ((fileTextBox.Text == "") ? "Sinais.csv" : fileTextBox.Text);
 
             // Arquivo inexistente
@@ -569,23 +516,66 @@ namespace interfaceEMG
             using (TextReader tr = new StreamReader(fileName, Encoding.Default))
             {
                 string line = null;
+                int index = 0;
 
-                while( ( line = tr.ReadLine() ) != null )
+                line = tr.ReadLine();       // Cabeçalho
+                line = null;
+
+                progressBar1.Visible = true;
+                progressBar1.Maximum = tamanho;
+                progressBar1.Value = 0;
+
+                while ((line = tr.ReadLine()) != null && index < tamanho)
                 {
                     string[] lineSplit = line.Split(';');
-                    string print = "";
 
-                    for( int i = 0 ; i < lineSplit.Length ; i++)
+                    for (int y = 0; y < lineSplit.Length - 1; y++)
                     {
-                        if(i != 0)
-                        {
-                            print += " ";
-                        }
-
-                        print += lineSplit[i];    
+                        sinais[y + 1][index] = Convert.ToDouble(lineSplit[y]);
                     }
-                    Console.WriteLine(print);
+                    progressBar1.Value = index;
+                    index++;
                 }
+                progressBar1.Value = tamanho;
+
+                ////------Pontos restantes------
+                //line = null;
+                //int taxa = taxaAmostragem / 8;
+
+                //progressBar1.Visible = true;
+                //progressBar1.Maximum = tamanho;
+                //progressBar1.Value = 0;
+
+                //while ((line = tr.ReadLine()) != null)
+                //{
+                //    string[] lineSplit = line.Split(';');
+
+                //    // Shift dos pontos
+                //    for (int i = 0; i < taxa; i++)
+                //    {
+                //        for (int y = 1; y < 9; y++)
+                //        {
+                //            sinais[y][i] = sinais[y][i + 1];
+                //        }
+
+                //        progressBar1.Value = i;
+                //    }
+
+                //    // Leitura dos pontos 
+                //    for (int i = taxa; i < tamanho; i++)
+                //    {
+                //        for (int y = 0; y < lineSplit.Length - 1; y++)
+                //        {
+
+                //            sinais[y + 1][i] = Convert.ToDouble(lineSplit[y]);
+                //        }
+                //        progressBar1.Value = i;
+                //    }
+                //    progressBar1.Value = tamanho;
+
+                //    // Plot
+                //    this.configurarCurvas();
+                //}
 
                 tr.Close();
             }
@@ -612,7 +602,15 @@ namespace interfaceEMG
         // Botão para ler arquivo
         private void readFileButton_Click(object sender, EventArgs e)
         {
-            readCSV();
+            this.readCSV();
+            this.configurarCurvas();
+
+            for (int j = 0; j < tamanho; j++)
+            {
+                Console.WriteLine(sinais[8][j]);
+            }
+
+
         }
 
         // Text Box do arquivo a ser lido
