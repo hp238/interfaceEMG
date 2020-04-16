@@ -517,8 +517,13 @@ namespace interfaceEMG
                 progressBar1.Value = 0;
 
                 // Primeiros pontos do arquivo 
-                while ((line = tr.ReadLine()) != null && index < tamanho)
+                while (index < tamanho)
                 {
+                    if((line = tr.ReadLine()) == null)
+                    {
+                        break;
+                    }
+
                     string[] lineSplit = line.Split(';');
 
                     for (int y = 0; y < lineSplit.Length - 1; y++)
@@ -569,8 +574,14 @@ namespace interfaceEMG
 
                     index = limit;
 
-                    while((line = tr.ReadLine()) != null && index < tamanho)
+                    while(index < tamanho)
                     {
+                        if((line = tr.ReadLine()) == null)
+                        {
+                            finish = true;
+                            break;
+                        }
+
                         string[] lineSplit = line.Split(';');
 
                         // Leitura dos pontos 
@@ -583,18 +594,12 @@ namespace interfaceEMG
                     }
                     progressBar1.Value = tamanho;
 
-                    if (line == null)
-                    {
-                        finish = true;
-                    }
-
                     // Plot
                     this.configurarCurvas();
                 }
 
                 tr.Close();
             }
-
         }
 
         // Botão para gerar curvas aleatoriamente
