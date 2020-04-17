@@ -82,8 +82,8 @@ namespace interfaceEMG
             graphCanais.GraphPane.Margin.All = 0;
 
             // Aba de biofeedback
-            graphBars.GraphPane.XAxis.IsVisible = false;
-            graphBars.GraphPane.YAxis.IsVisible = false;
+            graphBars.GraphPane.XAxis.IsVisible = true;
+            graphBars.GraphPane.YAxis.IsVisible = true;
             graphBars.GraphPane.Title.IsVisible = false;
             graphBars.GraphPane.Margin.All = 0;
 
@@ -424,6 +424,12 @@ namespace interfaceEMG
                     {
                         x[i] = i;
                         aux[i] = numAl.Next(1, 101) + max;
+
+                        if (i == numAl.Next(1, 1000) || i== numAl.Next(1, 1000) || i== numAl.Next(1, 1000) || i== numAl.Next(1, 1000)) aux[i] = numAl.Next(1, 101) + max;
+                        else aux[i] = max;
+
+                        //if (i == 200 || i == 220 || i == 240 || i == 260 || i == 280) aux[i] = 50 + max;
+                        //else aux[i] = 0 + max;
                     }
                     catch
                     {
@@ -460,12 +466,13 @@ namespace interfaceEMG
             }
 
             // FFT
-            Fourier.Forward(aux, FourierOptions.NoScaling);
 
+            //Fourier.Forward(aux, FourierOptions.NoScaling);
+            Fourier.Forward(aux);
             // Magnitude do sinal
             for (int i = 0; i < tamanho; i++)
             {
-                mag[i] = (Math.Abs(Math.Sqrt(Math.Pow(aux[i].Real, 2) + Math.Pow(aux[i].Imaginary, 2))));
+                if(i!=0)mag[i] = (Math.Abs(Math.Sqrt(Math.Pow(aux[i].Real, 2) + Math.Pow(aux[i].Imaginary, 2))));
             }
 
             // Frequência 
@@ -474,7 +481,6 @@ namespace interfaceEMG
 
             return (freq, mag); 
         }
-
 
         // Configurar plot
         private void configurarCurvas()
