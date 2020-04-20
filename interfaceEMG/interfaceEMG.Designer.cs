@@ -52,6 +52,8 @@
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.btmTeste = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.readFileButton = new System.Windows.Forms.Button();
+            this.fileTextBox = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -61,7 +63,7 @@
             // 
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Location = new System.Drawing.Point(1220, 12);
-            this.comboBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.comboBox1.Margin = new System.Windows.Forms.Padding(4);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(108, 24);
             this.comboBox1.TabIndex = 1;
@@ -73,7 +75,7 @@
             this.btmConectar.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Yellow;
             this.btmConectar.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.btmConectar.Location = new System.Drawing.Point(1356, 10);
-            this.btmConectar.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btmConectar.Margin = new System.Windows.Forms.Padding(4);
             this.btmConectar.Name = "btmConectar";
             this.btmConectar.Size = new System.Drawing.Size(100, 28);
             this.btmConectar.TabIndex = 2;
@@ -87,7 +89,7 @@
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Location = new System.Drawing.Point(16, 48);
-            this.tabControl1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabControl1.Margin = new System.Windows.Forms.Padding(4);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(1653, 762);
@@ -108,9 +110,9 @@
             this.tabPage1.Controls.Add(this.graphCanais);
             this.tabPage1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.tabPage1.Location = new System.Drawing.Point(4, 28);
-            this.tabPage1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage1.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(4);
             this.tabPage1.Size = new System.Drawing.Size(1645, 730);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Sinais";
@@ -120,7 +122,7 @@
             this.textBox8.BackColor = System.Drawing.Color.White;
             this.textBox8.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox8.Location = new System.Drawing.Point(8, 327);
-            this.textBox8.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox8.Margin = new System.Windows.Forms.Padding(4);
             this.textBox8.Name = "textBox8";
             this.textBox8.Size = new System.Drawing.Size(52, 15);
             this.textBox8.TabIndex = 8;
@@ -131,7 +133,7 @@
             this.textBox7.BackColor = System.Drawing.Color.White;
             this.textBox7.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox7.Location = new System.Drawing.Point(8, 684);
-            this.textBox7.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox7.Margin = new System.Windows.Forms.Padding(4);
             this.textBox7.Name = "textBox7";
             this.textBox7.Size = new System.Drawing.Size(52, 15);
             this.textBox7.TabIndex = 7;
@@ -142,7 +144,7 @@
             this.textBox6.BackColor = System.Drawing.Color.White;
             this.textBox6.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox6.Location = new System.Drawing.Point(8, 598);
-            this.textBox6.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox6.Margin = new System.Windows.Forms.Padding(4);
             this.textBox6.Name = "textBox6";
             this.textBox6.Size = new System.Drawing.Size(52, 15);
             this.textBox6.TabIndex = 6;
@@ -153,7 +155,7 @@
             this.textBox5.BackColor = System.Drawing.Color.White;
             this.textBox5.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox5.Location = new System.Drawing.Point(8, 508);
-            this.textBox5.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox5.Margin = new System.Windows.Forms.Padding(4);
             this.textBox5.Name = "textBox5";
             this.textBox5.Size = new System.Drawing.Size(52, 15);
             this.textBox5.TabIndex = 5;
@@ -164,7 +166,7 @@
             this.textBox4.BackColor = System.Drawing.Color.White;
             this.textBox4.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox4.Location = new System.Drawing.Point(8, 415);
-            this.textBox4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox4.Margin = new System.Windows.Forms.Padding(4);
             this.textBox4.Name = "textBox4";
             this.textBox4.Size = new System.Drawing.Size(52, 15);
             this.textBox4.TabIndex = 4;
@@ -175,7 +177,7 @@
             this.textBox3.BackColor = System.Drawing.Color.White;
             this.textBox3.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox3.Location = new System.Drawing.Point(8, 233);
-            this.textBox3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox3.Margin = new System.Windows.Forms.Padding(4);
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(52, 15);
             this.textBox3.TabIndex = 3;
@@ -186,7 +188,7 @@
             this.textBox2.BackColor = System.Drawing.Color.White;
             this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox2.Location = new System.Drawing.Point(8, 143);
-            this.textBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox2.Margin = new System.Windows.Forms.Padding(4);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(52, 15);
             this.textBox2.TabIndex = 2;
@@ -197,7 +199,7 @@
             this.textBox1.BackColor = System.Drawing.Color.White;
             this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox1.Location = new System.Drawing.Point(8, 54);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(4);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(52, 15);
             this.textBox1.TabIndex = 1;
@@ -207,7 +209,7 @@
             // 
             this.graphCanais.BackColor = System.Drawing.Color.RosyBrown;
             this.graphCanais.Location = new System.Drawing.Point(65, 12);
-            this.graphCanais.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.graphCanais.Margin = new System.Windows.Forms.Padding(5);
             this.graphCanais.Name = "graphCanais";
             this.graphCanais.ScrollGrace = 0D;
             this.graphCanais.ScrollMaxX = 0D;
@@ -230,9 +232,9 @@
             this.tabPage2.Controls.Add(this.textBox10);
             this.tabPage2.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.tabPage2.Location = new System.Drawing.Point(4, 28);
-            this.tabPage2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage2.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(4);
             this.tabPage2.Size = new System.Drawing.Size(1645, 730);
             this.tabPage2.TabIndex = 0;
             this.tabPage2.Text = "Biofeedback";
@@ -241,7 +243,7 @@
             // 
             this.graphFFT.BackColor = System.Drawing.Color.RosyBrown;
             this.graphFFT.Location = new System.Drawing.Point(52, 369);
-            this.graphFFT.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.graphFFT.Margin = new System.Windows.Forms.Padding(5);
             this.graphFFT.Name = "graphFFT";
             this.graphFFT.ScrollGrace = 0D;
             this.graphFFT.ScrollMaxX = 0D;
@@ -258,7 +260,7 @@
             // 
             this.graphBars.BackColor = System.Drawing.Color.RosyBrown;
             this.graphBars.Location = new System.Drawing.Point(53, 4);
-            this.graphBars.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.graphBars.Margin = new System.Windows.Forms.Padding(5);
             this.graphBars.Name = "graphBars";
             this.graphBars.ScrollGrace = 0D;
             this.graphBars.ScrollMaxX = 0D;
@@ -276,7 +278,7 @@
             this.textBox9.BackColor = System.Drawing.Color.White;
             this.textBox9.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox9.Location = new System.Drawing.Point(8, 508);
-            this.textBox9.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox9.Margin = new System.Windows.Forms.Padding(4);
             this.textBox9.Name = "textBox9";
             this.textBox9.Size = new System.Drawing.Size(52, 15);
             this.textBox9.TabIndex = 9;
@@ -287,7 +289,7 @@
             this.textBox10.BackColor = System.Drawing.Color.White;
             this.textBox10.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox10.Location = new System.Drawing.Point(8, 233);
-            this.textBox10.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox10.Margin = new System.Windows.Forms.Padding(4);
             this.textBox10.Name = "textBox10";
             this.textBox10.Size = new System.Drawing.Size(52, 15);
             this.textBox10.TabIndex = 10;
@@ -300,7 +302,7 @@
             // btmTeste
             // 
             this.btmTeste.Location = new System.Drawing.Point(1087, 12);
-            this.btmTeste.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btmTeste.Margin = new System.Windows.Forms.Padding(4);
             this.btmTeste.Name = "btmTeste";
             this.btmTeste.Size = new System.Drawing.Size(100, 28);
             this.btmTeste.TabIndex = 3;
@@ -311,10 +313,28 @@
             // progressBar1
             // 
             this.progressBar1.Location = new System.Drawing.Point(1499, 12);
-            this.progressBar1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.progressBar1.Margin = new System.Windows.Forms.Padding(4);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(161, 28);
             this.progressBar1.TabIndex = 4;
+            // 
+            // readFileButton
+            // 
+            this.readFileButton.Location = new System.Drawing.Point(245, 13);
+            this.readFileButton.Name = "readFileButton";
+            this.readFileButton.Size = new System.Drawing.Size(100, 28);
+            this.readFileButton.TabIndex = 5;
+            this.readFileButton.Text = "Ler Arquivo";
+            this.readFileButton.UseVisualStyleBackColor = true;
+            this.readFileButton.Click += new System.EventHandler(this.readFileButton_Click);
+            // 
+            // fileTextBox
+            // 
+            this.fileTextBox.Location = new System.Drawing.Point(16, 16);
+            this.fileTextBox.Name = "fileTextBox";
+            this.fileTextBox.Size = new System.Drawing.Size(223, 22);
+            this.fileTextBox.TabIndex = 6;
+            this.fileTextBox.TextChanged += new System.EventHandler(this.fileTextBox_TextChanged);
             // 
             // formInterface
             // 
@@ -323,13 +343,15 @@
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.ClientSize = new System.Drawing.Size(1685, 814);
+            this.Controls.Add(this.fileTextBox);
+            this.Controls.Add(this.readFileButton);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.btmTeste);
             this.Controls.Add(this.btmConectar);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.tabControl1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "formInterface";
@@ -340,6 +362,7 @@
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -366,6 +389,7 @@
         private System.Windows.Forms.ProgressBar progressBar1;
         private ZedGraph.ZedGraphControl graphFFT;
         private ZedGraph.ZedGraphControl graphBars;
+        private System.Windows.Forms.Button readFileButton;
+        private System.Windows.Forms.TextBox fileTextBox;
     }
 }
-
