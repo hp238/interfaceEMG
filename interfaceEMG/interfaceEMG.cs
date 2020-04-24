@@ -26,6 +26,7 @@ namespace interfaceEMG
         private int taxa = 100;
         private int janela = 2;
         private int auxJan = 0;
+        private int showGraph = 0;
 
         static int tamanho = 1000;                      // Tamanho do vetor de teste
         private double[] x = new double[tamanho];       // Eixo x
@@ -641,9 +642,8 @@ namespace interfaceEMG
         // Botão para gerar curvas aleatoriamente
         private void btmTeste_Click(object sender, EventArgs e)
         {
-            this.gerarCurvas();
-            this.configurarCurvas();
-
+            if (this.showGraph == 1) this.showGraph = 0;
+            else this.showGraph = 1;
             //this.savePoints(0);
             //String a = serialPort2.ReadLine();
             //MessageBox.Show("a");
@@ -653,8 +653,11 @@ namespace interfaceEMG
         private void timer2_Tick(object sender, EventArgs e)
         {
             atualizaListaCOMs();
-            this.gerarCurvas();
-            this.configurarCurvas();
+            if (this.showGraph == 1)
+            {
+                this.gerarCurvas();
+                this.configurarCurvas();
+            }
         }
 
         // Botão para ler arquivo
