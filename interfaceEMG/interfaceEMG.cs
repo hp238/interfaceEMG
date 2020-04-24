@@ -653,6 +653,8 @@ namespace interfaceEMG
         private void timer2_Tick(object sender, EventArgs e)
         {
             atualizaListaCOMs();
+            this.gerarCurvas();
+            this.configurarCurvas();
         }
 
         // Botão para ler arquivo
