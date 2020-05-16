@@ -89,6 +89,8 @@ namespace interfaceEMG
             graphBars.GraphPane.Title.IsVisible = false;
             graphBars.GraphPane.Margin.All = 0;
 
+            //Aba de FFT
+
             graphFFT.GraphPane.XAxis.IsVisible = false;
             graphFFT.GraphPane.YAxis.IsVisible = false;
             graphFFT.GraphPane.Title.IsVisible = false;
@@ -390,6 +392,28 @@ namespace interfaceEMG
             }
         }
 
+        //
+        // Extracao de envelope 
+        private double[] BF(double[] sinal)
+        {
+            double[] output = new double[tamanho];
+            for(int i = 0; i < tamanho/20; i++)
+            {
+                double max = 0;
+                for(int j = 0; j < 20; j++)
+                {
+                    if (sinal[i * 20 + j] > max) max = sinal[i * 20 + j];
+                }
+                for(int k = 0; k < 20; k++)
+                {
+                    output[i * 20 + k] = max;
+                }
+                Console.WriteLine(max);
+            }
+            
+            return (output);
+        }
+
         // Fast Fourier Transform 
         private (double[], double[]) FFT(double[] sinal)
         {
@@ -407,6 +431,7 @@ namespace interfaceEMG
             Fourier.Forward(aux);
 
             // Magnitude do sinal
+            mag[0] = 0;
             for (int i = 0; i < tamanho; i++)
             {
                 if (i != 0) mag[i] = (Math.Abs(Math.Sqrt(Math.Pow(aux[i].Real, 2) + Math.Pow(aux[i].Imaginary, 2))));
@@ -448,11 +473,13 @@ namespace interfaceEMG
 
                 graphCanais.GraphPane.Legend.IsVisible = false;
             }
+            
 
             // Sinal com transformada de Fourier
             (double[] frequencia, double[] mag) fft = FFT(sinais[graphIndexBiofeedback]);
+            double[] biofeedback = BF(sinais[graphIndexBiofeedback]);
 
-            graphBars.GraphPane.AddCurve("Barras", x, sinais[graphIndexBiofeedback], cores[graphIndexBiofeedback], ZedGraph.SymbolType.None);
+            graphBars.GraphPane.AddCurve("Barras", x, biofeedback, cores[graphIndexBiofeedback], ZedGraph.SymbolType.None);
             graphBars.GraphPane.Legend.IsVisible = false;
 
             graphFFT.GraphPane.AddCurve("FFT", fft.Item1, fft.Item2, cores[graphIndexBiofeedback], ZedGraph.SymbolType.None);
@@ -465,8 +492,8 @@ namespace interfaceEMG
             graphCanais.GraphPane.AxisChange();
             graphCanais.Refresh();
 
-            graphBars.GraphPane.YAxis.Scale.Max = sinais[graphIndexBiofeedback].Max() + 10;
-            graphBars.GraphPane.YAxis.Scale.Min = sinais[graphIndexBiofeedback].Min() - 10;
+            graphBars.GraphPane.YAxis.Scale.Max = biofeedback.Max() + 10;
+            graphBars.GraphPane.YAxis.Scale.Min = biofeedback.Min() - 10;
             graphBars.GraphPane.XAxis.Scale.Max = x.Length;
             graphBars.GraphPane.AxisChange();
             graphBars.Refresh();
