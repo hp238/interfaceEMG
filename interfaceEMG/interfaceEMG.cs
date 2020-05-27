@@ -29,6 +29,9 @@ namespace interfaceEMG
         private bool showGraphTest = false;
         private bool showBiofeedback = false;
         private bool showFFT = false;
+        private bool readFile = false;
+        private int currentLine = 1;
+        private int fileLength = 10000; //para garantir que o programa nao entra em loop
 
         static int tamanho = 1000;                      // Tamanho do vetor de teste
         private double[] x = new double[tamanho];       // Eixo x
@@ -530,7 +533,7 @@ namespace interfaceEMG
             }
             else
             {
-                Console.WriteLine("O arquivo {0} já existe!", fileName);
+                //Console.WriteLine("O arquivo {0} já existe!", fileName);
             }
 
             // Console.WriteLine(Path.GetFullPath(fileName));   // Diretorio completo do arquivo
@@ -557,7 +560,6 @@ namespace interfaceEMG
         private void readCSV()
         {
             string fileName = ((fileTextBox.Text == "") ? "Sinais.csv" : fileTextBox.Text);
-
             // Arquivo inexistente
             if (!System.IO.File.Exists(fileName))
             {
@@ -570,10 +572,16 @@ namespace interfaceEMG
             // Leitura do arquivo 
             using (TextReader tr = new StreamReader(fileName, Encoding.Default))
             {
+                int countLine = 0;
                 string line = null;
                 int index = 0;
 
-                line = tr.ReadLine();       // Cabeçalho
+                for (int i = 1; i < this.currentLine; i++) //ignora as linhas anteriores a currentLine
+                {
+                    tr.ReadLine();
+                }
+
+                if(this.currentLine==1) line = tr.ReadLine();       // Cabeçalho edit: so roda na primeira lida
                 line = null;
 
                 progressBar1.Visible = true;
@@ -581,13 +589,14 @@ namespace interfaceEMG
                 progressBar1.Value = 0;
 
                 // Primeiros pontos do arquivo 
-                while (index < tamanho)
+                while (index < tamanho && this.currentLine < tamanho) //a segunda parte do AND eh necessaria para a 1a iteracao
                 {
                     if ((line = tr.ReadLine()) == null)
                     {
                         break;
                     }
-
+                    countLine++; //essa parte evita que entre no while que vira em breve while(countLine < tamanho)
+                    this.currentLine = this.currentLine + 1;
                     string[] lineSplit = line.Split(';');
 
                     for (int y = 0; y < lineSplit.Length - 1; y++)
@@ -612,10 +621,10 @@ namespace interfaceEMG
                 progressBar1.Value = 0;
 
                 // Pontos restantes
-                while (!finish)
+                while (index < tamanho) //agora garante que so leia "tamanho" linhas de cada vez
                 {
                     // Delay de 1s
-                    Thread.Sleep(1000);
+                    //Thread.Sleep(1000);
 
                     this.cleanGraph();
 
@@ -624,7 +633,7 @@ namespace interfaceEMG
                     {
                         for (int y = 1; y < 9; y++)
                         {
-                            sinais[y][i] = sinais[y][i + 1];
+                            sinais[y][i] = sinais[y][i + 250];
                         }
 
                         progressBar1.Value = i;
@@ -639,7 +648,8 @@ namespace interfaceEMG
                             finish = true;
                             break;
                         }
-
+                        this.currentLine = this.currentLine + 1; //agora o programa registra que leu mais uma linha
+                        countLine++; //vamos por limite de "tamanho" para esse contador
                         string[] lineSplit = line.Split(';');
 
                         // Leitura dos pontos 
@@ -657,6 +667,8 @@ namespace interfaceEMG
                 }
 
                 tr.Close();
+                Console.WriteLine(tamanho);
+                Console.WriteLine(this.currentLine);
             }
         }
 
@@ -687,6 +699,11 @@ namespace interfaceEMG
             {
                 this.gerarCurvas();
                 this.configurarCurvas();
+                this.writePointsCSV(tamanho - (taxaAmostragem / 8));
+            }
+            if (this.readFile==true && (this.currentLine < this.fileLength))
+            {
+                this.readCSV();//le o csv e ja plota
             }
         }
 
@@ -694,7 +711,8 @@ namespace interfaceEMG
         private void readFileButton_Click(object sender, EventArgs e)
         {
             this.showGraphTest = false;
-            this.readCSV();
+            if (this.readFile == true) this.readFile = false;
+            else this.readFile = true;
         }
 
         // Text Box do arquivo a ser lido
