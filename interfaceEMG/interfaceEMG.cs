@@ -26,12 +26,14 @@ namespace interfaceEMG
         private int taxa = 100;
         private int janela = 2;
         private int auxJan = 0;
-        private int showGraph = 0;
+        private bool showGraphTest = false;
+        private bool showBiofeedback = false;
+        private bool showFFT = false;
 
         static int tamanho = 1000;                      // Tamanho do vetor de teste
         private double[] x = new double[tamanho];       // Eixo x
         private int taxaAmostragem = 2000;              // Taxa de amostragem do circuito
-        private int graphIndexBiofeedback = 3;          // Gráfico que será usado no biofeedback
+        private int graphIndex = 1;                     // Gráfico que será usado no biofeedback e FFT
 
         private void inicializaVetor()
         {
@@ -71,7 +73,19 @@ namespace interfaceEMG
             InitializeComponent();
             this.configurarInterface();
             timer2.Enabled = true;
-            //this.atualizaListaCOMs();
+            this.configBox();
+        }
+
+
+        private void configBox()
+        {
+            // Adiciona todos os canais disponíveis para o biofeedback e FFT
+            for(int i = 1 ; i < 9 ; i++)
+            {
+                string s = i.ToString(); 
+
+                comboBox2.Items.Add(s);
+            }
         }
 
         // Configuração inicial da tela
@@ -228,14 +242,7 @@ namespace interfaceEMG
         // Ler os pontos dos 8 canais de acordo com a taxa de amostragem
         private void readPoints()
         {
-            // Permitir atualização do gráfico
-            retas.Clear();
-            graphCanais.GraphPane.CurveList.Clear();
-            graphCanais.GraphPane.GraphObjList.Clear();
-            graphBars.GraphPane.CurveList.Clear();
-            graphBars.GraphPane.GraphObjList.Clear();
-            graphFFT.GraphPane.CurveList.Clear();
-            graphFFT.GraphPane.GraphObjList.Clear();
+            this.cleanGraph();
 
             progressBar1.Visible = true;
             progressBar1.Maximum = tamanho;
@@ -276,14 +283,7 @@ namespace interfaceEMG
         // Ler dados da porta serial
         private void lerDados()
         {
-            // Permitir atualização do gráfico
-            retas.Clear();
-            graphCanais.GraphPane.CurveList.Clear();
-            graphCanais.GraphPane.GraphObjList.Clear();
-            graphBars.GraphPane.CurveList.Clear();
-            graphBars.GraphPane.GraphObjList.Clear();
-            graphFFT.GraphPane.CurveList.Clear();
-            graphFFT.GraphPane.GraphObjList.Clear();
+            this.cleanGraph();
 
             MessageBox.Show("t1");
             progressBar1.Visible = true;        // barra de progresso
@@ -346,14 +346,7 @@ namespace interfaceEMG
         // Gerar curvas aleatoriamente para testes
         private void gerarCurvas()
         {
-            // Permitir atualização do gráfico
-            retas.Clear();
-            graphCanais.GraphPane.CurveList.Clear();
-            graphCanais.GraphPane.GraphObjList.Clear();
-            graphBars.GraphPane.CurveList.Clear();
-            graphBars.GraphPane.GraphObjList.Clear();
-            graphFFT.GraphPane.CurveList.Clear();
-            graphFFT.GraphPane.GraphObjList.Clear();
+            this.cleanGraph();
 
             // Código para sortear os valores de Y dos 8 canais
             Random numAl = new Random();
@@ -392,7 +385,6 @@ namespace interfaceEMG
             }
         }
 
-        //
         // Extracao de envelope 
         private double[] BF(double[] sinal)
         {
@@ -473,17 +465,6 @@ namespace interfaceEMG
 
                 graphCanais.GraphPane.Legend.IsVisible = false;
             }
-            
-
-            // Sinal com transformada de Fourier
-            (double[] frequencia, double[] mag) fft = FFT(sinais[graphIndexBiofeedback]);
-            double[] biofeedback = BF(sinais[graphIndexBiofeedback]);
-
-            graphBars.GraphPane.AddCurve("Barras", x, biofeedback, cores[graphIndexBiofeedback], ZedGraph.SymbolType.None);
-            graphBars.GraphPane.Legend.IsVisible = false;
-
-            graphFFT.GraphPane.AddCurve("FFT", fft.Item1, fft.Item2, cores[graphIndexBiofeedback], ZedGraph.SymbolType.None);
-            graphFFT.GraphPane.Legend.IsVisible = false;
 
             // Configurando limites
             graphCanais.GraphPane.YAxis.Scale.Max = sinais[1].Max() + 10;
@@ -492,17 +473,34 @@ namespace interfaceEMG
             graphCanais.GraphPane.AxisChange();
             graphCanais.Refresh();
 
-            graphBars.GraphPane.YAxis.Scale.Max = biofeedback.Max() + 10;
-            graphBars.GraphPane.YAxis.Scale.Min = biofeedback.Min() - 10;
-            graphBars.GraphPane.XAxis.Scale.Max = x.Length;
-            graphBars.GraphPane.AxisChange();
-            graphBars.Refresh();
+            if (this.showBiofeedback)
+            {
+                double[] biofeedback = BF(sinais[graphIndex]);
+                graphBars.GraphPane.AddCurve("Barras", x, biofeedback, cores[graphIndex], ZedGraph.SymbolType.None);
 
-            graphFFT.GraphPane.YAxis.Scale.Max = fft.Item2.Max() + 10;
-            graphFFT.GraphPane.YAxis.Scale.Min = fft.Item2.Min() - 10;
-            graphFFT.GraphPane.XAxis.Scale.Max = fft.Item1.Length;
-            graphFFT.GraphPane.AxisChange();
-            graphFFT.Refresh();
+                // Configurando limites
+                graphBars.GraphPane.Legend.IsVisible = false;
+                graphBars.GraphPane.YAxis.Scale.Max = biofeedback.Max() + 10;
+                graphBars.GraphPane.YAxis.Scale.Min = biofeedback.Min() - 10;
+                graphBars.GraphPane.XAxis.Scale.Max = x.Length;
+                graphBars.GraphPane.AxisChange();
+                graphBars.Refresh();
+            }
+
+            if (this.showFFT)
+            {
+                // Sinal com transformada de Fourier
+                (double[] frequencia, double[] mag) fft = FFT(sinais[graphIndex]);
+                graphFFT.GraphPane.AddCurve("FFT", fft.Item1, fft.Item2, cores[graphIndex], ZedGraph.SymbolType.None);
+                graphFFT.GraphPane.Legend.IsVisible = false;
+
+                // Configurando limites
+                graphFFT.GraphPane.YAxis.Scale.Max = fft.Item2.Max() + 10;
+                graphFFT.GraphPane.YAxis.Scale.Min = fft.Item2.Min() - 10;
+                graphFFT.GraphPane.XAxis.Scale.Max = fft.Item1.Length;
+                graphFFT.GraphPane.AxisChange();
+                graphFFT.Refresh();
+            }
 
         }
 
@@ -567,6 +565,8 @@ namespace interfaceEMG
                 return;
             }
 
+            this.cleanGraph();
+
             // Leitura do arquivo 
             using (TextReader tr = new StreamReader(fileName, Encoding.Default))
             {
@@ -617,13 +617,7 @@ namespace interfaceEMG
                     // Delay de 1s
                     Thread.Sleep(1000);
 
-                    // Permitir atualização do gráfico
-                    graphCanais.GraphPane.CurveList.Clear();
-                    graphCanais.GraphPane.GraphObjList.Clear();
-                    graphBars.GraphPane.CurveList.Clear();
-                    graphBars.GraphPane.GraphObjList.Clear();
-                    graphFFT.GraphPane.CurveList.Clear();
-                    graphFFT.GraphPane.GraphObjList.Clear();
+                    this.cleanGraph();
 
                     // Shift dos pontos
                     for (int i = 0; i < limit; i++)
@@ -666,21 +660,30 @@ namespace interfaceEMG
             }
         }
 
+        // Permitir atualização do gráfico
+        private void cleanGraph()
+        {
+            retas.Clear();
+            graphCanais.GraphPane.CurveList.Clear();
+            graphCanais.GraphPane.GraphObjList.Clear();
+            graphBars.GraphPane.CurveList.Clear();
+            graphBars.GraphPane.GraphObjList.Clear();
+            graphFFT.GraphPane.CurveList.Clear();
+            graphFFT.GraphPane.GraphObjList.Clear();
+        }
+
         // Botão para gerar curvas aleatoriamente
         private void btmTeste_Click(object sender, EventArgs e)
         {
-            if (this.showGraph == 1) this.showGraph = 0;
-            else this.showGraph = 1;
-            //this.savePoints(0);
-            //String a = serialPort2.ReadLine();
-            //MessageBox.Show("a");
+            if (this.showGraphTest) this.showGraphTest = false;
+            else this.showGraphTest = true;
         }
 
         // Timer
         private void timer2_Tick(object sender, EventArgs e)
         {
             atualizaListaCOMs();
-            if (this.showGraph == 1)
+            if (this.showGraphTest)
             {
                 this.gerarCurvas();
                 this.configurarCurvas();
@@ -690,14 +693,7 @@ namespace interfaceEMG
         // Botão para ler arquivo
         private void readFileButton_Click(object sender, EventArgs e)
         {
-            // Permitir atualização do gráfico
-            graphCanais.GraphPane.CurveList.Clear();
-            graphCanais.GraphPane.GraphObjList.Clear();
-            graphBars.GraphPane.CurveList.Clear();
-            graphBars.GraphPane.GraphObjList.Clear();
-            graphFFT.GraphPane.CurveList.Clear();
-            graphFFT.GraphPane.GraphObjList.Clear();
-
+            this.showGraphTest = false;
             this.readCSV();
         }
 
@@ -705,6 +701,29 @@ namespace interfaceEMG
         private void fileTextBox_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Index para biofeedback e FFT
+            int aux = Convert.ToInt32(comboBox2.Items[comboBox2.SelectedIndex]);
+
+            if (aux > 0)
+            {
+                graphIndex = aux;
+            }
+        }
+
+        private void biofeedbackCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (biofeedbackCheckBox.Checked) this.showBiofeedback = true;
+            else this.showBiofeedback = false;
+        }
+
+        private void FFTCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (FFTCheckBox.Checked) this.showFFT = true;
+            else this.showFFT = false;
         }
     }
 
