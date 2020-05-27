@@ -690,6 +690,14 @@ namespace interfaceEMG
         // Botão para ler arquivo
         private void readFileButton_Click(object sender, EventArgs e)
         {
+            // Permitir atualização do gráfico
+            graphCanais.GraphPane.CurveList.Clear();
+            graphCanais.GraphPane.GraphObjList.Clear();
+            graphBars.GraphPane.CurveList.Clear();
+            graphBars.GraphPane.GraphObjList.Clear();
+            graphFFT.GraphPane.CurveList.Clear();
+            graphFFT.GraphPane.GraphObjList.Clear();
+
             this.readCSV();
         }
 
