@@ -557,10 +557,12 @@ namespace interfaceEMG
         private void readCSV()
         {
             string fileName = ((fileTextBox.Text == "") ? "Sinais.csv" : fileTextBox.Text);
+            
             // Arquivo inexistente
             if (!System.IO.File.Exists(fileName))
             {
                 MessageBox.Show("Arquivo não encontrado.", "Erro");
+                this.readFile = false;
                 return;
             }
 
@@ -590,6 +592,7 @@ namespace interfaceEMG
                 {
                     if ((line = tr.ReadLine()) == null)
                     {
+                        this.readFile = false;
                         break;
                     }
                     countLine++;                                        // Evita que entre no while que vira em breve while(countLine < tamanho)
@@ -638,6 +641,7 @@ namespace interfaceEMG
                     {
                         if ((line = tr.ReadLine()) == null)
                         {
+                            this.readFile = false;
                             break;
                         }
                         this.currentLine = this.currentLine + 1;        // O programa registra que leu mais uma linha
@@ -659,8 +663,8 @@ namespace interfaceEMG
                 }
 
                 tr.Close();
-                Console.WriteLine(tamanho);
-                Console.WriteLine(this.currentLine);
+                //Console.WriteLine(tamanho);
+                //Console.WriteLine(this.currentLine);
             }
         }
 
@@ -679,20 +683,23 @@ namespace interfaceEMG
         // Botão para gerar curvas aleatoriamente
         private void btmTeste_Click(object sender, EventArgs e)
         {
-            if (this.showGraphTest) this.showGraphTest = false;
-            else this.showGraphTest = true;
+            this.showGraphTest = !this.showGraphTest;
+            this.readFile = false;
+            this.currentLine = 1;
         }
 
         // Timer
         private void timer2_Tick(object sender, EventArgs e)
         {
             atualizaListaCOMs();
+
             if (this.showGraphTest)
             {
                 this.gerarCurvas();
                 this.configurarCurvas();
                 //this.writePointsCSV(tamanho - (taxaAmostragem / 8));
             }
+
             if (this.readFile==true && (this.currentLine < this.fileLength))
             {
                 this.readCSV();         // Le o csv e ja plota
@@ -702,15 +709,15 @@ namespace interfaceEMG
         // Botão para ler arquivo
         private void readFileButton_Click(object sender, EventArgs e)
         {
+            this.readFile = !this.readFile;
             this.showGraphTest = false;
-            if (this.readFile == true) this.readFile = false;
-            else this.readFile = true;
         }
 
         // Text Box do arquivo a ser lido
         private void fileTextBox_TextChanged(object sender, EventArgs e)
         {
-
+            this.readFile = false;
+            this.currentLine = 1;
         }
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
@@ -726,14 +733,12 @@ namespace interfaceEMG
 
         private void biofeedbackCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            if (biofeedbackCheckBox.Checked) this.showBiofeedback = true;
-            else this.showBiofeedback = false;
+            this.showBiofeedback = !this.showBiofeedback;
         }
 
         private void FFTCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            if (FFTCheckBox.Checked) this.showFFT = true;
-            else this.showFFT = false;
+            this.showFFT = !this.showFFT;
         }
     }
 
