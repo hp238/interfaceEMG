@@ -348,7 +348,7 @@
             // 
             // fileTextBox
             // 
-            this.fileTextBox.Location = new System.Drawing.Point(16, 16);
+            this.fileTextBox.Location = new System.Drawing.Point(16, 15);
             this.fileTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.fileTextBox.Name = "fileTextBox";
             this.fileTextBox.Size = new System.Drawing.Size(223, 22);

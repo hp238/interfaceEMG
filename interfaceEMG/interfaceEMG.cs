@@ -23,15 +23,12 @@ namespace interfaceEMG
     {
 
         private Boolean[] estado = new Boolean[8];
-        private int taxa = 100;
-        private int janela = 2;
-        private int auxJan = 0;
         private bool showGraphTest = false;
         private bool showBiofeedback = false;
         private bool showFFT = false;
         private bool readFile = false;
         private int currentLine = 1;
-        private int fileLength = 10000; //para garantir que o programa nao entra em loop
+        private int fileLength = 10000;                 // Para garantir que o programa nao entra em loop
 
         static int tamanho = 1000;                      // Tamanho do vetor de teste
         private double[] x = new double[tamanho];       // Eixo x
@@ -118,7 +115,7 @@ namespace interfaceEMG
         private void atualizaListaCOMs()
         {
             int i;
-            bool quantDiferente; // flag para sinalizar que a quantidade de portas mudou
+            bool quantDiferente; // Flag para sinalizar que a quantidade de portas mudou
 
             i = 0;
             quantDiferente = false;
@@ -533,7 +530,7 @@ namespace interfaceEMG
             }
             else
             {
-                //Console.WriteLine("O arquivo {0} já existe!", fileName);
+                Console.WriteLine("O arquivo {0} já existe em interfaceEMG\\bin\\Debug\\!", fileName);
             }
 
             // Console.WriteLine(Path.GetFullPath(fileName));   // Diretorio completo do arquivo
@@ -576,37 +573,37 @@ namespace interfaceEMG
                 string line = null;
                 int index = 0;
 
-                for (int i = 1; i < this.currentLine; i++) //ignora as linhas anteriores a currentLine
+                for (int i = 1; i < this.currentLine; i++)              // Ignora as linhas anteriores a currentLine
                 {
                     tr.ReadLine();
                 }
 
-                if(this.currentLine==1) line = tr.ReadLine();       // Cabeçalho edit: so roda na primeira lida
+                if(this.currentLine==1) line = tr.ReadLine();           // Cabeçalho edit: so roda na primeira lida
                 line = null;
 
-                progressBar1.Visible = true;
-                progressBar1.Maximum = tamanho;
-                progressBar1.Value = 0;
+                this.progressBar1.Visible = true;
+                this.progressBar1.Maximum = tamanho;
+                this.progressBar1.Value = 0;
 
                 // Primeiros pontos do arquivo 
-                while (index < tamanho && this.currentLine < tamanho) //a segunda parte do AND eh necessaria para a 1a iteracao
+                while (index < tamanho && this.currentLine < tamanho)   // A segunda parte do AND eh necessaria para a 1a iteracao
                 {
                     if ((line = tr.ReadLine()) == null)
                     {
                         break;
                     }
-                    countLine++; //essa parte evita que entre no while que vira em breve while(countLine < tamanho)
+                    countLine++;                                        // Evita que entre no while que vira em breve while(countLine < tamanho)
                     this.currentLine = this.currentLine + 1;
                     string[] lineSplit = line.Split(';');
 
                     for (int y = 0; y < lineSplit.Length - 1; y++)
                     {
-                        sinais[y + 1][index] = Convert.ToDouble(lineSplit[y]) + (7 - y) * 100;
+                        this.sinais[y + 1][index] = Convert.ToDouble(lineSplit[y]) + (7 - y) * 100;
                     }
-                    progressBar1.Value = index;
+                    this.progressBar1.Value = index;
                     index++;
                 }
-                progressBar1.Value = tamanho;
+                this.progressBar1.Value = tamanho;
 
                 // Plot 
                 this.configurarCurvas();
@@ -614,18 +611,14 @@ namespace interfaceEMG
                 line = null;
                 int taxa = taxaAmostragem / 8;
                 int limit = tamanho - taxa;
-                bool finish = false;
 
-                progressBar1.Visible = true;
-                progressBar1.Maximum = tamanho;
-                progressBar1.Value = 0;
+                this.progressBar1.Visible = true;
+                this.progressBar1.Maximum = tamanho;
+                this.progressBar1.Value = 0;
 
                 // Pontos restantes
-                while (index < tamanho) //agora garante que so leia "tamanho" linhas de cada vez
+                while (index < tamanho)                                 // Garante que so leia "tamanho" linhas de cada vez
                 {
-                    // Delay de 1s
-                    //Thread.Sleep(1000);
-
                     this.cleanGraph();
 
                     // Shift dos pontos
@@ -636,7 +629,7 @@ namespace interfaceEMG
                             sinais[y][i] = sinais[y][i + 250];
                         }
 
-                        progressBar1.Value = i;
+                        this.progressBar1.Value = i;
                     }
 
                     index = limit;
@@ -645,22 +638,21 @@ namespace interfaceEMG
                     {
                         if ((line = tr.ReadLine()) == null)
                         {
-                            finish = true;
                             break;
                         }
-                        this.currentLine = this.currentLine + 1; //agora o programa registra que leu mais uma linha
-                        countLine++; //vamos por limite de "tamanho" para esse contador
+                        this.currentLine = this.currentLine + 1;        // O programa registra que leu mais uma linha
+                        countLine++;                                    // Vamos por limite de "tamanho" para esse contador
                         string[] lineSplit = line.Split(';');
 
                         // Leitura dos pontos 
                         for (int y = 0; y < lineSplit.Length - 1; y++)
                         {
-                            sinais[y + 1][index] = Convert.ToDouble(lineSplit[y]) + (7 - y) * 100;
+                            this.sinais[y + 1][index] = Convert.ToDouble(lineSplit[y]) + (7 - y) * 100;
                         }
-                        progressBar1.Value = index;
+                        this.progressBar1.Value = index;
                         index++;
                     }
-                    progressBar1.Value = tamanho;
+                    this.progressBar1.Value = tamanho;
 
                     // Plot
                     this.configurarCurvas();
@@ -699,11 +691,11 @@ namespace interfaceEMG
             {
                 this.gerarCurvas();
                 this.configurarCurvas();
-                this.writePointsCSV(tamanho - (taxaAmostragem / 8));
+                //this.writePointsCSV(tamanho - (taxaAmostragem / 8));
             }
             if (this.readFile==true && (this.currentLine < this.fileLength))
             {
-                this.readCSV();//le o csv e ja plota
+                this.readCSV();         // Le o csv e ja plota
             }
         }
 
@@ -726,7 +718,7 @@ namespace interfaceEMG
             // Index para biofeedback e FFT
             int aux = Convert.ToInt32(comboBox2.Items[comboBox2.SelectedIndex]);
 
-            if (aux > 0)
+            if (aux > 0 && aux < 9)
             {
                 graphIndex = aux;
             }
