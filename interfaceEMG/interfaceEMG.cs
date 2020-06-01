@@ -16,17 +16,26 @@ using DocumentFormat.OpenXml.EMMA;
 using System.Numerics;
 using MathNet.Numerics.IntegralTransforms;
 using MathNet.Numerics;
+using System.Collections;
+using System.Diagnostics;
 
 namespace interfaceEMG
 {
     public partial class formInterface : Form
     {
+        //testes
+        //Stopwatch stopwatch = new Stopwatch();
+        //int cont = 0;
 
         private Boolean[] estado = new Boolean[8];
         private bool showGraphTest = false;
         private bool showBiofeedback = false;
         private bool showFFT = false;
+        private bool calcFFT = false;
         private bool readFile = false;
+        private bool play = false;
+        private bool firstPoints = false;
+        private string fileName = "Sinais.csv";
         private int currentLine = 1;
         private int fileLength = 10000;                 // Para garantir que o programa nao entra em loop
 
@@ -42,6 +51,7 @@ namespace interfaceEMG
                 this.x[i] = i;
             }
         }
+
         private Dictionary<int, Double[]> sinais = new Dictionary<int, double[]>()
         {
             {1, new double[tamanho] },
@@ -67,6 +77,8 @@ namespace interfaceEMG
         }; // Dados para salvar no arquivo
 
         private Dictionary<int, Double[]> retas = new Dictionary<int, double[]>(); // Retas entre canais
+
+        private Dictionary<int, Double[]> sinaisFFT = new Dictionary<int, Double[]>();
 
         public formInterface()
         {
@@ -105,8 +117,8 @@ namespace interfaceEMG
 
             //Aba de FFT
 
-            graphFFT.GraphPane.XAxis.IsVisible = false;
-            graphFFT.GraphPane.YAxis.IsVisible = false;
+            graphFFT.GraphPane.XAxis.IsVisible = true;
+            graphFFT.GraphPane.YAxis.IsVisible = true;
             graphFFT.GraphPane.Title.IsVisible = false;
             graphFFT.GraphPane.Margin.All = 0;
         }
@@ -197,16 +209,15 @@ namespace interfaceEMG
             if (serialPort2.IsOpen == true)
             {
                 this.inicializaVetor();
-
                 this.readFirstPoints();
                 this.configurarCurvas();
-                this.writePointsCSV(0);
+                this.writePointsCSV(0);      //tirar
 
                 while (true)
                 {
                     this.readPoints();
                     this.configurarCurvas();
-                    this.writePointsCSV(tamanho - (taxaAmostragem / 8));
+                    this.writePointsCSV(tamanho - (taxaAmostragem / 8));    //tirar
                 }
             }
         }
@@ -225,7 +236,8 @@ namespace interfaceEMG
                 {
                     try
                     {
-                        double aux = Convert.ToDouble(serialPort2.ReadLine()) / 100;
+                        double aux = Convert.ToDouble(serialPort2.ReadExisting());
+                        //double aux = numAl.Next(1, 101);    //teste
                         sinais[y][i] = aux + (8 - y) * (100);
                         archiveData[y][i] = aux;
                     }
@@ -235,6 +247,7 @@ namespace interfaceEMG
                     }
                 }
                 progressBar1.Value = i;
+                //MessageBox.Show("a");
             }
             progressBar1.Value = tamanho;
         }
@@ -243,11 +256,11 @@ namespace interfaceEMG
         private void readPoints()
         {
             this.cleanGraph();
-
+            
             progressBar1.Visible = true;
             progressBar1.Maximum = tamanho;
             progressBar1.Value = 0;
-
+            
             int taxa = taxaAmostragem / 8;
             int limit = tamanho - taxa;
 
@@ -347,28 +360,48 @@ namespace interfaceEMG
         private void gerarCurvas()
         {
             this.cleanGraph();
-
+            //progressBar1.Visible = true;
+           //progressBar1.Maximum = tamanho*8;
+           // progressBar1.Value = 0;
             // Código para sortear os valores de Y dos 8 canais
             Random numAl = new Random();
             double max = 0;
-
+            int aux2 = 0;
             for (int y = 8; y >= 1; y--)
             {
+                //MessageBox.Show(y.ToString());
                 Double[] aux = new double[tamanho];
+                //var watch = new System.Diagnostics.Stopwatch();
+                
 
+                //stopwatch.Start();
                 for (int i = 0; i < tamanho; i++)
                 {
                     try
                     {
+                        aux2++;
                         x[i] = i;
-                        aux[i] = numAl.Next(1, 101) + max;
+                        //aux[i] = Math.Sin(i);
+                        
+                        if (aux2 < 100)
+                        {
+                            aux[i] = numAl.Next(1, 101) + max;
+                        }
+                        else if(aux2 >= 100)
+                        {
+                            aux[i] = numAl.Next(1, 201) + max;
+                            if (aux2 == 200)
+                            {
+                                aux2=0;
+                            }
+                        }
                         archiveData[y][i] = aux[i] - max;
                     }
                     catch
                     {
                         i--;
                     }
-
+                    //progressBar1.Value = y*i;
                 }
 
                 sinais[y] = aux;
@@ -382,7 +415,27 @@ namespace interfaceEMG
 
                 retas.Add(y, ret);
 
+                //adiciona os pontos ao vetor para o cálculo da FFT do intervalo
+                if (play == true){
+                    if (firstPoints == false)
+                    {
+                        sinaisFFT.Add(y, aux);
+                        if (y == 1) { firstPoints = true; }
+                    }
+                    else
+                    {
+                        //MessageBox.Show("OPA");
+                        Double[] aux3 = sinaisFFT[y];
+                        aux3.Concat(aux);
+                        sinaisFFT.Remove(y);
+                        sinaisFFT.Add(y, aux3);
+                    }
+                    
+                }
+
+                
             }
+            //progressBar1.Value = tamanho * 8;
         }
 
         // Extracao de envelope 
@@ -400,7 +453,7 @@ namespace interfaceEMG
                 {
                     output[i * 20 + k] = max;
                 }
-                Console.WriteLine(max);
+                //Console.WriteLine(max);
             }
             
             return (output);
@@ -409,12 +462,14 @@ namespace interfaceEMG
         // Fast Fourier Transform 
         private (double[], double[]) FFT(double[] sinal)
         {
+            //double[] sinal = sinal1.
             double[] mag = new double[tamanho];         // Magnitude
-            double[] freq = new double[tamanho];        // Frequencia
+            double[] freq = new double[tamanho/2];        // Frequencia
             Complex[] aux = new Complex[tamanho];
+            int numSamples = sinal.Length;
 
             // Transformando o sinal em número complexo
-            for (int i = 0; i < tamanho; i++)
+            for (int i = 0; i < sinal.Length; i++)
             {
                 aux[i] = new Complex(sinal[i], 0);
             }
@@ -424,16 +479,24 @@ namespace interfaceEMG
 
             // Magnitude do sinal
             mag[0] = 0;
-            for (int i = 0; i < tamanho; i++)
+            for (int i = 0; i < sinal.Length; i++)
             {
                 if (i != 0) mag[i] = (Math.Abs(Math.Sqrt(Math.Pow(aux[i].Real, 2) + Math.Pow(aux[i].Imaginary, 2))));
             }
 
+            int hzPerSample = taxaAmostragem / numSamples;
             // Frequência 
 
-            freq = x;   // teste 
+            //freq = x;   // teste
+            //Console.WriteLine(hzPerSample);
+            double[] mag2 = new double[tamanho/2];
+            for (int n = 0; n < tamanho / 2; n++)
+            {
+                freq[n] = x[n] * hzPerSample;
+                mag2[n] = mag[n];
+            }
 
-            return (freq, mag);
+            return (freq, mag2);
         }
 
         // Configurar plot
@@ -487,10 +550,10 @@ namespace interfaceEMG
                 graphBars.Refresh();
             }
 
-            if (this.showFFT)
+            if (this.showFFT && this.calcFFT)
             {
                 // Sinal com transformada de Fourier
-                (double[] frequencia, double[] mag) fft = FFT(sinais[graphIndex]);
+                (double[] frequencia, double[] mag) fft = FFT(sinaisFFT[graphIndex].ToArray());
                 graphFFT.GraphPane.AddCurve("FFT", fft.Item1, fft.Item2, cores[graphIndex], ZedGraph.SymbolType.None);
                 graphFFT.GraphPane.Legend.IsVisible = false;
 
@@ -498,6 +561,7 @@ namespace interfaceEMG
                 graphFFT.GraphPane.YAxis.Scale.Max = fft.Item2.Max() + 10;
                 graphFFT.GraphPane.YAxis.Scale.Min = fft.Item2.Min() - 10;
                 graphFFT.GraphPane.XAxis.Scale.Max = fft.Item1.Length;
+                //graphFFT.GraphPane.XAxis.MA
                 graphFFT.GraphPane.AxisChange();
                 graphFFT.Refresh();
             }
@@ -510,14 +574,14 @@ namespace interfaceEMG
         {
 
             // Nome do arquivo - salvo em interfaceEMG\bin\Debug\Sinais.csv
-            string fileName = "Sinais.csv";
+            //string fileName = "Sinais.csv";
 
             // Criando arquivo
             if (!System.IO.File.Exists(fileName))
             {
                 using (System.IO.FileStream fs = System.IO.File.Create(fileName))
                 {
-                    Console.WriteLine("Arquivo {0} criado!", fileName);
+                    //Console.WriteLine("Arquivo {0} criado!", fileName);
                 }
 
                 // Cabeçalho
@@ -530,10 +594,10 @@ namespace interfaceEMG
             }
             else
             {
-                Console.WriteLine("O arquivo {0} já existe em interfaceEMG\\bin\\Debug\\!", fileName);
+                //Console.WriteLine("O arquivo {0} já existe em interfaceEMG\\bin\\Debug\\!", fileName);
             }
 
-            // Console.WriteLine(Path.GetFullPath(fileName));   // Diretorio completo do arquivo
+            // //Console.WriteLine(Path.GetFullPath(fileName));   // Diretorio completo do arquivo
 
             // Escrever dados no arquivo
             using (TextWriter tw = new StreamWriter(fileName, true, Encoding.Default))
@@ -556,13 +620,15 @@ namespace interfaceEMG
         // Ler os pontos de um arquivo CSV
         private void readCSV()
         {
-            string fileName = ((fileTextBox.Text == "") ? "Sinais.csv" : fileTextBox.Text);
+            //string fileName = ((fileTextBox.Text == "") ? "SinaisN.csv" : fileTextBox.Text);
+            string fileName = txtArquivo.Text+".csv";
             
             // Arquivo inexistente
             if (!System.IO.File.Exists(fileName))
             {
-                MessageBox.Show("Arquivo não encontrado.", "Erro");
+                
                 this.readFile = false;
+                MessageBox.Show("Arquivo não encontrado.", "Erro");
                 return;
             }
 
@@ -663,8 +729,8 @@ namespace interfaceEMG
                 }
 
                 tr.Close();
-                //Console.WriteLine(tamanho);
-                //Console.WriteLine(this.currentLine);
+                // //Console.WriteLine(tamanho);
+                //  //Console.WriteLine(this.currentLine);
             }
         }
 
@@ -683,6 +749,7 @@ namespace interfaceEMG
         // Botão para gerar curvas aleatoriamente
         private void btmTeste_Click(object sender, EventArgs e)
         {
+
             this.showGraphTest = !this.showGraphTest;
             this.readFile = false;
             this.currentLine = 1;
@@ -695,9 +762,20 @@ namespace interfaceEMG
 
             if (this.showGraphTest)
             {
+                //this.writePointsCSV(0);
+                //stopwatch.Start();
+                //cont++;
                 this.gerarCurvas();
                 this.configurarCurvas();
+                //stopwatch.Stop();
                 //this.writePointsCSV(tamanho - (taxaAmostragem / 8));
+                //Console.WriteLine("Time elapsed: {0}", stopwatch.ElapsedMilliseconds);
+                //Console.WriteLine(cont);
+            }
+            if (play == true)
+            {
+                this.writePointsCSV(0);
+                this.writePointsCSV(tamanho - (taxaAmostragem / 8));
             }
 
             if (this.readFile==true && (this.currentLine < this.fileLength))
@@ -740,6 +818,35 @@ namespace interfaceEMG
         {
             this.showFFT = !this.showFFT;
         }
+
+        private void graphCanais_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        //botão para começar a salvar os dados
+        private void btmPlay_Click(object sender, EventArgs e)
+        {
+            if (play == false)
+            {
+                fileName = txtArquivo.Text+".csv";
+                play = true;
+                btmPlay.Text = "Stop";
+                btmPlay.BackColor = System.Drawing.Color.FromArgb(255, 0, 0);
+                sinaisFFT.Clear();
+                firstPoints = false;
+                calcFFT = false;
+            }
+            else
+            {
+                play = false;
+                btmPlay.Text = "Play";
+                btmPlay.BackColor = System.Drawing.Color.FromArgb(255, 165, 0);
+                calcFFT = true;
+            }
+            
+        }
+
     }
 
 }
