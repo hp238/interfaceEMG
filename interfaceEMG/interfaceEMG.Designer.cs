@@ -69,7 +69,7 @@
             // serialPort2
             // 
             this.serialPort2.BaudRate = 115200;
-            this.serialPort2.ReadTimeout = 1000;
+            this.serialPort2.ReadTimeout = 100;
             // 
             // comboBox1
             // 
@@ -219,7 +219,7 @@
             this.graphCanais.ScrollMinX = 0D;
             this.graphCanais.ScrollMinY = 0D;
             this.graphCanais.ScrollMinY2 = 0D;
-            this.graphCanais.Size = new System.Drawing.Size(1179, 592);
+            this.graphCanais.Size = new System.Drawing.Size(1179, 571);
             this.graphCanais.TabIndex = 0;
             this.graphCanais.UseExtendedPrintDialog = true;
             this.graphCanais.Load += new System.EventHandler(this.graphCanais_Load);
@@ -306,6 +306,7 @@
             // 
             // timer2
             // 
+            this.timer2.Interval = 2500;
             this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
             // 
             // btmTeste
@@ -411,7 +412,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.ClientSize = new System.Drawing.Size(1260, 671);
+            this.ClientSize = new System.Drawing.Size(1260, 685);
             this.Controls.Add(this.txtArquivo);
             this.Controls.Add(this.btmPlay);
             this.Controls.Add(this.FFTCheckBox);
