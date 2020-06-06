@@ -275,22 +275,9 @@ namespace interfaceEMG
             if (serialPort2.IsOpen == true)
             {
                 this.inicializaVetor();
-                //this.readFirstPoints();
-                //this.readPoints();
-                //this.configurarCurvas();
-                
-                //this.writePointsCSV(0);      //tirar
-                /*
-                while (true)
-                {
-                    this.readPoints();
-                    this.configurarCurvas();
-                    //this.writePointsCSV(tamanho - (taxaAmostragem / 8));    //tirar
-                }*/
                 this.showGraphConect = !this.showGraphConect;
             }
         }
-
 
         private static void DataReceivedHandler(object sender,SerialDataReceivedEventArgs e)
         {
@@ -303,7 +290,6 @@ namespace interfaceEMG
         // Ler os pontos dos 8 canais de acordo com a taxa de amostragem
         private void readPoints()
         {
-
             //var stopwatch = new Stopwatch();
             //stopwatch.Start();
             this.cleanGraph();
@@ -406,8 +392,6 @@ namespace interfaceEMG
 
         }
 
-
-
         // Gerar curvas aleatoriamente para testes
         private void gerarCurvas()
         {
@@ -423,10 +407,12 @@ namespace interfaceEMG
                     {
                         if (y % 2 == 0)
                         {
+                            archiveData[y][i] = s1[a];
                             sinais[y][i] = s1[a];
                         }
                         else
                         {
+                            archiveData[y][i] = s2[a];
                             sinais[y][i] = s2[a];
                         }
                         a++;
@@ -440,10 +426,12 @@ namespace interfaceEMG
                     {
                         if (y % 2 == 0)
                         {
+                            archiveData[y][i] = s1[a]/10;
                             sinais[y][i] = s1[a]/10;
                         }
                         else
                         {
+                            archiveData[y][i] = s2[a]/10;
                             sinais[y][i] = s2[a]/10;
                         }
                         a++;
@@ -455,7 +443,6 @@ namespace interfaceEMG
                 }
 
                 //MessageBox.Show("aa");
-
 
                 if (play == true)
                 {
@@ -476,10 +463,7 @@ namespace interfaceEMG
                         sinaisFFT.Remove(y);
                         sinaisFFT.Add(y, aux3);
                     }
-
                 }
-
-                
             }
 
             k++;
@@ -507,8 +491,6 @@ namespace interfaceEMG
             // progressBar1.Value = 0;
             // Código para sortear os valores de Y dos 8 canais
 
-
-            
             Random numAl = new Random();
             double max = 0;
             int aux2 = 0;
@@ -577,13 +559,9 @@ namespace interfaceEMG
                         aux3.Concat(aux);
                         sinaisFFT.Remove(y);
                         sinaisFFT.Add(y, aux3);
-                    }
-                    
+                    }                
                 }
-
-                
             }
-
     */
             //progressBar1.Value = tamanho * 8;
         }
@@ -738,7 +716,7 @@ namespace interfaceEMG
             {
                 using (System.IO.FileStream fs = System.IO.File.Create(fileName))
                 {
-                    //Console.WriteLine("Arquivo {0} criado!", fileName);
+                    Console.WriteLine("Arquivo {0} criado!", fileName);
                 }
 
                 // Cabeçalho
@@ -783,7 +761,6 @@ namespace interfaceEMG
             // Arquivo inexistente
             if (!System.IO.File.Exists(fileName))
             {
-                
                 this.readFile = false;
                 MessageBox.Show("Arquivo não encontrado.", "Erro");
                 return;
@@ -824,17 +801,14 @@ namespace interfaceEMG
 
                     for (int y = 0; y < lineSplit.Length - 1; y++)
                     {
-                        this.sinais[y + 1][index] = Convert.ToDouble(lineSplit[y]) + (7 - y) * 100;
+                        this.sinais[y + 1][index] = Convert.ToDouble(lineSplit[y]) + (7 - y) * 400;
                         //this.sinais[y + 1][index] = Convert.ToDouble(lineSplit[y]);
                     }
-
-                    
 
                     this.progressBar1.Value = index;
                     index++;
                     
                 }
-
 
                 this.progressBar1.Value = tamanho;
 
@@ -881,14 +855,12 @@ namespace interfaceEMG
                         // Leitura dos pontos 
                         for (int y = 0; y < lineSplit.Length - 1; y++)
                         {
-                            this.sinais[y + 1][index] = Convert.ToDouble(lineSplit[y])+ (7 - y) * 100;
+                            this.sinais[y + 1][index] = Convert.ToDouble(lineSplit[y])+ (7 - y) * 400;
                         }
                         this.progressBar1.Value = index;
                         index++;
                     }
                     this.progressBar1.Value = tamanho;
-
-
 
                     // Plot
                     this.configurarCurvas();
@@ -940,7 +912,7 @@ namespace interfaceEMG
             }
             if (play == true)
             {
-                this.writePointsCSV(0);
+                //this.writePointsCSV(0);
                 this.writePointsCSV(tamanho - (taxaAmostragem / 8));
             }
             if (this.readFile==true && (this.currentLine < this.fileLength))
