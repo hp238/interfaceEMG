@@ -801,7 +801,7 @@ namespace interfaceEMG
 
                     for (int y = 0; y < lineSplit.Length - 1; y++)
                     {
-                        this.sinais[y + 1][index] = Convert.ToDouble(lineSplit[y]) + (7 - y) * 400;
+                        this.sinais[y + 1][index] = Convert.ToDouble(lineSplit[y]);
                         //this.sinais[y + 1][index] = Convert.ToDouble(lineSplit[y]);
                     }
 
@@ -811,6 +811,16 @@ namespace interfaceEMG
                 }
 
                 this.progressBar1.Value = tamanho;
+
+                for (int y = 7; y >= 1; y--)
+                {
+                    double max = sinais[y + 1].Max();
+                    for (int i = 0; i < tamanho; i++)
+                    {
+                        x[i] = i;
+                        sinais[y][i] += max;
+                    }
+                }
 
                 // Plot 
                 this.configurarCurvas();
@@ -835,7 +845,6 @@ namespace interfaceEMG
                         {
                             sinais[y][i] = sinais[y][i + taxa];
                         }
-
                         this.progressBar1.Value = i;
                     }
 
@@ -855,12 +864,22 @@ namespace interfaceEMG
                         // Leitura dos pontos 
                         for (int y = 0; y < lineSplit.Length - 1; y++)
                         {
-                            this.sinais[y + 1][index] = Convert.ToDouble(lineSplit[y])+ (7 - y) * 400;
+                            this.sinais[y + 1][index] = Convert.ToDouble(lineSplit[y]);
                         }
                         this.progressBar1.Value = index;
                         index++;
                     }
                     this.progressBar1.Value = tamanho;
+
+                    for (int y = 7; y >= 1; y--)
+                    {
+                        double max = sinais[y + 1].Max();
+                        for (int i = 0; i < tamanho; i++)
+                        {
+                            x[i] = i;
+                            sinais[y][i] += max;
+                        }
+                    }
 
                     // Plot
                     this.configurarCurvas();
