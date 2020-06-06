@@ -833,7 +833,7 @@ namespace interfaceEMG
                     {
                         for (int y = 1; y < 9; y++)
                         {
-                            sinais[y][i] = sinais[y][i + 250];
+                            sinais[y][i] = sinais[y][i + taxa];
                         }
 
                         this.progressBar1.Value = i;
