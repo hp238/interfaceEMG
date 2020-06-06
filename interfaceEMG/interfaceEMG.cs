@@ -24,12 +24,72 @@ namespace interfaceEMG
     public partial class formInterface : Form
     {
 
+        double[] s1 = new double[]
+        {
+            100,200,100,200,100,200,100,200,100,200,
+              100,200,100,200,100,200,100,200,100,200,
+              100,200,100,200,100,200,100,200,100,200,
+              100,200,100,200,100,200,100,200,100,200,
+              100,200,100,200,100,200,100,200,100,200,
+              100,200,100,200,100,200,100,200,100,200,
+              100,200,100,200,100,200,100,200,100,200,
+              250,150,270,120,300,100,320,80,340,60,
+              360,40,380,20,400,0,400,0,400,0,
+              380,20,360,40,340,60,320,80,300,100,
+              280,120,260,140,240,160,220,180,200,200,
+              100,200,100,200,100,200,100,200,100,200,
+              100,200,100,200,100,200,100,200,100,200,
+              100,200,100,200,100,200,100,200,100,200,
+              100,200,100,200,100,200,100,200,100,200,
+              100,200,100,200,100,200,100,200,100,200,
+              100,200,100,200,100,200,100,200,100,200,
+              100,200,100,200,100,200,100,200,100,200,
+              250,150,270,120,300,100,320,80,340,60,
+              360,40,380,20,400,0,400,0,400,0,
+              380,20,360,40,340,60,320,80,300,100,
+              280,120,260,140,240,160,220,180,200,200,
+              100,200,100,200,100,200,100,200,100,200,
+              100,200,100,200,100,200,100,200,100,200,
+              100,200,100,200,100,200,100,200,100,200
+        };
+        double[] s2 = new double[]
+        {
+              100,200,100,200,100,200,100,200,100,200,
+              250,150,270,120,300,100,320,80,340,60,
+              360,40,380,20,400,0,400,0,400,0,
+              380,20,360,40,340,60,320,80,300,100,
+              100,200,100,200,100,200,100,200,100,200,
+              100,200,100,200,100,200,100,200,100,200,
+              100,200,100,200,100,200,100,200,100,200,
+              100,200,100,200,100,200,100,200,100,200,
+              100,200,100,200,100,200,100,200,100,200,
+              100,200,100,200,100,200,100,200,100,200,
+              280,120,260,140,240,160,220,180,200,200,
+              100,200,100,200,100,200,100,200,100,200,
+              100,200,100,200,100,200,100,200,100,200,
+              250,150,270,120,300,100,320,80,340,60,
+              360,40,380,20,400,0,400,0,400,0,
+              380,20,360,40,340,60,320,80,300,100,
+              280,120,260,140,240,160,220,180,200,200,
+              100,200,100,200,100,200,100,200,100,200,
+              100,200,100,200,100,200,100,200,100,200,
+              100,200,100,200,100,200,100,200,100,200,
+              100,200,100,200,100,200,100,200,100,200,
+              100,200,100,200,100,200,100,200,100,200,
+              100,200,100,200,100,200,100,200,100,200,
+              100,200,100,200,100,200,100,200,100,200,
+              100,200,100,200,100,200,100,200,100,200
+        };
+
+        int k = 0;
+
         int contt = 0;
 
         private int limit = 0;
         private bool firstPoint = false;
         private bool showGraphTest = false;
         private bool showGraphConect = false;
+        private bool showGraphRead = false;
         private bool showBiofeedback = false;
         private bool showFFT = false;
         private bool calcFFT = false;
@@ -85,7 +145,9 @@ namespace interfaceEMG
         {
             InitializeComponent();
             this.configurarInterface();
+            timer2.Interval = taxaAmostragem/4;
             timer2.Enabled = true;
+
             
             this.configBox();
         }
@@ -182,6 +244,8 @@ namespace interfaceEMG
                 {
                     serialPort2.PortName = comboBox1.Items[comboBox1.SelectedIndex].ToString();
                     serialPort2.Open();
+                    serialPort2.Write("ok");
+                    
                 }
                 catch
                 {
@@ -212,8 +276,8 @@ namespace interfaceEMG
             {
                 this.inicializaVetor();
                 //this.readFirstPoints();
-                this.readPoints();
-                this.configurarCurvas();
+                //this.readPoints();
+                //this.configurarCurvas();
                 
                 //this.writePointsCSV(0);      //tirar
                 /*
@@ -233,12 +297,15 @@ namespace interfaceEMG
 
             SerialPort sp = (SerialPort)sender;
             string indata = sp.ReadExisting();
-            Console.WriteLine(indata);
+            //Console.WriteLine(indata);
         }
 
         // Ler os pontos dos 8 canais de acordo com a taxa de amostragem
         private void readPoints()
         {
+
+            //var stopwatch = new Stopwatch();
+            //stopwatch.Start();
             this.cleanGraph();
             
             progressBar1.Visible = true;
@@ -246,19 +313,13 @@ namespace interfaceEMG
             progressBar1.Value = 0;
             int taxa = taxaAmostragem / 8;
 
-            if (!firstPoint)
-            {
-                this.limit = tamanho - taxa;
-                firstPoint = true;
-            }
-            else if(this.limit == 0)
-            {
-                this.limit = tamanho - taxa;
-            }
-            else
-            {
-                this.limit = this.limit - taxa;
-            }
+
+            this.limit = tamanho - taxa;
+
+            Console.WriteLine("taxa: " + taxa);
+            Console.WriteLine("Limit: " + limit);
+            Console.WriteLine("---------");
+
 
             for (int i = 0; i < limit; i++)
             {
@@ -281,14 +342,14 @@ namespace interfaceEMG
 
             for (int i = limit; i < tamanho; i++)
             {
-                double max = sinais[8].Max();
+                //double max = sinais[8].Max();
                 for (int y = 1; y < 9; y++)
                 {
                     try
                     {
-                        int fator = 10;
+                        int fator = 1;
                         double aux = Convert.ToDouble(serialPort2.ReadLine())/fator;
-                        sinais[y][i] = aux + (8 - y) * max;
+                        sinais[y][i] = aux;
                         archiveData[y][i] = aux;
                     }
                     catch
@@ -296,16 +357,26 @@ namespace interfaceEMG
                         y--;
                     }
                 }
-                progressBar1.Value = i;
-            }
-            progressBar1.Value = tamanho;
+                progressBar1.Value = i*8;
 
+            }
+            progressBar1.Value = tamanho*8;
+            
+            for(int y = 7; y >= 1; y--)
+            {
+                //Console.WriteLine(y);
+                double max = sinais[y + 1].Max();
+                for (int i = limit; i < tamanho; i++)
+                {
+                    sinais[y][i] += max;
+                }
+                
+            }
+            
             if (play == true)
             {
                 if (contt == 0)
                 {
-
-                   
                     for (int z = 1; z <= 8; z++)
                     {
                         Array.Copy(sinais[z], tamanho - taxa, auxFFT[z], 0, taxa);
@@ -326,6 +397,13 @@ namespace interfaceEMG
                     }
                 }
             }
+
+            //stopwatch.Stop();
+            //Console.WriteLine($"4ª parte: {stopwatch.ElapsedMilliseconds}ms");
+            
+            //stopwatch.Stop();
+            //Console.WriteLine($"Tempo passado: {stopwatch.ElapsedMilliseconds}ms");
+
         }
 
 
@@ -333,11 +411,104 @@ namespace interfaceEMG
         // Gerar curvas aleatoriamente para testes
         private void gerarCurvas()
         {
+           // MessageBox.Show("aa");
             this.cleanGraph();
+
+            int a = 0;
+            for (int y = 8; y >= 1; y--)
+            {
+                for (int i = 0; i < tamanho; i++)
+                {
+                    if (k == 0)
+                    {
+                        if (y % 2 == 0)
+                        {
+                            sinais[y][i] = s1[a];
+                        }
+                        else
+                        {
+                            sinais[y][i] = s2[a];
+                        }
+                        a++;
+                        if (a == 249)
+                        {
+                            a = 0;
+                        }
+                        
+                    }
+                    else if(k > 1)
+                    {
+                        if (y % 2 == 0)
+                        {
+                            sinais[y][i] = s1[a]/10;
+                        }
+                        else
+                        {
+                            sinais[y][i] = s2[a]/10;
+                        }
+                        a++;
+                        if (a == 249)
+                        {
+                            a = 0;
+                        }
+                    }
+                }
+
+                //MessageBox.Show("aa");
+
+
+                if (play == true)
+                {
+                    if (firstPoints == false)
+                    {
+                        sinaisFFT.Remove(y);
+                        sinaisFFT.Add(y, sinais[y]);
+                        if (y == 1)
+                        {
+                            //firstPoints = true; 
+                        }
+                    }
+                    else
+                    {
+                        //MessageBox.Show("OPA");
+                        Double[] aux3 = sinaisFFT[y];
+                        aux3.Concat(sinais[y]);
+                        sinaisFFT.Remove(y);
+                        sinaisFFT.Add(y, aux3);
+                    }
+
+                }
+
+                
+            }
+
+            k++;
+            if (k == 4)
+            {
+                k = 0;
+            }
+
+            for (int y = 7; y >= 1; y--)
+            {
+                //Console.WriteLine(y);
+                double max = sinais[y + 1].Max();
+                for (int i = 0; i < tamanho; i++)
+                {
+                    x[i] = i;
+                    sinais[y][i] += max;
+                }
+
+            }
+            //MessageBox.Show(sinais[1][0].ToString());
+
+            /* ANTIGO
             //progressBar1.Visible = true;
-           //progressBar1.Maximum = tamanho*8;
-           // progressBar1.Value = 0;
+            //progressBar1.Maximum = tamanho*8;
+            // progressBar1.Value = 0;
             // Código para sortear os valores de Y dos 8 canais
+
+
+            
             Random numAl = new Random();
             double max = 0;
             int aux2 = 0;
@@ -393,6 +564,7 @@ namespace interfaceEMG
                 if (play == true){
                     if (firstPoints == false)
                     {
+                        sinaisFFT.Remove(y);
                         sinaisFFT.Add(y, aux);
                         if (y == 1) { 
                             //firstPoints = true; 
@@ -411,6 +583,8 @@ namespace interfaceEMG
 
                 
             }
+
+    */
             //progressBar1.Value = tamanho * 8;
         }
 
@@ -481,32 +655,39 @@ namespace interfaceEMG
             // Cores das curvas
             Dictionary<int, System.Drawing.Color> cores = new Dictionary<int, System.Drawing.Color>()
             {
-                {1,System.Drawing.Color.Aqua },
+                {1,System.Drawing.Color.Red },
                 {2,System.Drawing.Color.Brown },
-                {3,System.Drawing.Color.Coral },
-                {4,System.Drawing.Color.Green },
-                {5,System.Drawing.Color.HotPink },
-                {6,System.Drawing.Color.Maroon },
-                {7,System.Drawing.Color.Red },
-                {8,System.Drawing.Color.Tomato }
+                {3,System.Drawing.Color.Fuchsia },
+                {4,System.Drawing.Color.BlueViolet },
+                {5,System.Drawing.Color.Gold },
+                {6,System.Drawing.Color.Cyan },
+                {7,System.Drawing.Color.Green },
+                {8,System.Drawing.Color.DarkOrange }
             };
 
             // Adicionar cada curva
             for (int i = 1; i <= 8; i++)
             {
 
-                graphCanais.GraphPane.AddCurve("minha curva", x, sinais[i], cores[i], ZedGraph.SymbolType.None);
+                graphCanais.GraphPane.AddCurve("Canal  "+i, x, sinais[i], cores[i], ZedGraph.SymbolType.None);
 
                 //if (i != 1)
                 //{
                 //    graphCanais.GraphPane.AddCurve("minha curva", x, retas[i], System.Drawing.Color.Black, ZedGraph.SymbolType.None);
                 //}
 
-                graphCanais.GraphPane.Legend.IsVisible = false;
+                graphCanais.GraphPane.Legend.IsVisible = true;
+                //graphCanais.GraphPane.Legend.posit
             }
 
             // Configurando limites
+            double max = 0;
+            for(int i = 1; i <= 8; i++)
+            {
+                max += sinais[i].Max();
+            }
             graphCanais.GraphPane.YAxis.Scale.Max = sinais[1].Max() + sinais[1].Max()*0.05;
+            //graphCanais.GraphPane.YAxis.Scale.Max = max;
             graphCanais.GraphPane.YAxis.Scale.Min = sinais[8].Min() - sinais[8].Min()*0.05;
             graphCanais.GraphPane.XAxis.Scale.Max = x.Length;
             graphCanais.GraphPane.AxisChange();
@@ -644,10 +825,17 @@ namespace interfaceEMG
                     for (int y = 0; y < lineSplit.Length - 1; y++)
                     {
                         this.sinais[y + 1][index] = Convert.ToDouble(lineSplit[y]) + (7 - y) * 100;
+                        //this.sinais[y + 1][index] = Convert.ToDouble(lineSplit[y]);
                     }
+
+                    
+
                     this.progressBar1.Value = index;
                     index++;
+                    
                 }
+
+
                 this.progressBar1.Value = tamanho;
 
                 // Plot 
@@ -693,12 +881,14 @@ namespace interfaceEMG
                         // Leitura dos pontos 
                         for (int y = 0; y < lineSplit.Length - 1; y++)
                         {
-                            this.sinais[y + 1][index] = Convert.ToDouble(lineSplit[y]) + (7 - y) * 100;
+                            this.sinais[y + 1][index] = Convert.ToDouble(lineSplit[y])+ (7 - y) * 100;
                         }
                         this.progressBar1.Value = index;
                         index++;
                     }
                     this.progressBar1.Value = tamanho;
+
+
 
                     // Plot
                     this.configurarCurvas();
@@ -734,9 +924,12 @@ namespace interfaceEMG
         {
             
             atualizaListaCOMs();
-            
+            if (this.showGraphRead){
+                this.configurarCurvas();
+            }
             if (this.showGraphConect)
             {
+                
                 this.readPoints();
                 this.configurarCurvas();
             }
@@ -750,11 +943,11 @@ namespace interfaceEMG
                 this.writePointsCSV(0);
                 this.writePointsCSV(tamanho - (taxaAmostragem / 8));
             }
-
             if (this.readFile==true && (this.currentLine < this.fileLength))
             {
                 this.readCSV();         // Le o csv e ja plota
             }
+
             
         }
 
@@ -763,6 +956,8 @@ namespace interfaceEMG
         {
             this.readFile = !this.readFile;
             this.showGraphTest = false;
+            //this.showGraphRead = true;
+            
         }
 
         // Text Box do arquivo a ser lido
