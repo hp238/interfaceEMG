@@ -83,6 +83,7 @@ namespace interfaceEMG
 
         private int k = 0;                              // utilizado no gerar curvas para variar o tipo de onda gerado
         private bool auxReadCSV = false;                // quando true dar um offset nos primeiros sinais lidos
+        private bool auxWriteCSV = false;               // para verificar apenas uma vez se o arquivo .csv já existe
         private int limit = 0;                          // variável auxiliar equivalente a tamanho-taxa
         private bool showGraphTest = false;             // true para mostrar as curvas geradas pela própria interface
         private bool showGraphConect = false;           // true para mostrar as curvas lidas pela comunicação serial/bluetooth
@@ -387,8 +388,14 @@ namespace interfaceEMG
 
             // Nome do arquivo - salvo em interfaceEMG\bin\Debug\Sinais.csv
             //string fileName = "Sinais.csv";
-
+            /*if (File.Exists(fileName) && (this.auxWriteCSV == false))
+            {
+                File.Delete(fileName);
+                MessageBox.Show("a");
+                this.auxWriteCSV = true;
+            }*/
             // Criando arquivo
+            
             if (!System.IO.File.Exists(fileName))
             {
                 using (System.IO.FileStream fs = System.IO.File.Create(fileName))
@@ -406,6 +413,7 @@ namespace interfaceEMG
             }
             else
             {
+
                 //Console.WriteLine("O arquivo {0} já existe em interfaceEMG\\bin\\Debug\\!", fileName);
             }
 
@@ -436,7 +444,7 @@ namespace interfaceEMG
             
             //string fileName = ((fileTextBox.Text == "") ? "SinaisN.csv" : fileTextBox.Text);
             string fileName = txtArquivo.Text + ".csv";
-            Console.WriteLine("CL:  " + currentLine);
+            
 
             // Arquivo inexistente
             if (!System.IO.File.Exists(fileName))
@@ -450,7 +458,6 @@ namespace interfaceEMG
             this.cleanGraph();
 
             // Leitura do arquivo 
-            Console.WriteLine("opa");
             using (TextReader tr = new StreamReader(fileName, Encoding.Default))
             {
 
@@ -783,7 +790,7 @@ namespace interfaceEMG
                 }
                 if (serialPort2.IsOpen)
                 {
-                    btmConectar.Text = "Desconectar";
+                    btmConect.Text = "Desconectar";
                     comboBox1.Enabled = false;
                 }
             }
@@ -793,7 +800,8 @@ namespace interfaceEMG
                 {
                     serialPort2.Close();
                     comboBox1.Enabled = true;
-                    btmConectar.Text = "Conectar";
+                    btmConect.Text = "Conectar";
+                    btmConect.BackColor = System.Drawing.Color.FromArgb(255, 165, 0);
                 }
                 catch
                 {
@@ -804,6 +812,7 @@ namespace interfaceEMG
 
             if (serialPort2.IsOpen == true)
             {
+                btmConect.BackColor = System.Drawing.Color.FromArgb(255, 0, 0);
                 this.inicializaVetor();
                 this.showGraphConect = !this.showGraphConect;
                 this.showGraphRead = false;
@@ -823,6 +832,13 @@ namespace interfaceEMG
                 sinaisFFT.Clear();
                 firstPoints = false;
                 calcFFT = false;
+
+                //exclui o arquivo caso ele exista
+                if (!this.auxWriteCSV && File.Exists(fileName))
+                {
+                    File.Delete(fileName);
+                    this.auxWriteCSV = true;
+                }
             }
             else
             {
@@ -840,7 +856,17 @@ namespace interfaceEMG
             this.readFile = !this.readFile;
             this.showGraphTest = false;
             this.showGraphConect = false;
-            this.showGraphRead = true;
+            
+            if (!this.showGraphRead)
+            {
+                btmRead.BackColor = System.Drawing.Color.FromArgb(255, 0, 0);
+                this.showGraphRead = true;
+            }
+            else
+            {
+                btmRead.BackColor = System.Drawing.Color.FromArgb(255, 165, 0);
+                this.showGraphRead = false;
+            }
         }
 
         // Botão para gerar curvas aleatoriamente
@@ -851,6 +877,14 @@ namespace interfaceEMG
             this.showGraphRead = false;
             this.readFile = false;
             this.currentLine = 1;
+            if (this.showGraphTest)
+            {
+                btmTest.BackColor = System.Drawing.Color.FromArgb(255, 0, 0);
+            }
+            else
+            {
+                btmTest.BackColor = System.Drawing.Color.FromArgb(255, 165, 0);
+            }
         }
 
     }

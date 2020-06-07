@@ -32,7 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(formInterface));
             this.serialPort2 = new System.IO.Ports.SerialPort(this.components);
             this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.btmConectar = new System.Windows.Forms.Button();
+            this.btmConect = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.graphCanais = new ZedGraph.ZedGraphControl();
@@ -43,9 +43,9 @@
             this.graphFFT = new ZedGraph.ZedGraphControl();
             this.textBox10 = new System.Windows.Forms.TextBox();
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.btmTeste = new System.Windows.Forms.Button();
+            this.btmTest = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.readFileButton = new System.Windows.Forms.Button();
+            this.btmRead = new System.Windows.Forms.Button();
             this.fileTextBox = new System.Windows.Forms.TextBox();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.biofeedbackCheckBox = new System.Windows.Forms.CheckBox();
@@ -71,19 +71,19 @@
             this.comboBox1.Size = new System.Drawing.Size(82, 21);
             this.comboBox1.TabIndex = 1;
             // 
-            // btmConectar
+            // btmConect
             // 
-            this.btmConectar.BackColor = System.Drawing.Color.Gainsboro;
-            this.btmConectar.FlatAppearance.BorderColor = System.Drawing.Color.Red;
-            this.btmConectar.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Yellow;
-            this.btmConectar.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.btmConectar.Location = new System.Drawing.Point(1017, 8);
-            this.btmConectar.Name = "btmConectar";
-            this.btmConectar.Size = new System.Drawing.Size(75, 23);
-            this.btmConectar.TabIndex = 2;
-            this.btmConectar.Text = "Conectar";
-            this.btmConectar.UseVisualStyleBackColor = false;
-            this.btmConectar.Click += new System.EventHandler(this.btmConectar_Click);
+            this.btmConect.BackColor = System.Drawing.Color.Gainsboro;
+            this.btmConect.FlatAppearance.BorderColor = System.Drawing.Color.Red;
+            this.btmConect.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Yellow;
+            this.btmConect.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.btmConect.Location = new System.Drawing.Point(1017, 8);
+            this.btmConect.Name = "btmConect";
+            this.btmConect.Size = new System.Drawing.Size(75, 23);
+            this.btmConect.TabIndex = 2;
+            this.btmConect.Text = "Conectar";
+            this.btmConect.UseVisualStyleBackColor = false;
+            this.btmConect.Click += new System.EventHandler(this.btmConectar_Click);
             // 
             // tabControl1
             // 
@@ -213,15 +213,15 @@
             this.timer2.Interval = 500;
             this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
             // 
-            // btmTeste
+            // btmTest
             // 
-            this.btmTeste.Location = new System.Drawing.Point(815, 10);
-            this.btmTeste.Name = "btmTeste";
-            this.btmTeste.Size = new System.Drawing.Size(75, 23);
-            this.btmTeste.TabIndex = 3;
-            this.btmTeste.Text = "Testar";
-            this.btmTeste.UseVisualStyleBackColor = true;
-            this.btmTeste.Click += new System.EventHandler(this.btmTeste_Click);
+            this.btmTest.Location = new System.Drawing.Point(815, 10);
+            this.btmTest.Name = "btmTest";
+            this.btmTest.Size = new System.Drawing.Size(75, 23);
+            this.btmTest.TabIndex = 3;
+            this.btmTest.Text = "Testar";
+            this.btmTest.UseVisualStyleBackColor = true;
+            this.btmTest.Click += new System.EventHandler(this.btmTeste_Click);
             // 
             // progressBar1
             // 
@@ -230,16 +230,16 @@
             this.progressBar1.Size = new System.Drawing.Size(121, 23);
             this.progressBar1.TabIndex = 4;
             // 
-            // readFileButton
+            // btmRead
             // 
-            this.readFileButton.Location = new System.Drawing.Point(184, 10);
-            this.readFileButton.Margin = new System.Windows.Forms.Padding(2);
-            this.readFileButton.Name = "readFileButton";
-            this.readFileButton.Size = new System.Drawing.Size(75, 23);
-            this.readFileButton.TabIndex = 5;
-            this.readFileButton.Text = "Ler Arquivo";
-            this.readFileButton.UseVisualStyleBackColor = true;
-            this.readFileButton.Click += new System.EventHandler(this.readFileButton_Click);
+            this.btmRead.Location = new System.Drawing.Point(184, 10);
+            this.btmRead.Margin = new System.Windows.Forms.Padding(2);
+            this.btmRead.Name = "btmRead";
+            this.btmRead.Size = new System.Drawing.Size(75, 23);
+            this.btmRead.TabIndex = 5;
+            this.btmRead.Text = "Ler Arquivo";
+            this.btmRead.UseVisualStyleBackColor = true;
+            this.btmRead.Click += new System.EventHandler(this.readFileButton_Click);
             // 
             // fileTextBox
             // 
@@ -323,10 +323,10 @@
             this.Controls.Add(this.biofeedbackCheckBox);
             this.Controls.Add(this.comboBox2);
             this.Controls.Add(this.fileTextBox);
-            this.Controls.Add(this.readFileButton);
+            this.Controls.Add(this.btmRead);
             this.Controls.Add(this.progressBar1);
-            this.Controls.Add(this.btmTeste);
-            this.Controls.Add(this.btmConectar);
+            this.Controls.Add(this.btmTest);
+            this.Controls.Add(this.btmConect);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.tabControl1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -348,7 +348,7 @@
         #endregion
         private System.IO.Ports.SerialPort serialPort2;
         private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.Button btmConectar;
+        private System.Windows.Forms.Button btmConect;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
@@ -357,11 +357,11 @@
         private System.Windows.Forms.Timer timer2;
         private System.Windows.Forms.TextBox textBox9;
         private System.Windows.Forms.TextBox textBox10;
-        private System.Windows.Forms.Button btmTeste;
+        private System.Windows.Forms.Button btmTest;
         private System.Windows.Forms.ProgressBar progressBar1;
         private ZedGraph.ZedGraphControl graphFFT;
         private ZedGraph.ZedGraphControl graphBars;
-        private System.Windows.Forms.Button readFileButton;
+        private System.Windows.Forms.Button btmRead;
         private System.Windows.Forms.TextBox fileTextBox;
         private System.Windows.Forms.ComboBox comboBox2;
         private System.Windows.Forms.CheckBox biofeedbackCheckBox;
