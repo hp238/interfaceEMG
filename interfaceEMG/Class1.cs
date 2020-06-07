@@ -24,6 +24,7 @@ namespace interfaceEMG
 
         public static void shift(Dictionary<int, Double[]> sinais, int limit, int taxa)
         {
+            //Console.WriteLine(limit);
             for (int i = 0; i < limit; i++)
             {
                 for (int y = 1; y < 9; y++)

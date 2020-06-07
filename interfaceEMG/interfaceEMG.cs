@@ -24,7 +24,7 @@ namespace interfaceEMG
     public partial class formInterface : Form
     {
 
-        double[] s1 = new double[]
+        private double[] s1 = new double[]
         {
             100,200,100,200,100,200,100,200,100,200,
               100,200,100,200,100,200,100,200,100,200,
@@ -51,8 +51,8 @@ namespace interfaceEMG
               100,200,100,200,100,200,100,200,100,200,
               100,200,100,200,100,200,100,200,100,200,
               100,200,100,200,100,200,100,200,100,200
-        };
-        double[] s2 = new double[]
+        };         // vetor para testar a interface
+        private double[] s2 = new double[]
         {
               100,200,100,200,100,200,100,200,100,200,
               250,150,270,120,300,100,320,80,340,60,
@@ -79,39 +79,27 @@ namespace interfaceEMG
               100,200,100,200,100,200,100,200,100,200,
               100,200,100,200,100,200,100,200,100,200,
               100,200,100,200,100,200,100,200,100,200
-        };
+        };         // vetor para testar a interface
 
-        int k = 0;
-
-        //int firstPoints = 0;
-
-        private int limit = 0;
-        //private bool firstPoint = false;
-        private bool showGraphTest = false;
-        private bool showGraphConect = false;
-        private bool showGraphRead = false;
-        private bool showBiofeedback = false;
-        private bool showFFT = false;
-        private bool calcFFT = false;
-        private bool readFile = false;
-        private bool play = false;
-        private bool firstPoints = false;
-        private string fileName = "Sinais.csv";
-        private int currentLine = 1;
-        private int fileLength = 40000;                 // Para garantir que o programa nao entra em loop
-
+        private int k = 0;                              // utilizado no gerar curvas para variar o tipo de onda gerado
+        private bool auxReadCSV = false;                // quando true dar um offset nos primeiros sinais lidos
+        private int limit = 0;                          // variável auxiliar equivalente a tamanho-taxa
+        private bool showGraphTest = false;             // true para mostrar as curvas geradas pela própria interface
+        private bool showGraphConect = false;           // true para mostrar as curvas lidas pela comunicação serial/bluetooth
+        private bool showGraphRead = false;             // true para mostrar as curvas lidas do arquivos .cvs
+        private bool showBiofeedback = false;           // true para mostrar as curvas da aba de biofeedback
+        private bool showFFT = false;                   // true para mostrar as curvas da aba de FFT (controlado pelo botão Play)
+        private bool calcFFT = false;                   // true para calcular o FFT de cada sinal do intervalo selecionado pelo botão Play
+        private bool readFile = false;                  // true para iniciar a leitura do arquivo .csv
+        private bool play = false;                      // true para iniciar a salvar os pontos e plotar a FFT
+        private bool firstPoints = false;               // false para indicar que os primeiros "taxa" pontos foram lidos na comunicação serial/bluetooth
+                                                        // true para indicar que os demais "taxa" pontos lidos devem ser concatenados ao pontos lidos anteriormente
+        private string fileName = "Sinais.csv";         // nome padrão do arquivo .csv que será salvo
+        private int currentLine = 1;                    // indica a linha que está sendo lida pelo readfile
         static int tamanho = 1000;                      // Tamanho do vetor de teste
         private double[] x = new double[tamanho];       // Eixo x
         private int taxaAmostragem = 2000;              // Taxa de amostragem do circuito
         private int graphIndex = 1;                     // Gráfico que será usado no biofeedback e FFT
-
-        private void inicializaVetor()
-        {
-            for (int i = 0; i < 100; i++)
-            {
-                this.x[i] = i;
-            }
-        }
 
         private Dictionary<int, Double[]> sinais = new Dictionary<int, double[]>()
         {
@@ -123,7 +111,7 @@ namespace interfaceEMG
             {6, new double[tamanho] },
             {7, new double[tamanho] },
             {8, new double[tamanho] },
-        }; // Eixo y dos 8 canais
+        };           // Eixo y dos 8 canais
 
         private Dictionary<int, Double[]> archiveData = new Dictionary<int, double[]>()
         {
@@ -135,12 +123,11 @@ namespace interfaceEMG
             {6, new double[tamanho] },
             {7, new double[tamanho] },
             {8, new double[tamanho] },
-        }; // Dados para salvar no arquivo
+        };      // Dados para salvar no arquivo .csv
 
-        private Dictionary<int, Double[]> retas = new Dictionary<int, double[]>(); // Retas entre canais
+        private Dictionary<int, Double[]> sinaisFFT = new Dictionary<int, Double[]>();           // Dados para o cálculo da FFT
 
-        private Dictionary<int, Double[]> sinaisFFT = new Dictionary<int, Double[]>();
-
+        //Inicialização da Interface
         public formInterface()
         {
             InitializeComponent();
@@ -152,142 +139,27 @@ namespace interfaceEMG
             this.configBox();
         }
 
-        private void configBox()
-        {
-            // Adiciona todos os canais disponíveis para o biofeedback e FFT
-            for (int i = 1; i < 9; i++)
-            {
-                string s = i.ToString();
-
-                comboBox2.Items.Add(s);
-            }
-        }
-
-        // Configuração inicial da tela
-        private void configurarInterface()
-        {
-            // Gráfico dos canais
-            graphCanais.GraphPane.XAxis.IsVisible = false;
-            graphCanais.GraphPane.YAxis.IsVisible = false;
-            graphCanais.GraphPane.Title.IsVisible = false;
-            graphCanais.GraphPane.Margin.All = 0;
-
-            // Aba de biofeedback
-            graphBars.GraphPane.XAxis.IsVisible = false;
-            graphBars.GraphPane.YAxis.IsVisible = false;
-            graphBars.GraphPane.Title.IsVisible = false;
-            graphBars.GraphPane.Margin.All = 0;
-
-            //Aba de FFT
-            graphFFT.GraphPane.XAxis.IsVisible = true;
-            graphFFT.GraphPane.YAxis.IsVisible = true;
-            graphFFT.GraphPane.Title.IsVisible = false;
-            graphFFT.GraphPane.Margin.All = 0;
-        }
-
-        // Atualiza listas de portas conectadas
-        private void atualizaListaCOMs()
-        {
-            int i;
-            bool quantDiferente; // Flag para sinalizar que a quantidade de portas mudou
-
-            i = 0;
-            quantDiferente = false;
-
-
-            // Se a quantidade de portas mudou
-            if (comboBox1.Items.Count == SerialPort.GetPortNames().Length)
-            {
-                foreach (string s in SerialPort.GetPortNames())
-                {
-                    if (comboBox1.Items[i++].Equals(s) == false)
-                    {
-                        quantDiferente = true;
-                    }
-                }
-            }
-            else
-            {
-                quantDiferente = true;
-            }
-
-            // Se não foi detectado diferença
-            if (quantDiferente == false)
-            {
-                return;                     //retorna
-            }
-
-            //limpa comboBox
-            comboBox1.Items.Clear();
-
-            // Adiciona todas as COM diponíveis na lista
-            foreach (string s in SerialPort.GetPortNames())
-            {
-                comboBox1.Items.Add(s);
-            }
-            // Seleciona a primeira posição da lista
-            comboBox1.SelectedIndex = 0;
-        }
-
-        // Botão conectar
-        private void btmConectar_Click(object sender, EventArgs e)
+        //eixo x
+        private void inicializaVetor()
         {
             for (int i = 0; i < tamanho; i++)
             {
-                x[i] = i;
-            }
-            if (serialPort2.IsOpen == false)
-            {
-                try
-                {
-                    serialPort2.PortName = comboBox1.Items[comboBox1.SelectedIndex].ToString();
-                    serialPort2.Open();
-                    serialPort2.Write("ok");
-
-                }
-                catch
-                {
-                    return;
-                }
-                if (serialPort2.IsOpen)
-                {
-                    btmConectar.Text = "Desconectar";
-                    comboBox1.Enabled = false;
-                }
-            }
-            else
-            {
-                try
-                {
-                    serialPort2.Close();
-                    comboBox1.Enabled = true;
-                    btmConectar.Text = "Conectar";
-                }
-                catch
-                {
-                    return;
-                }
-
-            }
-
-            if (serialPort2.IsOpen == true)
-            {
-                this.inicializaVetor();
-                this.showGraphConect = !this.showGraphConect;
+                this.x[i] = i;
             }
         }
 
-
+        /**
+         * Aquisição de sinais
+         */
 
         // Ler os pontos dos 8 canais de acordo com a taxa de amostragem
         private void readPoints()
         {
-            //var stopwatch = new Stopwatch();
-            //stopwatch.Start();
             this.cleanGraph();
 
             int taxa = taxaAmostragem / 8;
 
+            //salva os dados parciais para o cálculo da FFT
             Dictionary<int, Double[]> auxFFT = new Dictionary<int, double[]>()
             {
                 {1, new double[taxa] },
@@ -304,13 +176,8 @@ namespace interfaceEMG
             progressBar1.Maximum = tamanho * 8;
             progressBar1.Value = 0;
 
-
-
             this.limit = tamanho - taxa;
-
             tools.shift(sinais, limit, taxa);
-
-
 
             for (int i = limit; i < tamanho; i++)
             {
@@ -346,10 +213,7 @@ namespace interfaceEMG
         private void gerarCurvas()
         {
             // MessageBox.Show("aa");
-            for (int i = 0; i < tamanho; i++)
-            {
-                x[i] = i;
-            }
+            this.inicializaVetor();
 
             this.cleanGraph();
             int taxa = taxaAmostragem / 8;
@@ -434,6 +298,271 @@ namespace interfaceEMG
 
         }
 
+        
+        /**
+         * Timer
+         * */
+
+        // Timer
+        private void timer2_Tick(object sender, EventArgs e)
+        {
+            atualizaListaCOMs();
+
+            if (this.showGraphConect)
+            {
+                this.readPoints();
+                this.configurarCurvas();
+            }
+
+            if (this.showGraphTest)
+            {
+                this.gerarCurvas();
+                this.configurarCurvas();
+            }
+
+            if (play == true)
+            {
+                this.writePointsCSV(tamanho - (taxaAmostragem / 8));
+            }
+            
+            if (this.showGraphRead)
+            {
+                this.readCSV();         // Le o csv e ja plota
+            }
+
+        }
+
+        // Atualiza listas de portas conectadas
+        private void atualizaListaCOMs()
+        {
+            int i;
+            bool quantDiferente; // Flag para sinalizar que a quantidade de portas mudou
+
+            i = 0;
+            quantDiferente = false;
+
+
+            // Se a quantidade de portas mudou
+            if (comboBox1.Items.Count == SerialPort.GetPortNames().Length)
+            {
+                foreach (string s in SerialPort.GetPortNames())
+                {
+                    if (comboBox1.Items[i++].Equals(s) == false)
+                    {
+                        quantDiferente = true;
+                    }
+                }
+            }
+            else
+            {
+                quantDiferente = true;
+            }
+
+            // Se não foi detectado diferença
+            if (quantDiferente == false)
+            {
+                return;                     //retorna
+            }
+
+            //limpa comboBox
+            comboBox1.Items.Clear();
+
+            // Adiciona todas as COM diponíveis na lista
+            foreach (string s in SerialPort.GetPortNames())
+            {
+                comboBox1.Items.Add(s);
+            }
+            // Seleciona a primeira posição da lista
+            comboBox1.SelectedIndex = 0;
+        }
+
+
+        /**
+         * CSV
+         */
+
+        // Salva pontos no arquivo CSV
+        private void writePointsCSV(int start)
+        {
+
+            // Nome do arquivo - salvo em interfaceEMG\bin\Debug\Sinais.csv
+            //string fileName = "Sinais.csv";
+
+            // Criando arquivo
+            if (!System.IO.File.Exists(fileName))
+            {
+                using (System.IO.FileStream fs = System.IO.File.Create(fileName))
+                {
+                    Console.WriteLine("Arquivo {0} criado!", fileName);
+                }
+
+                // Cabeçalho
+                using (TextWriter tw = new StreamWriter(fileName, false, Encoding.Default))
+                {
+                    tw.Write("Sinal 1;Sinal 2;Sinal 3;Sinal 4; Sinal 5;Sinal 6;Sinal 7;Sinal 8;");
+                    tw.Write("\n");
+                    tw.Close();
+                }
+            }
+            else
+            {
+                //Console.WriteLine("O arquivo {0} já existe em interfaceEMG\\bin\\Debug\\!", fileName);
+            }
+
+            // //Console.WriteLine(Path.GetFullPath(fileName));   // Diretorio completo do arquivo
+
+            // Escrever dados no arquivo
+            using (TextWriter tw = new StreamWriter(fileName, true, Encoding.Default))
+            {
+                for (int i = start; i < tamanho; i++)
+                {
+                    string line = "";
+
+                    for (int y = 1; y < 9; y++)
+                    {
+                        string aux = String.Format("{0};", archiveData[y][i]);
+                        line += aux;
+                    }
+                    tw.Write(line + "\n");
+                }
+                tw.Close();
+            }
+        }
+
+        // Ler os pontos de um arquivo CSV
+        private void readCSV()
+        {
+            this.cleanGraph();
+            
+            //string fileName = ((fileTextBox.Text == "") ? "SinaisN.csv" : fileTextBox.Text);
+            string fileName = txtArquivo.Text + ".csv";
+            Console.WriteLine("CL:  " + currentLine);
+
+            // Arquivo inexistente
+            if (!System.IO.File.Exists(fileName))
+            {
+
+                this.readFile = false;
+                MessageBox.Show("Arquivo não encontrado.", "Erro");
+                return;
+            }
+
+            this.cleanGraph();
+
+            // Leitura do arquivo 
+            Console.WriteLine("opa");
+            using (TextReader tr = new StreamReader(fileName, Encoding.Default))
+            {
+
+                int countLine = 0;
+                string line = null;
+                int index = 0;
+
+                for (int i = 1; i < this.currentLine; i++)              // Ignora as linhas anteriores a currentLine
+                {
+                    tr.ReadLine();
+                }
+
+                if (this.currentLine == 1) line = tr.ReadLine();           // Cabeçalho edit: so roda na primeira lida
+                line = null;
+
+                this.progressBar1.Visible = true;
+                this.progressBar1.Maximum = tamanho;
+                this.progressBar1.Value = 0;
+
+                // Primeiros pontos do arquivo 
+                while (index < tamanho && this.currentLine < tamanho)   // A segunda parte do AND eh necessaria para a 1a iteracao
+                {
+                    int a = 0;
+                    line = tr.ReadLine();
+
+                    countLine++;                                        // Evita que entre no while que vira em breve while(countLine < tamanho)
+                    this.currentLine = this.currentLine + 1;
+                    string[] lineSplit = line.Split(';');
+
+                    for (int y = 0; y < lineSplit.Length - 1; y++)
+                    {
+                        this.sinais[y + 1][index] = Convert.ToDouble(lineSplit[y]);// + (7 - y) * 100;
+                    }
+                    this.progressBar1.Value = index;
+                    index++;
+                }
+                this.progressBar1.Value = tamanho;
+
+                //dar offset apenas nos primeiros pontos
+                if (auxReadCSV == false)
+                {
+                    tools.offset(sinais, 0, tamanho);
+                    this.inicializaVetor();
+                    this.configurarCurvas();
+                    auxReadCSV = true;
+                }
+
+                line = null;
+                int taxa = taxaAmostragem / 8;
+                int limit = tamanho - taxa;
+
+                this.progressBar1.Visible = true;
+                this.progressBar1.Maximum = tamanho;
+                this.progressBar1.Value = 0;
+
+                // Pontos restantes
+                while (index < tamanho - taxa)                                 // Garante que so leia "tamanho" linhas de cada vez
+                {
+                    this.cleanGraph();
+
+                    // Shift dos pontos
+                    tools.shift(sinais, limit, taxa);
+
+                    index = limit;
+
+                    while (index < tamanho)
+                    {
+                        if ((line = tr.ReadLine()) == null)
+                        {
+                            Console.WriteLine("stop");
+                            this.readFile = false;
+                            this.showGraphRead = false;
+                            break;
+                        }
+                        this.currentLine = this.currentLine + 1;        // O programa registra que leu mais uma linha
+                        countLine++;                                    // Vamos por limite de "tamanho" para esse contador
+                        string[] lineSplit = line.Split(';');
+
+                        // Leitura dos pontos 
+                        for (int y = 0; y < lineSplit.Length - 1; y++)
+                        {
+                            this.sinais[y + 1][index] = Convert.ToDouble(lineSplit[y]);// + (7 - y) * 100;
+                        }
+                        this.progressBar1.Value = index;
+                        index++;
+                    }
+                    this.progressBar1.Value = tamanho;
+
+                    tools.offset(sinais, tamanho-taxa, tamanho);
+
+                    // Plot
+                    this.configurarCurvas();
+                }
+                tr.Close();
+            }
+        }
+
+        /**
+         * FFT e Biofeedback
+         * */
+
+        private void configBox()
+        {
+            // Adiciona todos os canais disponíveis para o biofeedback e FFT
+            for (int i = 1; i < 9; i++)
+            {
+                string s = i.ToString();
+
+                comboBox2.Items.Add(s);
+            }
+        }
+
         // Extracao de envelope 
         private double[] BF(double[] sinal)
         {
@@ -493,6 +622,50 @@ namespace interfaceEMG
             return (freq, mag2);
         }
 
+        // Text Box do arquivo a ser lido
+        private void fileTextBox_TextChanged(object sender, EventArgs e)
+        {
+            this.readFile = false;
+            this.currentLine = 1;
+        }
+
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Index para biofeedback e FFT
+            int aux = Convert.ToInt32(comboBox2.Items[comboBox2.SelectedIndex]);
+
+            if (aux > 0 && aux < 9)
+            {
+                graphIndex = aux;
+            }
+        }
+
+        private void biofeedbackCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            this.showBiofeedback = !this.showBiofeedback;
+        }
+
+        private void FFTCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            this.showFFT = !this.showFFT;
+        }
+
+
+        /**
+         * Gráficos
+         * */
+
+        // Permitir atualização do gráfico
+        private void cleanGraph()
+        {
+            graphCanais.GraphPane.CurveList.Clear();
+            graphCanais.GraphPane.GraphObjList.Clear();
+            graphBars.GraphPane.CurveList.Clear();
+            graphBars.GraphPane.GraphObjList.Clear();
+            graphFFT.GraphPane.CurveList.Clear();
+            graphFFT.GraphPane.GraphObjList.Clear();
+        }
+
         // Configurar plot
         private void configurarCurvas()
         {
@@ -520,11 +693,6 @@ namespace interfaceEMG
             }
 
             // Configurando limites
-            double max = 0;
-            for (int i = 1; i <= 8; i++)
-            {
-                max += sinais[i].Max();
-            }
             graphCanais.GraphPane.YAxis.Scale.Max = sinais[1].Max() + sinais[1].Max() * 0.05;
             //graphCanais.GraphPane.YAxis.Scale.Max = max;
             graphCanais.GraphPane.YAxis.Scale.Min = sinais[8].Min() - sinais[8].Min() * 0.05;
@@ -564,224 +732,104 @@ namespace interfaceEMG
 
         }
 
+        // Configuração inicial da tela
+        private void configurarInterface()
+        {
+            // Gráfico dos canais
+            graphCanais.GraphPane.XAxis.IsVisible = false;
+            graphCanais.GraphPane.YAxis.IsVisible = false;
+            graphCanais.GraphPane.Title.IsVisible = false;
+            graphCanais.GraphPane.Margin.All = 0;
 
-        // Salva pontos no arquivo CSV
-        private void writePointsCSV(int start)
+            // Aba de biofeedback
+            graphBars.GraphPane.XAxis.IsVisible = false;
+            graphBars.GraphPane.YAxis.IsVisible = false;
+            graphBars.GraphPane.Title.IsVisible = false;
+            graphBars.GraphPane.Margin.All = 0;
+
+            //Aba de FFT
+            graphFFT.GraphPane.XAxis.IsVisible = true;
+            graphFFT.GraphPane.YAxis.IsVisible = true;
+            graphFFT.GraphPane.Title.IsVisible = false;
+            graphFFT.GraphPane.Margin.All = 0;
+        }
+
+        private void graphCanais_Load(object sender, EventArgs e)
         {
 
-            // Nome do arquivo - salvo em interfaceEMG\bin\Debug\Sinais.csv
-            //string fileName = "Sinais.csv";
+        }
 
-            // Criando arquivo
-            if (!System.IO.File.Exists(fileName))
+
+        /**
+         * Botões
+         * */
+
+        // Botão conectar
+        private void btmConectar_Click(object sender, EventArgs e)
+        {
+            this.inicializaVetor();
+            if (serialPort2.IsOpen == false)
             {
-                using (System.IO.FileStream fs = System.IO.File.Create(fileName))
+                try
                 {
-                    Console.WriteLine("Arquivo {0} criado!", fileName);
-                }
+                    serialPort2.PortName = comboBox1.Items[comboBox1.SelectedIndex].ToString();
+                    serialPort2.Open();
+                    serialPort2.Write("ok");
 
-                // Cabeçalho
-                using (TextWriter tw = new StreamWriter(fileName, false, Encoding.Default))
+                }
+                catch
                 {
-                    tw.Write("Sinal 1;Sinal 2;Sinal 3;Sinal 4; Sinal 5;Sinal 6;Sinal 7;Sinal 8;");
-                    tw.Write("\n");
-                    tw.Close();
+                    return;
+                }
+                if (serialPort2.IsOpen)
+                {
+                    btmConectar.Text = "Desconectar";
+                    comboBox1.Enabled = false;
                 }
             }
             else
             {
-                //Console.WriteLine("O arquivo {0} já existe em interfaceEMG\\bin\\Debug\\!", fileName);
+                try
+                {
+                    serialPort2.Close();
+                    comboBox1.Enabled = true;
+                    btmConectar.Text = "Conectar";
+                }
+                catch
+                {
+                    return;
+                }
+
             }
 
-            // //Console.WriteLine(Path.GetFullPath(fileName));   // Diretorio completo do arquivo
-
-            // Escrever dados no arquivo
-            using (TextWriter tw = new StreamWriter(fileName, true, Encoding.Default))
+            if (serialPort2.IsOpen == true)
             {
-                for (int i = start; i < tamanho; i++)
-                {
-                    string line = "";
-
-                    for (int y = 1; y < 9; y++)
-                    {
-                        string aux = String.Format("{0};", archiveData[y][i]);
-                        line += aux;
-                    }
-                    tw.Write(line + "\n");
-                }
-                tw.Close();
+                this.inicializaVetor();
+                this.showGraphConect = !this.showGraphConect;
+                this.showGraphRead = false;
+                this.showGraphTest = false;
             }
         }
 
-        // Ler os pontos de um arquivo CSV
-        private void readCSV()
+        //botão para começar a salvar os dados
+        private void btmPlay_Click(object sender, EventArgs e)
         {
-            //string fileName = ((fileTextBox.Text == "") ? "SinaisN.csv" : fileTextBox.Text);
-            string fileName = txtArquivo.Text + ".csv";
-
-            // Arquivo inexistente
-            if (!System.IO.File.Exists(fileName))
+            if (this.play == false)
             {
-
-                this.readFile = false;
-                MessageBox.Show("Arquivo não encontrado.", "Erro");
-                return;
+                fileName = txtArquivo.Text + ".csv";
+                this.play = true;
+                btmPlay.Text = "Stop";
+                btmPlay.BackColor = System.Drawing.Color.FromArgb(255, 0, 0);
+                sinaisFFT.Clear();
+                firstPoints = false;
+                calcFFT = false;
             }
-
-            this.cleanGraph();
-
-            // Leitura do arquivo 
-            using (TextReader tr = new StreamReader(fileName, Encoding.Default))
+            else
             {
-                int countLine = 0;
-                string line = null;
-                int index = 0;
-
-                for (int i = 1; i < this.currentLine; i++)              // Ignora as linhas anteriores a currentLine
-                {
-                    tr.ReadLine();
-                }
-
-                if (this.currentLine == 1) line = tr.ReadLine();           // Cabeçalho edit: so roda na primeira lida
-                line = null;
-
-                this.progressBar1.Visible = true;
-                this.progressBar1.Maximum = tamanho;
-                this.progressBar1.Value = 0;
-
-                // Primeiros pontos do arquivo 
-                while (index < tamanho && this.currentLine < tamanho)   // A segunda parte do AND eh necessaria para a 1a iteracao
-                {
-                    if ((line = tr.ReadLine()) == null)
-                    {
-                        this.readFile = false;
-                        break;
-                    }
-                    countLine++;                                        // Evita que entre no while que vira em breve while(countLine < tamanho)
-                    this.currentLine = this.currentLine + 1;
-                    string[] lineSplit = line.Split(';');
-
-                    for (int y = 0; y < lineSplit.Length - 1; y++)
-                    {
-                        this.sinais[y + 1][index] = Convert.ToDouble(lineSplit[y]);// + (7 - y) * 100;
-                    }
-                    this.progressBar1.Value = index;
-                    index++;
-                }
-                this.progressBar1.Value = tamanho;
-
-                //tools.offset(sinais, 0, tamanho);
-
-                // Plot 
-                this.configurarCurvas();
-
-                line = null;
-                int taxa = taxaAmostragem / 8;
-                int limit = tamanho - taxa;
-
-                this.progressBar1.Visible = true;
-                this.progressBar1.Maximum = tamanho;
-                this.progressBar1.Value = 0;
-
-                // Pontos restantes
-                while (index < tamanho)                                 // Garante que so leia "tamanho" linhas de cada vez
-                {
-                    this.cleanGraph();
-
-                    // Shift dos pontos
-                    for (int i = 0; i < limit; i++)
-                    {
-                        for (int y = 1; y < 9; y++)
-                        {
-                            sinais[y][i] = sinais[y][i + 250];
-                        }
-
-                        this.progressBar1.Value = i;
-                    }
-
-                    index = limit;
-
-                    while (index < tamanho)
-                    {
-                        if ((line = tr.ReadLine()) == null)
-                        {
-                            this.readFile = false;
-                            break;
-                        }
-                        this.currentLine = this.currentLine + 1;        // O programa registra que leu mais uma linha
-                        countLine++;                                    // Vamos por limite de "tamanho" para esse contador
-                        string[] lineSplit = line.Split(';');
-
-                        // Leitura dos pontos 
-                        for (int y = 0; y < lineSplit.Length - 1; y++)
-                        {
-                            this.sinais[y + 1][index] = Convert.ToDouble(lineSplit[y]);// + (7 - y) * 100;
-                        }
-                        this.progressBar1.Value = index;
-                        index++;
-                    }
-                    this.progressBar1.Value = tamanho;
-
-                    //tools.offset(sinais, 750, tamanho);
-
-                    // Plot
-                    this.configurarCurvas();
-                }
-
-                tr.Close();
-            }
-        }
-
-        // Permitir atualização do gráfico
-        private void cleanGraph()
-        {
-            retas.Clear();
-            graphCanais.GraphPane.CurveList.Clear();
-            graphCanais.GraphPane.GraphObjList.Clear();
-            graphBars.GraphPane.CurveList.Clear();
-            graphBars.GraphPane.GraphObjList.Clear();
-            graphFFT.GraphPane.CurveList.Clear();
-            graphFFT.GraphPane.GraphObjList.Clear();
-        }
-
-        // Botão para gerar curvas aleatoriamente
-        private void btmTeste_Click(object sender, EventArgs e)
-        {
-            this.showGraphTest = !this.showGraphTest;
-            this.readFile = false;
-            this.currentLine = 1;
-        }
-
-        // Timer
-        private void timer2_Tick(object sender, EventArgs e)
-        {
-            atualizaListaCOMs();
-            if (this.showGraphRead)
-            {
-                this.configurarCurvas();
-            }
-
-            if (this.showGraphConect)
-            {
-                this.readPoints();
-                this.configurarCurvas();
-            }
-
-            if (this.showGraphTest)
-            {
-                this.gerarCurvas();
-                this.configurarCurvas();
-            }
-
-            if (play == true)
-            {
-                //this.writePointsCSV(0);
-                this.writePointsCSV(tamanho - (taxaAmostragem / 8));
-            }
-
-            if (this.readFile == true && (this.currentLine < this.fileLength))
-            {
-                this.readCSV();         // Le o csv e ja plota
+                this.play = false;
+                btmPlay.Text = "Play";
+                btmPlay.BackColor = System.Drawing.Color.FromArgb(255, 165, 0);
+                calcFFT = true;
             }
 
         }
@@ -791,62 +839,19 @@ namespace interfaceEMG
         {
             this.readFile = !this.readFile;
             this.showGraphTest = false;
+            this.showGraphConect = false;
+            this.showGraphRead = true;
         }
 
-        // Text Box do arquivo a ser lido
-        private void fileTextBox_TextChanged(object sender, EventArgs e)
+        // Botão para gerar curvas aleatoriamente
+        private void btmTeste_Click(object sender, EventArgs e)
         {
+            this.showGraphTest = !this.showGraphTest;
+            this.showGraphConect = false;
+            this.showGraphRead = false;
             this.readFile = false;
             this.currentLine = 1;
         }
 
-        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Index para biofeedback e FFT
-            int aux = Convert.ToInt32(comboBox2.Items[comboBox2.SelectedIndex]);
-
-            if (aux > 0 && aux < 9)
-            {
-                graphIndex = aux;
-            }
-        }
-
-        private void biofeedbackCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            this.showBiofeedback = !this.showBiofeedback;
-        }
-
-        private void FFTCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            this.showFFT = !this.showFFT;
-        }
-
-        private void graphCanais_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        //botão para começar a salvar os dados
-        private void btmPlay_Click(object sender, EventArgs e)
-        {
-            if (play == false)
-            {
-                fileName = txtArquivo.Text + ".csv";
-                play = true;
-                btmPlay.Text = "Stop";
-                btmPlay.BackColor = System.Drawing.Color.FromArgb(255, 0, 0);
-                sinaisFFT.Clear();
-                firstPoints = false;
-                calcFFT = false;
-            }
-            else
-            {
-                play = false;
-                btmPlay.Text = "Play";
-                btmPlay.BackColor = System.Drawing.Color.FromArgb(255, 165, 0);
-                calcFFT = true;
-            }
-
-        }
     }
 }
