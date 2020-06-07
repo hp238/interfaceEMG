@@ -755,8 +755,7 @@ namespace interfaceEMG
         // Ler os pontos de um arquivo CSV
         private void readCSV()
         {
-            //string fileName = ((fileTextBox.Text == "") ? "SinaisN.csv" : fileTextBox.Text);
-            string fileName = txtArquivo.Text+".csv";
+            string fileName = ((fileTextBox.Text == "") ? "Sinais.csv" : fileTextBox.Text+".csv");
             
             // Arquivo inexistente
             if (!System.IO.File.Exists(fileName))
@@ -802,7 +801,6 @@ namespace interfaceEMG
                     for (int y = 0; y < lineSplit.Length - 1; y++)
                     {
                         this.sinais[y + 1][index] = Convert.ToDouble(lineSplit[y]);
-                        //this.sinais[y + 1][index] = Convert.ToDouble(lineSplit[y]);
                     }
 
                     this.progressBar1.Value = index;
@@ -904,7 +902,6 @@ namespace interfaceEMG
         // Botão para gerar curvas aleatoriamente
         private void btmTeste_Click(object sender, EventArgs e)
         {
-
             this.showGraphTest = !this.showGraphTest;
             this.readFile = false;
             this.currentLine = 1;
@@ -913,32 +910,34 @@ namespace interfaceEMG
         // Timer
         private void timer2_Tick(object sender, EventArgs e)
         {
-            
             atualizaListaCOMs();
             if (this.showGraphRead){
                 this.configurarCurvas();
             }
+
             if (this.showGraphConect)
             {
                 
                 this.readPoints();
                 this.configurarCurvas();
             }
+
             if (this.showGraphTest)
             {
                 this.gerarCurvas();
                 this.configurarCurvas();
             }
+
             if (play == true)
             {
                 //this.writePointsCSV(0);
                 this.writePointsCSV(tamanho - (taxaAmostragem / 8));
             }
+
             if (this.readFile==true && (this.currentLine < this.fileLength))
             {
                 this.readCSV();         // Le o csv e ja plota
             }
-
             
         }
 
@@ -948,7 +947,6 @@ namespace interfaceEMG
             this.readFile = !this.readFile;
             this.showGraphTest = false;
             //this.showGraphRead = true;
-            
         }
 
         // Text Box do arquivo a ser lido
@@ -1006,9 +1004,6 @@ namespace interfaceEMG
             }
             
         }
-
-
     }
-
-
 }
+
