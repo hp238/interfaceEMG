@@ -98,7 +98,7 @@ namespace interfaceEMG
         private bool firstPoints = false;
         private string fileName = "Sinais.csv";
         private int currentLine = 1;
-        private int fileLength = 10000;                 // Para garantir que o programa nao entra em loop
+        private int fileLength = 40000;                 // Para garantir que o programa nao entra em loop
 
         static int tamanho = 1000;                      // Tamanho do vetor de teste
         private double[] x = new double[tamanho];       // Eixo x
@@ -145,13 +145,12 @@ namespace interfaceEMG
         {
             InitializeComponent();
             this.configurarInterface();
+            
             timer2.Interval = taxaAmostragem/4;
             timer2.Enabled = true;
-
             
             this.configBox();
         }
-
 
         private void configBox()
         {
@@ -180,7 +179,6 @@ namespace interfaceEMG
             graphBars.GraphPane.Margin.All = 0;
 
             //Aba de FFT
-
             graphFFT.GraphPane.XAxis.IsVisible = true;
             graphFFT.GraphPane.YAxis.IsVisible = true;
             graphFFT.GraphPane.Title.IsVisible = false;
@@ -612,11 +610,9 @@ namespace interfaceEMG
                 if (i != 0) mag[i] = (Math.Abs(Math.Sqrt(Math.Pow(aux[i].Real, 2) + Math.Pow(aux[i].Imaginary, 2))));
             }
 
-            int hzPerSample = taxaAmostragem / numSamples;
             // Frequência 
+            int hzPerSample = taxaAmostragem / numSamples;
 
-            //freq = x;   // teste
-            //Console.WriteLine(hzPerSample);
             double[] mag2 = new double[tamanho/2];
             for (int n = 0; n < tamanho / 2; n++)
             {
@@ -917,7 +913,6 @@ namespace interfaceEMG
 
             if (this.showGraphConect)
             {
-                
                 this.readPoints();
                 this.configurarCurvas();
             }
@@ -946,7 +941,6 @@ namespace interfaceEMG
         {
             this.readFile = !this.readFile;
             this.showGraphTest = false;
-            //this.showGraphRead = true;
         }
 
         // Text Box do arquivo a ser lido
