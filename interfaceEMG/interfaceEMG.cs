@@ -101,6 +101,7 @@ namespace interfaceEMG
         private double[] x = new double[tamanho];       // Eixo x
         private int taxaAmostragem = 2000;              // Taxa de amostragem do circuito
         private int graphIndex = 1;                     // Gráfico que será usado no biofeedback e FFT
+        private int canais = 8;
 
         private Dictionary<int, Double[]> sinais = new Dictionary<int, double[]>()
         {
@@ -158,7 +159,7 @@ namespace interfaceEMG
         {
             this.cleanGraph();
 
-            int taxa = taxaAmostragem / 8;
+            int taxa = taxaAmostragem / canais;
 
             //salva os dados parciais para o cálculo da FFT
             Dictionary<int, Double[]> auxFFT = new Dictionary<int, double[]>()
@@ -174,7 +175,7 @@ namespace interfaceEMG
             };
 
             progressBar1.Visible = true;
-            progressBar1.Maximum = tamanho * 8;
+            progressBar1.Maximum = tamanho * canais;
             progressBar1.Value = 0;
 
             this.limit = tamanho - taxa;
@@ -182,8 +183,8 @@ namespace interfaceEMG
 
             for (int i = limit; i < tamanho; i++)
             {
-                //double max = sinais[8].Max();
-                for (int y = 1; y < 9; y++)
+                
+                for (int y = 1; y <= canais; y++)
                 {
                     try
                     {
@@ -197,10 +198,10 @@ namespace interfaceEMG
                         y--;
                     }
                 }
-                progressBar1.Value = i * 8;
+                progressBar1.Value = i * canais;
 
             }
-            progressBar1.Value = tamanho * 8;
+            progressBar1.Value = tamanho * canais;
 
             tools.offset(sinais, limit, tamanho);
 
@@ -217,7 +218,7 @@ namespace interfaceEMG
             this.inicializaVetor();
 
             this.cleanGraph();
-            int taxa = taxaAmostragem / 8;
+            int taxa = taxaAmostragem / canais;
             this.limit = tamanho - taxa;
 
             Dictionary<int, Double[]> auxFFT = new Dictionary<int, double[]>()
@@ -238,8 +239,8 @@ namespace interfaceEMG
 
             for (int i = limit; i < tamanho; i++)
             {
-                //double max = sinais[8].Max();
-                for (int y = 1; y < 9; y++)
+                
+                for (int y = 1; y <= canais; y++)
                 {
                     if (k < 4)
                     {
@@ -323,7 +324,7 @@ namespace interfaceEMG
 
             if (play == true)
             {
-                this.writePointsCSV(tamanho - (taxaAmostragem / 8));
+                this.writePointsCSV(tamanho - (taxaAmostragem / canais));
             }
             
             if (this.showGraphRead)
@@ -426,7 +427,7 @@ namespace interfaceEMG
                 {
                     string line = "";
 
-                    for (int y = 1; y < 9; y++)
+                    for (int y = 1; y <= canais; y++)
                     {
                         string aux = String.Format("{0};", archiveData[y][i]);
                         line += aux;
@@ -506,7 +507,7 @@ namespace interfaceEMG
                 }
 
                 line = null;
-                int taxa = taxaAmostragem / 8;
+                int taxa = taxaAmostragem / canais;
                 int limit = tamanho - taxa;
 
                 this.progressBar1.Visible = true;
@@ -562,7 +563,7 @@ namespace interfaceEMG
         private void configBox()
         {
             // Adiciona todos os canais disponíveis para o biofeedback e FFT
-            for (int i = 1; i < 9; i++)
+            for (int i = 1; i <= canais; i++)
             {
                 string s = i.ToString();
 
@@ -641,7 +642,7 @@ namespace interfaceEMG
             // Index para biofeedback e FFT
             int aux = Convert.ToInt32(comboBox2.Items[comboBox2.SelectedIndex]);
 
-            if (aux > 0 && aux < 9)
+            if (aux > 0 && aux <= canais)
             {
                 graphIndex = aux;
             }
@@ -690,7 +691,7 @@ namespace interfaceEMG
             };
 
             // Adicionar cada curva
-            for (int i = 1; i <= 8; i++)
+            for (int i = 1; i <= canais; i++)
             {
 
                 graphCanais.GraphPane.AddCurve("Canal  " + i, x, sinais[i], cores[i], ZedGraph.SymbolType.None);
@@ -702,7 +703,7 @@ namespace interfaceEMG
             // Configurando limites
             graphCanais.GraphPane.YAxis.Scale.Max = sinais[1].Max() + sinais[1].Max() * 0.05;
             //graphCanais.GraphPane.YAxis.Scale.Max = max;
-            graphCanais.GraphPane.YAxis.Scale.Min = sinais[8].Min() - sinais[8].Min() * 0.05;
+            graphCanais.GraphPane.YAxis.Scale.Min = sinais[canais].Min() - sinais[canais].Min() * 0.05;
             graphCanais.GraphPane.XAxis.Scale.Max = x.Length;
             graphCanais.GraphPane.AxisChange();
             graphCanais.Refresh();
