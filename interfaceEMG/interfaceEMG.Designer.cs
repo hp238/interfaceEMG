@@ -46,12 +46,13 @@
             this.btmTest = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.btmRead = new System.Windows.Forms.Button();
-            this.fileTextBox = new System.Windows.Forms.TextBox();
+            this.txtRead = new System.Windows.Forms.TextBox();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.biofeedbackCheckBox = new System.Windows.Forms.CheckBox();
             this.FFTCheckBox = new System.Windows.Forms.CheckBox();
             this.btmPlay = new System.Windows.Forms.Button();
             this.txtArquivo = new System.Windows.Forms.TextBox();
+            this.offsetCheckBox = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -66,7 +67,7 @@
             // comboBox1
             // 
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(915, 10);
+            this.comboBox1.Location = new System.Drawing.Point(955, 8);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(82, 21);
             this.comboBox1.TabIndex = 1;
@@ -77,7 +78,7 @@
             this.btmConect.FlatAppearance.BorderColor = System.Drawing.Color.Red;
             this.btmConect.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Yellow;
             this.btmConect.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.btmConect.Location = new System.Drawing.Point(1017, 8);
+            this.btmConect.Location = new System.Drawing.Point(1043, 6);
             this.btmConect.Name = "btmConect";
             this.btmConect.Size = new System.Drawing.Size(75, 23);
             this.btmConect.TabIndex = 2;
@@ -215,7 +216,7 @@
             // 
             // btmTest
             // 
-            this.btmTest.Location = new System.Drawing.Point(815, 10);
+            this.btmTest.Location = new System.Drawing.Point(874, 6);
             this.btmTest.Name = "btmTest";
             this.btmTest.Size = new System.Drawing.Size(75, 23);
             this.btmTest.TabIndex = 3;
@@ -225,14 +226,14 @@
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(1124, 10);
+            this.progressBar1.Location = new System.Drawing.Point(1124, 6);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(121, 23);
             this.progressBar1.TabIndex = 4;
             // 
             // btmRead
             // 
-            this.btmRead.Location = new System.Drawing.Point(184, 10);
+            this.btmRead.Location = new System.Drawing.Point(156, 10);
             this.btmRead.Margin = new System.Windows.Forms.Padding(2);
             this.btmRead.Name = "btmRead";
             this.btmRead.Size = new System.Drawing.Size(75, 23);
@@ -241,14 +242,15 @@
             this.btmRead.UseVisualStyleBackColor = true;
             this.btmRead.Click += new System.EventHandler(this.readFileButton_Click);
             // 
-            // fileTextBox
+            // txtRead
             // 
-            this.fileTextBox.Location = new System.Drawing.Point(12, 12);
-            this.fileTextBox.Margin = new System.Windows.Forms.Padding(2);
-            this.fileTextBox.Name = "fileTextBox";
-            this.fileTextBox.Size = new System.Drawing.Size(168, 20);
-            this.fileTextBox.TabIndex = 6;
-            this.fileTextBox.TextChanged += new System.EventHandler(this.fileTextBox_TextChanged);
+            this.txtRead.Location = new System.Drawing.Point(12, 12);
+            this.txtRead.Margin = new System.Windows.Forms.Padding(2);
+            this.txtRead.Name = "txtRead";
+            this.txtRead.Size = new System.Drawing.Size(140, 20);
+            this.txtRead.TabIndex = 6;
+            this.txtRead.Text = "Sinais";
+            this.txtRead.TextChanged += new System.EventHandler(this.fileTextBox_TextChanged);
             // 
             // comboBox2
             // 
@@ -294,21 +296,33 @@
             this.btmPlay.FlatAppearance.BorderColor = System.Drawing.Color.Coral;
             this.btmPlay.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Coral;
             this.btmPlay.ForeColor = System.Drawing.SystemColors.InactiveCaptionText;
-            this.btmPlay.Location = new System.Drawing.Point(660, 10);
+            this.btmPlay.Location = new System.Drawing.Point(761, 6);
             this.btmPlay.Name = "btmPlay";
             this.btmPlay.Size = new System.Drawing.Size(75, 23);
             this.btmPlay.TabIndex = 12;
-            this.btmPlay.Text = "Play";
+            this.btmPlay.Text = "Iniciar";
             this.btmPlay.UseVisualStyleBackColor = false;
             this.btmPlay.Click += new System.EventHandler(this.btmPlay_Click);
             // 
             // txtArquivo
             // 
-            this.txtArquivo.Location = new System.Drawing.Point(585, 11);
+            this.txtArquivo.Location = new System.Drawing.Point(654, 8);
             this.txtArquivo.Name = "txtArquivo";
-            this.txtArquivo.Size = new System.Drawing.Size(69, 20);
+            this.txtArquivo.Size = new System.Drawing.Size(101, 20);
             this.txtArquivo.TabIndex = 13;
             this.txtArquivo.Text = "Sinais";
+            // 
+            // offsetCheckBox
+            // 
+            this.offsetCheckBox.AutoSize = true;
+            this.offsetCheckBox.ForeColor = System.Drawing.SystemColors.ActiveCaption;
+            this.offsetCheckBox.Location = new System.Drawing.Point(553, 11);
+            this.offsetCheckBox.Name = "offsetCheckBox";
+            this.offsetCheckBox.Size = new System.Drawing.Size(54, 17);
+            this.offsetCheckBox.TabIndex = 14;
+            this.offsetCheckBox.Text = "Offset";
+            this.offsetCheckBox.UseVisualStyleBackColor = true;
+            this.offsetCheckBox.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // formInterface
             // 
@@ -317,12 +331,13 @@
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.ClientSize = new System.Drawing.Size(1260, 685);
+            this.Controls.Add(this.offsetCheckBox);
             this.Controls.Add(this.txtArquivo);
             this.Controls.Add(this.btmPlay);
             this.Controls.Add(this.FFTCheckBox);
             this.Controls.Add(this.biofeedbackCheckBox);
             this.Controls.Add(this.comboBox2);
-            this.Controls.Add(this.fileTextBox);
+            this.Controls.Add(this.txtRead);
             this.Controls.Add(this.btmRead);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.btmTest);
@@ -362,11 +377,12 @@
         private ZedGraph.ZedGraphControl graphFFT;
         private ZedGraph.ZedGraphControl graphBars;
         private System.Windows.Forms.Button btmRead;
-        private System.Windows.Forms.TextBox fileTextBox;
+        private System.Windows.Forms.TextBox txtRead;
         private System.Windows.Forms.ComboBox comboBox2;
         private System.Windows.Forms.CheckBox biofeedbackCheckBox;
         private System.Windows.Forms.CheckBox FFTCheckBox;
         private System.Windows.Forms.Button btmPlay;
         private System.Windows.Forms.TextBox txtArquivo;
+        private System.Windows.Forms.CheckBox offsetCheckBox;
     }
 }

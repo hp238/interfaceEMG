@@ -8,11 +8,11 @@ namespace interfaceEMG
 {
     static class tools
     {
-        public static void offset(Dictionary<int, Double[]> sinais, int limit, int tamanho)
+        //offset ajustável
+        public static void offset(Dictionary<int, Double[]> sinais, int limit, int tamanho, int canais)
         {
-            for (int y = 7; y >= 1; y--)
+            for (int y = canais-1; y >= 1; y--) //canais-1 para ignorar o canal 8
             {
-                //Console.WriteLine(y);
                 double max = sinais[y + 1].Max();
                 for (int i = limit; i < tamanho; i++)
                 {
@@ -22,19 +22,45 @@ namespace interfaceEMG
             }
         }
 
-        public static void shift(Dictionary<int, Double[]> sinais, int limit, int taxa)
+        //offset constante
+        public static void offsetNorm(Dictionary<int, Double[]> sinais, int limit, int tamanho, int canais)
+        {
+            double[] max = new double[canais];
+            double aux = 0;
+            for (int y = canais; y >= 1; y--)
+            {
+                for (int i = limit; i < tamanho; i++)
+                {
+                    if(sinais[y][i] > aux)
+                    {
+                        aux = sinais[y][i];
+                    }
+                }
+                max[y - 1] = aux;
+            }
+            double maxi = max.Max();
+            for (int y = canais; y >= 1; y--)
+            {
+                for (int i = limit; i < tamanho; i++)
+                {
+                    sinais[y][i] += (maxi+maxi*0.1)*(canais-y);
+                }
+            }
+        }
+
+        public static void shift(Dictionary<int, Double[]> sinais, int limit, int taxa, int canais)
         {
             //Console.WriteLine(limit);
             for (int i = 0; i < limit; i++)
             {
-                for (int y = 1; y < 9; y++)
+                for (int y = 1; y <= canais; y++)
                 {
                     sinais[y][i] = sinais[y][i + taxa];
                 }
             }
         }
 
-        public static List<bool> concatFFT(Dictionary<int, Double[]> sinais, Dictionary<int, Double[]> sinaisFFT, Dictionary<int, Double[]> auxFFT, bool firstPoints, int tamanho, int taxa, bool play)
+        public static List<bool> concatFFT(Dictionary<int, Double[]> sinais, Dictionary<int, Double[]> sinaisFFT, Dictionary<int, Double[]> auxFFT, bool firstPoints, int tamanho, int taxa, bool play, int canais)
         {
 
             if (play == true)
@@ -42,8 +68,10 @@ namespace interfaceEMG
 
                 if (firstPoints == false)
                 {
-                    for (int z = 1; z <= 8; z++)
+                    for (int z = 1; z <= canais; z++)
                     {
+                        Console.WriteLine(z);
+                        double[] a = auxFFT[z];
                         Array.Copy(sinais[z], tamanho - taxa, auxFFT[z], 0, taxa);
                         sinaisFFT.Add(z, auxFFT[z]);
                         if (firstPoints == false) { firstPoints = true; }
@@ -52,7 +80,7 @@ namespace interfaceEMG
                 else
                 {
                     Double[] aux3;
-                    for (int z = 1; z <= 8; z++)
+                    for (int z = 1; z <= canais; z++)
                     {
                         Array.Copy(sinais[z], tamanho - taxa, auxFFT[z], 0, taxa);
                         aux3 = sinaisFFT[z];
