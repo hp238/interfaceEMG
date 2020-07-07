@@ -959,5 +959,111 @@ namespace interfaceEMG
             }
         }
 
+        // Timer to Flappy Bird Update the Scenario 
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            moveTrees(5);
+            moveHurdles(5);
+        }
+
+
+        Random r = new Random();
+
+        // Move the hurdles
+        void moveHurdles(int speed)
+        {
+
+            if (h1.Left >= 0) 
+            { 
+                h1.Left += -speed; 
+            }
+            else 
+            {
+                h1.Height = r.Next(150, 250);
+                h1.Left = 1650; 
+            }
+
+            if (h2.Left >= 0)
+            {
+                h2.Left += -speed;
+            }
+            else
+            {
+                h2.Height = r.Next(300, 400);
+                h2.Left = 1650;
+            }
+
+            if (h3.Left >= 0)
+            {
+                h3.Left += -speed;
+            }
+            else
+            {
+                h3.Height = r.Next(150, 250);
+                h3.Left = 1650;
+            }
+
+            if (h4.Left >= 0)
+            {
+                h4.Left += -speed;
+            }
+            else
+            {
+                h4.Height = r.Next(350, 400);
+                h4.Left = 1650;
+            }
+
+            if (h5.Left >= 0)
+            {
+                h5.Left += -speed;
+            }
+            else
+            {
+                h5.Height = r.Next(150, 250);
+                h5.Left = 1650;
+            }
+
+            if (h6.Left >= 0)
+            {
+                h6.Left += -speed;
+            }
+            else
+            {
+                h6.Height = r.Next(300, 400);
+                h6.Left = 1650;
+            }
+
+        }
+
+        // Move trees
+        void moveTrees(int speed)
+        {
+            if (tree1.Left >= 0) { tree1.Left += -speed; }         
+            else { tree1.Left = 1650; }
+
+            if (tree2.Left >= 0) { tree2.Left += -speed; }
+            else { tree2.Left = 1650; }
+
+            if (tree3.Left >= 0) { tree3.Left += -speed; }
+            else { tree3.Left = 1650; }
+
+            if (tree4.Left >= 0) { tree4.Left += -speed; }
+            else { tree4.Left = 1650; }
+
+        }
+
+        // Timer to Update the Bird (Player)
+        private void timer3_Tick(object sender, EventArgs e)
+        {
+            if (bird.Top <= 640)
+            {
+                bird.Top += 10;
+            }
+        }
+
+        private void FlappyBird_KeyDown(object sender, KeyEventArgs e)
+        {
+
+        }
     }
 }
