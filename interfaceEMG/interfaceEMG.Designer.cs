@@ -43,6 +43,11 @@
             this.graphFFT = new ZedGraph.ZedGraphControl();
             this.textBox10 = new System.Windows.Forms.TextBox();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.startButton = new System.Windows.Forms.Label();
+            this.restartButton = new System.Windows.Forms.Label();
+            this.ScoreLabel = new System.Windows.Forms.Label();
+            this.GameOverLabel = new System.Windows.Forms.Label();
+            this.bird = new System.Windows.Forms.PictureBox();
             this.h5 = new System.Windows.Forms.PictureBox();
             this.h6 = new System.Windows.Forms.PictureBox();
             this.h3 = new System.Windows.Forms.PictureBox();
@@ -66,13 +71,13 @@
             this.txtArquivo = new System.Windows.Forms.TextBox();
             this.offsetCheckBox = new System.Windows.Forms.CheckBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.bird = new System.Windows.Forms.PictureBox();
             this.timer3 = new System.Windows.Forms.Timer(this.components);
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.tabPage4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.bird)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.h5)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.h6)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.h3)).BeginInit();
@@ -84,7 +89,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.tree3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tree2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tree1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.bird)).BeginInit();
             this.SuspendLayout();
             // 
             // serialPort2
@@ -249,6 +253,10 @@
             // tabPage4
             // 
             this.tabPage4.BackColor = System.Drawing.Color.Aqua;
+            this.tabPage4.Controls.Add(this.startButton);
+            this.tabPage4.Controls.Add(this.restartButton);
+            this.tabPage4.Controls.Add(this.ScoreLabel);
+            this.tabPage4.Controls.Add(this.GameOverLabel);
             this.tabPage4.Controls.Add(this.bird);
             this.tabPage4.Controls.Add(this.h5);
             this.tabPage4.Controls.Add(this.h6);
@@ -266,6 +274,72 @@
             this.tabPage4.Size = new System.Drawing.Size(1645, 730);
             this.tabPage4.TabIndex = 1;
             this.tabPage4.Text = "Flappy Bird";
+            this.tabPage4.MouseClick += new System.Windows.Forms.MouseEventHandler(this.MouseClick_FlappyBird);
+            // 
+            // startButton
+            // 
+            this.startButton.AutoSize = true;
+            this.startButton.BackColor = System.Drawing.Color.Black;
+            this.startButton.Font = new System.Drawing.Font("Monotype Corsiva", 48F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.startButton.ForeColor = System.Drawing.SystemColors.Window;
+            this.startButton.Location = new System.Drawing.Point(700, 229);
+            this.startButton.Name = "startButton";
+            this.startButton.Size = new System.Drawing.Size(194, 97);
+            this.startButton.TabIndex = 16;
+            this.startButton.Text = "Start";
+            this.startButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.startButton.Click += new System.EventHandler(this.startButton_Click);
+            // 
+            // restartButton
+            // 
+            this.restartButton.AutoSize = true;
+            this.restartButton.BackColor = System.Drawing.Color.Black;
+            this.restartButton.Font = new System.Drawing.Font("Monotype Corsiva", 48F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.restartButton.ForeColor = System.Drawing.SystemColors.Window;
+            this.restartButton.Location = new System.Drawing.Point(669, 450);
+            this.restartButton.Name = "restartButton";
+            this.restartButton.Size = new System.Drawing.Size(260, 97);
+            this.restartButton.TabIndex = 15;
+            this.restartButton.Text = "Restart";
+            this.restartButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.restartButton.Click += new System.EventHandler(this.restartButton_Click);
+            // 
+            // ScoreLabel
+            // 
+            this.ScoreLabel.AutoSize = true;
+            this.ScoreLabel.BackColor = System.Drawing.Color.Black;
+            this.ScoreLabel.Font = new System.Drawing.Font("Monotype Corsiva", 19.8F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ScoreLabel.ForeColor = System.Drawing.SystemColors.Window;
+            this.ScoreLabel.Location = new System.Drawing.Point(3, 11);
+            this.ScoreLabel.Name = "ScoreLabel";
+            this.ScoreLabel.Size = new System.Drawing.Size(100, 40);
+            this.ScoreLabel.TabIndex = 13;
+            this.ScoreLabel.Text = "Score: ";
+            this.ScoreLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // GameOverLabel
+            // 
+            this.GameOverLabel.AutoSize = true;
+            this.GameOverLabel.BackColor = System.Drawing.Color.Transparent;
+            this.GameOverLabel.Font = new System.Drawing.Font("Monotype Corsiva", 48F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.GameOverLabel.ForeColor = System.Drawing.Color.Black;
+            this.GameOverLabel.Location = new System.Drawing.Point(612, 331);
+            this.GameOverLabel.Name = "GameOverLabel";
+            this.GameOverLabel.Size = new System.Drawing.Size(364, 97);
+            this.GameOverLabel.TabIndex = 12;
+            this.GameOverLabel.Text = "Game Over";
+            this.GameOverLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // bird
+            // 
+            this.bird.BackColor = System.Drawing.Color.Transparent;
+            this.bird.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("bird.BackgroundImage")));
+            this.bird.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.bird.Location = new System.Drawing.Point(61, 331);
+            this.bird.Name = "bird";
+            this.bird.Size = new System.Drawing.Size(67, 60);
+            this.bird.TabIndex = 11;
+            this.bird.TabStop = false;
             // 
             // h5
             // 
@@ -501,19 +575,9 @@
             this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // bird
-            // 
-            this.bird.BackColor = System.Drawing.Color.Transparent;
-            this.bird.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("bird.BackgroundImage")));
-            this.bird.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.bird.Location = new System.Drawing.Point(23, 275);
-            this.bird.Name = "bird";
-            this.bird.Size = new System.Drawing.Size(100, 90);
-            this.bird.TabIndex = 11;
-            this.bird.TabStop = false;
-            // 
             // timer3
             // 
+            this.timer3.Enabled = true;
             this.timer3.Tick += new System.EventHandler(this.timer3_Tick);
             // 
             // formInterface
@@ -542,7 +606,6 @@
             this.MinimizeBox = false;
             this.Name = "formInterface";
             this.Text = "Interface EMG";
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FlappyBird_KeyDown);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
@@ -550,6 +613,8 @@
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
             this.tabPage4.ResumeLayout(false);
+            this.tabPage4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.bird)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.h5)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.h6)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.h3)).EndInit();
@@ -561,7 +626,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.tree3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tree2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tree1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.bird)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -606,5 +670,9 @@
         private System.Windows.Forms.PictureBox h4;
         private System.Windows.Forms.PictureBox bird;
         private System.Windows.Forms.Timer timer3;
+        private System.Windows.Forms.Label GameOverLabel;
+        private System.Windows.Forms.Label ScoreLabel;
+        private System.Windows.Forms.Label restartButton;
+        private System.Windows.Forms.Label startButton;
     }
 }
