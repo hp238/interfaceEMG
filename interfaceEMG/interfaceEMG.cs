@@ -1116,7 +1116,7 @@ namespace interfaceEMG
         {
             if (startFlag)
             {
-                bird.Top += -40;
+                bird.Top += -50;
             }
         }
 
@@ -1136,6 +1136,7 @@ namespace interfaceEMG
 
         }
 
+        // Restart Button clicked
         private void restartButton_Click(object sender, EventArgs e)
         {
             startFlag = false;
@@ -1152,6 +1153,7 @@ namespace interfaceEMG
 
         }
 
+        // Reset scenario to initial positions
         private void resetScenario()
         {
             h1.Height = 280;
