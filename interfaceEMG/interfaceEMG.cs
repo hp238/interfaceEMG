@@ -101,11 +101,16 @@ namespace interfaceEMG
         private double[] x = new double[tamanho];       // Eixo x
         private int taxaAmostragem = 2000;              // Taxa de amostragem do circuito
         private int graphIndex = 1;                     // Gráfico que será usado no biofeedback e FFT
-        private int canais = 8;                        // Número de canais
-        private bool offsetType = false;                //define o tipo de offset
-                                                        //true para um offset igual para todos os canais
-                                                        //true para um offset ajustável
+        private int canais = 8;                         // Número de canais
+        private bool offsetType = false;                // define o tipo de offset
+                                                        // true para um offset igual para todos os canais
+                                                        // true para um offset ajustável
         private bool auxGraphs = false;
+        
+        // Flappy Bird Variables
+        private int score = 0;
+        private int scoreAux = 0;
+        private bool startFlag = false;
 
         private Dictionary<int, Double[]> sinais = new Dictionary<int, double[]>();
 
@@ -124,6 +129,18 @@ namespace interfaceEMG
             timer2.Enabled = true;
 
             this.configBox();
+
+            // Setando botões e labels do Flappy Bird
+            startButton.Visible = true;
+            startButton.Enabled = true;
+
+            restartButton.Visible = false;
+            restartButton.Enabled = false;
+
+            GameOverLabel.Visible = false;
+            ScoreLabel.Visible = true;
+            ScoreLabel.Text = "Score: 0s";
+
         }
 
         //eixo x
@@ -959,5 +976,213 @@ namespace interfaceEMG
             }
         }
 
+        // Timer to Flappy Bird Update the Scenario 
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+
+            if (startFlag)
+            {
+                moveTrees(10);
+                moveHurdles(10);
+                GameOver();
+
+                ScoreLabel.Visible = true;
+                string aux = "Score: " + score.ToString() + "s";
+                ScoreLabel.Text = aux;
+            }
+            
+        }
+
+        Random r = new Random();
+
+        // Move the hurdles
+        void moveHurdles(int speed)
+        {
+
+            if (h1.Left >= 0) 
+            { 
+                h1.Left += -speed; 
+            }
+            else 
+            {
+                h1.Height = r.Next(150, 250);
+                h1.Left = 1650; 
+            }
+
+            if (h2.Left >= 0)
+            {
+                h2.Left += -speed;
+            }
+            else
+            {
+                h2.Height = r.Next(300, 400);
+                h2.Left = 1650;
+            }
+
+            if (h3.Left >= 0)
+            {
+                h3.Left += -speed;
+            }
+            else
+            {
+                h3.Height = r.Next(150, 250);
+                h3.Left = 1650;
+            }
+
+            if (h4.Left >= 0)
+            {
+                h4.Left += -speed;
+            }
+            else
+            {
+                h4.Height = r.Next(350, 400);
+                h4.Left = 1650;
+            }
+
+            if (h5.Left >= 0)
+            {
+                h5.Left += -speed;
+            }
+            else
+            {
+                h5.Height = r.Next(150, 250);
+                h5.Left = 1650;
+            }
+
+            if (h6.Left >= 0)
+            {
+                h6.Left += -speed;
+            }
+            else
+            {
+                h6.Height = r.Next(300, 400);
+                h6.Left = 1650;
+            }
+
+        }
+
+        // Move trees
+        void moveTrees(int speed)
+        {
+            if (tree1.Left >= 0) { tree1.Left += -speed; }         
+            else { tree1.Left = 1650; }
+
+            if (tree2.Left >= 0) { tree2.Left += -speed; }
+            else { tree2.Left = 1650; }
+
+            if (tree3.Left >= 0) { tree3.Left += -speed; }
+            else { tree3.Left = 1650; }
+
+            if (tree4.Left >= 0) { tree4.Left += -speed; }
+            else { tree4.Left = 1650; }
+
+        }
+
+        // Timer to Update the Bird (Player)
+        private void timer3_Tick(object sender, EventArgs e)
+        {
+            if(bird.Top <= 500 && startFlag)
+            { 
+                bird.Top += 10;
+                
+                scoreAux++;
+                if(scoreAux == 10)
+                {
+                    scoreAux = 0;
+                    score++;
+                }
+            }
+
+        }
+
+        void GameOver()
+        {
+            if (bird.Bounds.IntersectsWith(h1.Bounds) || bird.Bounds.IntersectsWith(h2.Bounds) || bird.Bounds.IntersectsWith(h3.Bounds) || bird.Bounds.IntersectsWith(h4.Bounds) || bird.Bounds.IntersectsWith(h5.Bounds) || bird.Bounds.IntersectsWith(h6.Bounds))
+            {               
+                // Desabilitar os timers - Travar o jogo
+                timer1.Enabled = false;
+                timer3.Enabled = false;
+
+                GameOverLabel.Visible = true;
+                restartButton.Visible = true;
+                restartButton.Enabled = true;
+
+                startFlag = false;
+            }
+        }
+
+        // Click to Update the Y of Bird (Player)
+        private void MouseClick_FlappyBird(object sender, MouseEventArgs e)
+        {
+            if (startFlag)
+            {
+                bird.Top += -50;
+            }
+        }
+
+        // Start Button clicked
+        private void startButton_Click(object sender, EventArgs e)
+        {
+            timer1.Enabled = true;
+            timer3.Enabled = true;
+
+            startFlag = true;
+            startButton.Visible = false;
+            startButton.Enabled = false;
+
+            GameOverLabel.Visible = false;
+            restartButton.Visible = false;
+            restartButton.Enabled = false;
+
+        }
+
+        // Restart Button clicked
+        private void restartButton_Click(object sender, EventArgs e)
+        {
+            startFlag = false;
+            startButton.Visible = true;
+            startButton.Enabled = true;
+
+            restartButton.Visible = false;
+            restartButton.Enabled = false;
+            GameOverLabel.Visible = false;
+
+            ScoreLabel.Text = "Score: 0s";
+            resetScenario();
+            score = 0;
+
+        }
+
+        // Reset scenario to initial positions
+        private void resetScenario()
+        {
+            h1.Height = 280;
+            h1.Width = 200;
+
+            h2.Size = h1.Size;
+            h3.Size = h1.Size;
+            h4.Size = h1.Size;
+            h5.Size = h1.Size;
+            h6.Size = h1.Size;
+
+            bird.Left = 61;
+            bird.Top = 331;
+
+            h1.Left = 180;
+            h1.Top = 0;
+            h2.Left = 180;
+            h2.Top = 450;
+
+            h3.Left = 860;
+            h3.Top = 0;
+            h4.Left = 860;
+            h4.Top = 450;
+
+            h5.Left = 1520;
+            h5.Top = 0;
+            h6.Left = 1520;
+            h6.Top = 450;
+
+        }
     }
 }
