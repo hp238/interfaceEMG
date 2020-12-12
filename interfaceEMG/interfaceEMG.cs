@@ -18,77 +18,31 @@ using MathNet.Numerics.IntegralTransforms;
 using MathNet.Numerics;
 using System.Collections;
 using System.Diagnostics;
+using FftSharp;
+//using Complex = FftSharp.Complex;
+using Comples = System.Numerics.Complex;
+using Complex = System.Numerics.Complex;
+using NAudio.Wave;
+using NAudio.CoreAudioApi;
+using System.Net.Sockets;
+using System.Net;
 
 namespace interfaceEMG
 {
     public partial class formInterface : Form
     {
 
-        private double[] s1 = new double[]
-        {
-            100,200,100,200,100,200,100,200,100,200,
-              100,200,100,200,100,200,100,200,100,200,
-              100,200,100,200,100,200,100,200,100,200,
-              100,200,100,200,100,200,100,200,100,200,
-              100,200,100,200,100,200,100,200,100,200,
-              100,200,100,200,100,200,100,200,100,200,
-              100,200,100,200,100,200,100,200,100,200,
-              250,150,270,120,300,100,320,80,340,60,
-              360,40,380,20,400,0,400,0,400,0,
-              380,20,360,40,340,60,320,80,300,100,
-              280,120,260,140,240,160,220,180,200,200,
-              100,200,100,200,100,200,100,200,100,200,
-              100,200,100,200,100,200,100,200,100,200,
-              100,200,100,200,100,200,100,200,100,200,
-              100,200,100,200,100,200,100,200,100,200,
-              100,200,100,200,100,200,100,200,100,200,
-              100,200,100,200,100,200,100,200,100,200,
-              100,200,100,200,100,200,100,200,100,200,
-              250,150,270,120,300,100,320,80,340,60,
-              360,40,380,20,400,0,400,0,400,0,
-              380,20,360,40,340,60,320,80,300,100,
-              280,120,260,140,240,160,220,180,200,200,
-              100,200,100,200,100,200,100,200,100,200,
-              100,200,100,200,100,200,100,200,100,200,
-              100,200,100,200,100,200,100,200,100,200
-        };         // vetor para testar a interface
-        private double[] s2 = new double[]
-        {
-              100,200,100,200,100,200,100,200,100,200,
-              250,150,270,120,300,100,320,80,340,60,
-              360,40,380,20,400,0,400,0,400,0,
-              380,20,360,40,340,60,320,80,300,100,
-              100,200,100,200,100,200,100,200,100,200,
-              100,200,100,200,100,200,100,200,100,200,
-              100,200,100,200,100,200,100,200,100,200,
-              100,200,100,200,100,200,100,200,100,200,
-              100,200,100,200,100,200,100,200,100,200,
-              100,200,100,200,100,200,100,200,100,200,
-              280,120,260,140,240,160,220,180,200,200,
-              100,200,100,200,100,200,100,200,100,200,
-              100,200,100,200,100,200,100,200,100,200,
-              250,150,270,120,300,100,320,80,340,60,
-              360,40,380,20,400,0,400,0,400,0,
-              380,20,360,40,340,60,320,80,300,100,
-              280,120,260,140,240,160,220,180,200,200,
-              100,200,100,200,100,200,100,200,100,200,
-              100,200,100,200,100,200,100,200,100,200,
-              100,200,100,200,100,200,100,200,100,200,
-              100,200,100,200,100,200,100,200,100,200,
-              100,200,100,200,100,200,100,200,100,200,
-              100,200,100,200,100,200,100,200,100,200,
-              100,200,100,200,100,200,100,200,100,200,
-              100,200,100,200,100,200,100,200,100,200
-        };         // vetor para testar a interface
+
+        #region Variáveis
 
         private int k = 0;                              // utilizado no gerar curvas para variar o tipo de onda gerado
         private bool auxReadCSV = false;                // quando true dar um offset nos primeiros sinais lidos
         private bool auxWriteCSV = false;               // para verificar apenas uma vez se o arquivo .csv já existe
         private int limit = 0;                          // variável auxiliar equivalente a tamanho-taxa
-        private bool showGraphTest = false;             // true para mostrar as curvas geradas pela própria interface
-        private bool showGraphConect = false;           // true para mostrar as curvas lidas pela comunicação serial/bluetooth
+        private bool showGraphWIFI = false;
+        private bool showGraphBluetooth = false;           // true para mostrar as curvas lidas pela comunicação serial/bluetooth
         private bool showGraphRead = false;             // true para mostrar as curvas lidas do arquivos .cvs
-        private bool showBiofeedback = false;           // true para mostrar as curvas da aba de biofeedback
+        private bool showEnvoltoria = false;           // true para mostrar as curvas da aba de biofeedback
         private bool showFFT = false;                   // true para mostrar as curvas da aba de FFT (controlado pelo botão Play)
         private bool calcFFT = false;                   // true para calcular o FFT de cada sinal do intervalo selecionado pelo botão Play
         private bool readFile = false;                  // true para iniciar a leitura do arquivo .csv
@@ -97,15 +51,23 @@ namespace interfaceEMG
                                                         // true para indicar que os demais "taxa" pontos lidos devem ser concatenados ao pontos lidos anteriormente
         private string fileName = "Sinais.csv";         // nome padrão do arquivo .csv que será salvo
         private int currentLine = 1;                    // indica a linha que está sendo lida pelo readfile
-        static int tamanho = 1000;                      // Tamanho do vetor de teste
-        private double[] x = new double[tamanho];       // Eixo x
-        private int taxaAmostragem = 2000;              // Taxa de amostragem do circuito
+        static int tamanho = 500;                      // Tamanho do vetor de teste
+        private double[] x;//= new double[tamanho];       // Eixo x
+        private double taxaAmostragem = 1000;              // Taxa de amostragem do circuito em Hz
         private int graphIndex = 1;                     // Gráfico que será usado no biofeedback e FFT
         private int canais = 8;                         // Número de canais
         private bool offsetType = false;                // define o tipo de offset
                                                         // true para um offset igual para todos os canais
                                                         // true para um offset ajustável
+        private bool finishFFT = false;
+        private int janENV = 100;
         private bool auxGraphs = false;
+        UdpClient udpClient;
+        double[] output;
+
+        private int canal = 1;
+        private double limiarBird = 2500;
+        private bool flappyBird = false;
         
         // Flappy Bird Variables
         private int score = 0;
@@ -118,18 +80,22 @@ namespace interfaceEMG
 
         private Dictionary<int, Double[]> sinaisFFT = new Dictionary<int, double[]>();           // Dados para o cálculo da FFT
 
+        #endregion
+
+
+        #region Inicialização
         //Inicialização da Interface
         public formInterface()
         {
             InitializeComponent();
-            this.inicializarDicionarios();
-            this.configurarInterface();
-
-            timer2.Interval = taxaAmostragem / 4;
-            timer2.Enabled = true;
-
             this.configBox();
 
+            this.inicializarDicionarios();
+            this.configurarInterface();
+            
+            //timer2.Interval = 1;
+            timer2.Enabled = true;
+            
             // Setando botões e labels do Flappy Bird
             startButton.Visible = true;
             startButton.Enabled = true;
@@ -146,9 +112,12 @@ namespace interfaceEMG
         //eixo x
         private void inicializaVetor()
         {
+            double d = 1 / taxaAmostragem;
+            //Console.WriteLine(tamanho);
+            x = new double[tamanho];
             for (int i = 0; i < tamanho; i++)
             {
-                this.x[i] = i;
+                this.x[i] = i*d;
             }  
         }
 
@@ -164,16 +133,19 @@ namespace interfaceEMG
             }
         }
 
-        /**
-         * Aquisição de sinais
-         */
+        #endregion
+
+
+        #region  Aquisição de sinais
+
 
         // Ler os pontos dos 8 canais de acordo com a taxa de amostragem
         private void readPoints()
         {
+
             this.cleanGraph();
 
-            int taxa = taxaAmostragem / canais;
+            int taxa = 100;// taxaAmostragem / canais;
 
             //salva os dados parciais para o cálculo da FFT
             Dictionary<int, Double[]> auxFFT = new Dictionary<int, double[]>();
@@ -181,36 +153,139 @@ namespace interfaceEMG
             {
                 auxFFT.Add(i, new double[taxa]);
             }
-            
-            progressBar1.Visible = true;
-            progressBar1.Maximum = tamanho * canais;
-            progressBar1.Value = 0;
+
+            //progressBar1.Visible = true;
+            //progressBar1.Maximum = tamanho * canais;
+            //progressBar1.Value = 0;
 
             this.limit = tamanho - taxa;
             tools.shift(sinais, limit, taxa, canais);
 
-            for (int i = limit; i < tamanho; i++)
+            double[] auxFlappy = new double[100];
+
+            int n = 0;
+            if (showGraphBluetooth)
             {
-                
-                for (int y = 1; y <= canais; y++)
+                Console.WriteLine("ssssssssssssssss");
+                for (int i = limit; i < tamanho; i++)
                 {
-                    try
+                    //Console.WriteLine("-------------");
+                    for (int y = 1; y <= canais; y++)
                     {
-                        int fator = 1;
-                        double aux = Convert.ToDouble(serialPort2.ReadLine()) / fator;
-                        sinais[y][i] = aux;
-                        archiveData[y][i] = aux;
+                        double aux = 0;
+                        try
+                        {
+                            int fator = 1;
+                            aux = Convert.ToDouble(serialPort2.ReadLine()) / fator;
+                            sinais[y][i] = aux;
+                            archiveData[y][i] = aux;
+                            //Console.WriteLine("---------");
+                            //Console.WriteLine(aux);
+                            //double aux = 0;
+                            //double aux = 0;
+
+                        }
+                        catch
+                        {
+                            y--;
+                        }
+                        
+                        if (y == canal && flappyBird == true)
+                        {
+                            auxFlappy[n] = sinais[y][i];
+                            n++;
+                            if (n == 500)
+                            {
+                                n = 0;
+                                for (int m = 0; m < 500; m++)
+                                {
+                                    Console.WriteLine(auxFlappy[m]);
+                                    if (auxFlappy[m] > limiarBird)
+                                    {
+                                        bird.Top += -50;
+                                        m = 500;
+                                    }
+
+                                }
+                            }
+                        }
                     }
-                    catch
-                    {
-                        y--;
-                    }
+                    // progressBar1.Value = i * canais;
+
                 }
-                progressBar1.Value = i * canais;
+            }
+            else if (showGraphWIFI)
+            {
+                var stopwatch = new Stopwatch();
+                stopwatch.Start();
+                for (int i = limit; i < tamanho; i++)
+                {
+                    
+
+                    IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 8080);
+                    Byte[] receiveBytes = udpClient.Receive(ref RemoteIpEndPoint);
+                    string returnData = Encoding.ASCII.GetString(receiveBytes);
+                    string[] dados = returnData.Split('-');
+                    //Console.WriteLine(returnData);
+                    //Console.WriteLine(dados[0]);
+                    //Console.WriteLine(dados[14]);
+                    //Console.WriteLine(dados[15]);
+
+                    for (int k = 0; k < 1;k++)
+                    {
+                        for (int y = 1; y <= canais; y++)
+                        {
+                            //Console.WriteLine((y - 1) + k * 8);
+                            sinais[y][i] = Convert.ToDouble(dados[(y - 1)+k*8]);
+                            archiveData[y][i] = Convert.ToDouble(dados[(y - 1)+k*8]);
+                            //Console.WriteLine(sinais[y][i]);
+                            if (y == canal && flappyBird == true)
+                            {
+                                auxFlappy[n] = sinais[y][i];
+                                n++;
+                                if (n == 100)
+                                {
+                                    n = 0;
+                                    for (int m = 0; m < 100; m++)
+                                    {
+                                        //Console.WriteLine(auxFlappy[m]);
+                                        if (auxFlappy[m] > limiarBird)
+                                        {
+                                            bird.Top += -50;
+                                            m = 100;
+                                        }
+
+                                    }
+                                }
+                            }
+
+                        }
+                        if (k < 0){
+                            i++;
+                        }
+                        
+                    }
+
+                    
+                }
+                stopwatch.Stop();
+                //Console.WriteLine($"tempo: { stopwatch.Elapsed}");
+
+
+
+
+                // double aux = 0;
+
+
+                // Console.WriteLine(returnData);
+                // aux = Convert.ToDouble(returnData);
+
 
             }
-            progressBar1.Value = tamanho * canais;
+            // progressBar1.Value = tamanho * canais;
 
+            tools.offsetNorm(sinais, limit, tamanho, canais);
+            /*
             if (!offsetType)
             {
                 tools.offset(sinais, limit, tamanho, canais);
@@ -219,123 +294,47 @@ namespace interfaceEMG
             {
                 tools.offsetNorm(sinais, limit, tamanho, canais);
             }
+            */
 
 
-            List<bool> auxb = tools.concatFFT(sinais, sinaisFFT, auxFFT, firstPoints, tamanho, taxa, play, canais);
+            List<bool> auxb = tools.concatFFT(sinais, sinaisFFT, auxFFT, firstPoints, tamanho, taxa, calcFFT, canais);
             firstPoints = (bool)auxb[0];
-            play = (bool)auxb[1];
+            this.calcFFT = (bool)auxb[1];
+            //play = (bool)auxb[1];
+
+
+
+
+            //this.configurarCurvas();
+            /*for (int i = 0; i < tamanho; i++)
+            {
+                Console.WriteLine("------------------");
+            }*/
+            //}
 
         }
 
-        // Gerar curvas aleatoriamente para testes
-        private void gerarCurvas()
-        {
-            // MessageBox.Show("aa");
-            this.inicializaVetor();
 
-            this.cleanGraph();
-            int taxa = taxaAmostragem / canais;
-            this.limit = tamanho - taxa;
-
-            Dictionary<int, Double[]> auxFFT = new Dictionary<int, double[]>();
-            for (int i = 1; i <= canais; i++)
-            {
-                auxFFT.Add(i, new double[taxa]);
-            }
-
-            int a = 0;
-
-            tools.shift(sinais, limit, taxa, canais);
-
-            for (int i = limit; i < tamanho; i++)
-            {
-                
-                for (int y = 1; y <= canais; y++)
-                {
-                    if (k < 4)
-                    {
-                        if (y % 2 == 0)
-                        {
-                            archiveData[y][i] = s1[a];
-                            sinais[y][i] = s1[a];
-                        }
-                        else
-                        {
-                            archiveData[y][i] = s2[a];
-                            sinais[y][i] = s2[a];
-                        }
-                        a++;
-                        if (a == 249)
-                        {
-                            a = 0;
-                        }
-
-                    }
-                    else if (k >= 4)
-                    {
-                        if (y % 2 == 0)
-                        {
-                            archiveData[y][i] = s1[a] / 10;
-                            sinais[y][i] = s1[a] / 10;
-                        }
-                        else
-                        {
-                            archiveData[y][i] = s2[a] / 10;
-                            sinais[y][i] = s2[a] / 10;
-                        }
-                        a++;
-                        if (a == 249)
-                        {
-                            a = 0;
-                        }
-                    }
-                }
-            }
+        #endregion
 
 
-            List<bool> aux = tools.concatFFT(sinais, sinaisFFT, auxFFT, firstPoints, tamanho, taxa, play, canais);
-            firstPoints = (bool)aux[0];
-            play = (bool)aux[1];
+        #region Timer
 
-
-            if (!offsetType)
-            {
-                tools.offset(sinais, limit, tamanho, canais);
-            }
-            else
-            {
-                tools.offsetNorm(sinais, limit, tamanho, canais);
-            }
-
-
-            k++;
-            if (k == 11)
-            {
-                k = 0;
-            }
-
-
-        }
-
-        
-        /**
-         * Timer
-         * */
 
         // Timer
         private void timer2_Tick(object sender, EventArgs e)
         {
             atualizaListaCOMs();
 
-            if (this.showGraphConect)
+            if (this.showGraphBluetooth)
             {
                 this.readPoints();
                 this.configurarCurvas();
             }
 
-            if (this.showGraphTest)
+            if (this.showGraphWIFI)
             {
-                this.gerarCurvas();
+                this.readPoints();
                 this.configurarCurvas();
             }
 
@@ -347,7 +346,7 @@ namespace interfaceEMG
 
             if (play == true)
             {
-                this.writePointsCSV(tamanho - (taxaAmostragem / canais));
+                this.writePointsCSV(tamanho - 100);// ((int)taxaAmostragem / canais));
             }
 
             if (auxGraphs)
@@ -355,6 +354,11 @@ namespace interfaceEMG
                 this.cleanGraph();
                 this.configurarCurvas();
             }
+            /*
+            if (this.flappyBird == true)
+            {
+                this.emgFlappyBird(sinais[canal], canal);
+            }*/
 
 
 
@@ -403,11 +407,11 @@ namespace interfaceEMG
             // Seleciona a primeira posição da lista
             comboBox1.SelectedIndex = 0;
         }
+        #endregion
 
 
-        /**
-         * CSV
-         */
+        #region CSV
+
 
         // Salva pontos no arquivo CSV
         private void writePointsCSV(int start)
@@ -499,14 +503,14 @@ namespace interfaceEMG
                 if (this.currentLine == 1) line = tr.ReadLine();           // Cabeçalho edit: so roda na primeira lida
                 line = null;
 
-                this.progressBar1.Visible = true;
-                this.progressBar1.Maximum = tamanho;
-                this.progressBar1.Value = 0;
+                //this.progressBar1.Visible = true;
+                //this.progressBar1.Maximum = tamanho;
+               // this.progressBar1.Value = 0;
 
                 // Primeiros pontos do arquivo 
                 while (index < tamanho && this.currentLine < tamanho)   // A segunda parte do AND eh necessaria para a 1a iteracao
                 {
-                    int a = 0;
+                    //int a = 0;
                     line = tr.ReadLine();
 
                     countLine++;                                        // Evita que entre no while que vira em breve while(countLine < tamanho)
@@ -517,10 +521,10 @@ namespace interfaceEMG
                     {
                         this.sinais[y + 1][index] = Convert.ToDouble(lineSplit[y]);// + (7 - y) * 100;
                     }
-                    this.progressBar1.Value = index;
+                    //this.progressBar1.Value = index;
                     index++;
                 }
-                this.progressBar1.Value = tamanho;
+                //this.progressBar1.Value = tamanho;
 
                 //dar offset apenas nos primeiros pontos
                 if (auxReadCSV == false)
@@ -541,12 +545,12 @@ namespace interfaceEMG
                 }
 
                 line = null;
-                int taxa = taxaAmostragem / canais;
+                int taxa = 100;// (int)taxaAmostragem / canais;
                 int limit = tamanho - taxa;
 
-                this.progressBar1.Visible = true;
-                this.progressBar1.Maximum = tamanho;
-                this.progressBar1.Value = 0;
+                //this.progressBar1.Visible = true;
+                //this.progressBar1.Maximum = tamanho;
+                //this.progressBar1.Value = 0;
 
                 // Pontos restantes
                 while (index < tamanho - taxa)                                 // Garante que so leia "tamanho" linhas de cada vez
@@ -579,10 +583,10 @@ namespace interfaceEMG
                         {
                             this.sinais[y + 1][index] = Convert.ToDouble(lineSplit[y]);// + (7 - y) * 100;
                         }
-                        this.progressBar1.Value = index;
+                        //this.progressBar1.Value = index;
                         index++;
                     }
-                    this.progressBar1.Value = tamanho;
+                    //this.progressBar1.Value = tamanho;
 
                     // FFT
                     Dictionary<int, Double[]> auxFFT = new Dictionary<int, double[]>();
@@ -620,80 +624,221 @@ namespace interfaceEMG
             }
         }
 
-        /**
-         * FFT e Biofeedback
-         * */
+        #endregion
+
+
+        #region Outras abas
+
 
         private void configBox()
         {
+
+            //configura numero de canais
+            cbCanais.Items.Add(1);
+            cbCanais.Items.Add(4);
+            cbCanais.Items.Add(8);
+            cbCanais.Items.Add(16);
+
+            //configura janela sinais
+            cbJanela.Items.Add(300);
+            cbJanela.Items.Add(500);
+            cbJanela.Items.Add(700);
+            cbJanela.Items.Add(1000);
+            cbJanela.Items.Add(1500);
+            cbJanela.Items.Add(2000);
+            cbJanela.Items.Add(3000);
+            cbJanela.Items.Add(4000);
+            cbJanela.Items.Add(6000);
+            cbJanela.Items.Add(7000);
+            cbJanela.Items.Add(8000);
+
+
             // Adiciona todos os canais disponíveis para o biofeedback e FFT
             for (int i = 1; i <= canais; i++)
             {
                 string s = i.ToString();
 
                 comboBox2.Items.Add(s);
+
             }
+
+
         }
 
         // Extracao de envelope 
-        private double[] BF(double[] sinal)
+        private void envoltoria(double[] sinal, int can)
         {
-            int jan= 8;
-            double[] output = new double[tamanho];
-            for (int i = 0; i < tamanho / jan; i++)
+            //int jan= 25;
+            
+            //janENV = 300;
+            int taxa = 100;
+            Console.WriteLine(limit);
+            //Console.WriteLine(tamanho);
+            for (int i = 0; i < limit; i++)
             {
-                double max = 0;
-                for (int j = 0; j < jan; j++)
-                {
-                    if (sinal[i * jan + j] > max) max = sinal[i * jan + j];
-                }
-                for (int k = 0; k < jan; k++)
-                {
-                    output[i * jan + k] = max;
-                }
-                //Console.WriteLine(max);
+                //Console.WriteLine(i + taxa);
+                output[i] = output[i + taxa];
             }
 
-            return (output);
+            for (int i = limit; i < tamanho; i++)
+            {
+                //Console.WriteLine(sinal[i]);
+                output[i] = sinal[i] - 4000 * (canais - can);
+                Console.WriteLine(output[i]);
+
+
+            }
+
+            for (int i=limit; i < tamanho; i++)
+            {
+                if (output[i]<2000)
+                {
+                    //Console.WriteLine(output[i]);
+                    output[i] = 2000 + (2000 - output[i]);
+                    //Console.WriteLine(output[i]);
+                    //Console.WriteLine("-----------");
+                }
+                
+                //output[i] = Math.Abs(sinal[i]-3000*(9-can));
+            }
+
+            for(int i = limit; i<tamanho; i++)
+            {
+                int e = i - janENV / 2;
+                int d = i + janENV / 2;
+                if (e < 0)
+                {
+                    e = 0;
+                }
+                if (d >= tamanho)
+                {
+                    d = tamanho - 1;
+                }
+                int cont = 0;
+                double sum = 0;
+                for(int n = e; n < d; n++)
+                {
+                    
+                    sum += output[n];
+                    cont++;
+                    
+                    
+                }
+                output[i] = (sum / cont);
+                
+            }
+
+
+            //return (output);
         }
 
         // Fast Fourier Transform 
         private (double[], double[]) FFT(double[] sinal)
         {
+
             //double[] sinal = sinal1.
-            double[] mag = new double[tamanho];         // Magnitude
-            double[] freq = new double[tamanho / 2];        // Frequencia
-            Complex[] aux = new Complex[tamanho];
+            int p = 2;
+            //Complex[] aux = new Complex[tamanho];
             int numSamples = sinal.Length;
 
             // Transformando o sinal em número complexo
-            for (int i = 0; i < sinal.Length; i++)
+            /*for (int i = 0; i < sinal.Length; i++)
             {
                 aux[i] = new Complex(sinal[i], 0);
             }
+            */
+            Complex[] samples = new Complex[numSamples];
 
+            /*
+            double[] fundamental = Generate.Sinusoidal(numSamples, taxaAmostragem, 60, 10.0);
+            double[] second = Generate.Sinusoidal(numSamples, taxaAmostragem, 120, secondHarm, 0.0, secondPH);
+            double[] third = Generate.Sinusoidal(numSamples, taxaAmostragem, 120, thirdHarm, 0.0, thirdPH);*/
+
+            for(int i=0; i< numSamples; i++)
+            {
+                samples[i] = new Complex(sinal[i], 0);
+            }
+
+            double[] mag = new double[samples.Length / p];         // Magnitude
+            double[] freq = new double[samples.Length / p];        // Frequencia
             // FFT
-            Fourier.Forward(aux);
+            Fourier.Forward(samples, FourierOptions.NoScaling);
 
             // Magnitude do sinal
             mag[0] = 0;
-            for (int i = 0; i < sinal.Length; i++)
+            for (int i = 1; i < samples.Length/p; i++)
             {
-                if (i != 0) mag[i] = (Math.Abs(Math.Sqrt(Math.Pow(aux[i].Real, 2) + Math.Pow(aux[i].Imaginary, 2))));
+                mag[i] = (2.0/numSamples)*(Math.Abs(Math.Sqrt(Math.Pow(samples[i].Real, 2) + Math.Pow(samples[i].Imaginary, 2))));
             }
 
             // Frequência 
-            int hzPerSample = taxaAmostragem / numSamples;
+            int hzPerSample = (int)taxaAmostragem / numSamples;
+            //Console.WriteLine(hzPerSample);
 
-            double[] mag2 = new double[tamanho / 2];
-            for (int n = 0; n < tamanho / 2; n++)
+            
+
+            //double[] mag2 = new double[tamanho / 2];
+            for (int n = 0; n < samples.Length / p; n++)
             {
-                freq[n] = x[n] * hzPerSample;
-                mag2[n] = mag[n];
+                freq[n] = n * hzPerSample;
+                //mag2[n] = mag[n];
+            }
+            
+            return (freq, mag);
+            
+            
+            //double[] audio = FftSharp.SampleData.SampleAudio1();
+            /*
+            double[] audio = sinal;
+
+            // convert the data to an array of complex numbers
+            FftSharp.Complex[] buffer = new FftSharp.Complex[audio.Length];
+            for (int i = 0; i < buffer.Length; i++)
+                buffer[i] = new FftSharp.Complex(audio[i], 0);
+
+            // compute the FFT in-place
+            FftSharp.Transform.FFT(buffer);
+
+            double[] fftMag = FftSharp.Transform.FFTmagnitude(sinal);
+
+            double[] window = FftSharp.Window.Hanning(audio.Length);
+            /*
+            Console.WriteLine(sinaisFFT.);
+
+            return (FftSharp.Transform.FFTfreq(taxaAmostragem, sinaisFFT.Length, true), FftSharp.Transform.FFTmagnitude(sinaisFFT));*/
+            /*
+            double[] fft = new double[sinal.Length];
+            System.Numerics.Complex[] fftComplex = new System.Numerics.Complex[sinal.Length];
+            for (int i = 0; i < sinal.Length; i++)
+                fftComplex[i] = new System.Numerics.Complex(sinal[i], 0.0);
+            Accord.Math.FourierTransform.FFT(fftComplex, Accord.Math.FourierTransform.Direction.Forward);
+
+            ILNumerics.fft
+
+            BufferedWaveProvider bwp;
+
+            int BUFFERSIZE = (int)Math.Pow(2, 11);
+            int frameSize = BUFFERSIZE;
+            var audioBytes = new byte[frameSize];
+            //bwp.Read(audioBytes, 0, frameSize);
+
+            int BYTES_PER_POINT = 1;
+            int graphPointCount = audioBytes.Length / BYTES_PER_POINT;
+
+            double pcmPointSpacingMs = taxaAmostragem / 1000;
+            double fftMaxFreq = taxaAmostragem / 2;
+            double fftPointSpacingHz = fftMaxFreq / graphPointCount;
+            double[] fftX = new double[sinal.Length];
+
+            for (int i = 0; i < sinal.Length; i++) {
+                fft[i] = fftComplex[i].Magnitude;
+                fftX[i] = i * fftPointSpacingHz;
             }
 
-            return (freq, mag2);
+            return (fftX, fft);*/
         }
+
+        
 
         // Text Box do arquivo a ser lido
         private void fileTextBox_TextChanged(object sender, EventArgs e)
@@ -715,7 +860,8 @@ namespace interfaceEMG
 
         private void biofeedbackCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            this.showBiofeedback = !this.showBiofeedback;
+            this.showEnvoltoria = !this.showEnvoltoria;
+            output = new double[tamanho];
         }
 
         private void FFTCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -723,10 +869,11 @@ namespace interfaceEMG
             this.showFFT = !this.showFFT;
         }
 
+        #endregion
 
-        /**
-         * Gráficos
-         * */
+
+        #region  Gráficos
+
 
         // Permitir atualização do gráfico
         private void cleanGraph()
@@ -777,28 +924,32 @@ namespace interfaceEMG
             graphCanais.GraphPane.YAxis.Scale.Max = sinais[1].Max() + sinais[1].Max() * 0.05;
             //graphCanais.GraphPane.YAxis.Scale.Max = max;
             graphCanais.GraphPane.YAxis.Scale.Min = sinais[canais].Min() - sinais[canais].Min() * 0.05;
-            graphCanais.GraphPane.XAxis.Scale.Max = x.Length;
+            graphCanais.GraphPane.XAxis.Scale.Min = x.Min();
+            graphCanais.GraphPane.XAxis.Scale.Max = x.Max();
+            graphCanais.GraphPane.XAxis.Title.Text = "Tempo (s)";
             graphCanais.GraphPane.AxisChange();
             graphCanais.Refresh();
 
-            if (this.showBiofeedback)
+            if (this.showEnvoltoria)
             {
-                double[] biofeedback = BF(sinais[graphIndex]);
-                graphBars.GraphPane.AddCurve("Barras", x, biofeedback, cores[graphIndex], ZedGraph.SymbolType.None);
+                envoltoria(sinais[graphIndex], graphIndex);
+                double[] envolt = output;
+                graphBars.GraphPane.AddCurve("Barras", x, envolt, cores[graphIndex], ZedGraph.SymbolType.None);
 
                 // Configurando limites
                 graphBars.GraphPane.Legend.IsVisible = false;
-                graphBars.GraphPane.YAxis.Scale.Max = biofeedback.Max() + 10;
-                graphBars.GraphPane.YAxis.Scale.Min = biofeedback.Min() - 10;
-                graphBars.GraphPane.XAxis.Scale.Max = x.Length;
+                graphBars.GraphPane.YAxis.Scale.Max = envolt.Max() + 10;
+                graphBars.GraphPane.YAxis.Scale.Min = envolt.Min() - 10;
+                graphBars.GraphPane.XAxis.Scale.Min = x.Min();
+                graphBars.GraphPane.XAxis.Scale.Max = x.Max();
                 graphBars.GraphPane.AxisChange();
                 graphBars.Refresh();
             }
 
-            if (this.showFFT && this.calcFFT)
+            if (this.showFFT && this.finishFFT)
             {
                 // Sinal com transformada de Fourier
-                Console.WriteLine(graphIndex);
+                //Console.WriteLine(graphIndex);
                 (double[] frequencia, double[] mag) fft = FFT(sinaisFFT[graphIndex].ToArray());
                 graphFFT.GraphPane.AddCurve("FFT", fft.Item1, fft.Item2, cores[graphIndex], ZedGraph.SymbolType.None);
                 graphFFT.GraphPane.Legend.IsVisible = false;
@@ -806,7 +957,7 @@ namespace interfaceEMG
                 // Configurando limites
                 graphFFT.GraphPane.YAxis.Scale.Max = fft.Item2.Max() + 10;
                 graphFFT.GraphPane.YAxis.Scale.Min = fft.Item2.Min() - 10;
-                graphFFT.GraphPane.XAxis.Scale.Max = fft.Item1.Length;
+                graphFFT.GraphPane.XAxis.Scale.Max = fft.Item1.Max();
                 //graphFFT.GraphPane.XAxis.MA
                 graphFFT.GraphPane.AxisChange();
                 graphFFT.Refresh();
@@ -818,7 +969,7 @@ namespace interfaceEMG
         private void configurarInterface()
         {
             // Gráfico dos canais
-            graphCanais.GraphPane.XAxis.IsVisible = false;
+            graphCanais.GraphPane.XAxis.IsVisible = true;
             graphCanais.GraphPane.YAxis.IsVisible = false;
             graphCanais.GraphPane.Title.IsVisible = false;
             graphCanais.GraphPane.Margin.All = 0;
@@ -831,7 +982,9 @@ namespace interfaceEMG
 
             //Aba de FFT
             graphFFT.GraphPane.XAxis.IsVisible = true;
+            graphFFT.GraphPane.XAxis.Title.Text = "Frequência (Hz)";
             graphFFT.GraphPane.YAxis.IsVisible = true;
+            graphFFT.GraphPane.YAxis.Title.Text = "Magnitude";
             graphFFT.GraphPane.Title.IsVisible = false;
             graphFFT.GraphPane.Margin.All = 0;
         }
@@ -847,24 +1000,45 @@ namespace interfaceEMG
         {
 
         }
+        #endregion
 
 
-        /**
-         * Botões
-         * */
+        #region Botões
 
+
+
+
+        private void btmFFT_Click(object sender, EventArgs e)
+        {
+            if(this.calcFFT == false)
+            {
+                this.calcFFT = true;
+                btmFFT.Text = "Parar";
+                btmFFT.BackColor = System.Drawing.Color.FromArgb(255, 0, 0);
+                sinaisFFT.Clear();
+                firstPoints = false;
+            }
+            else
+            {
+                this.calcFFT = false;
+                this.finishFFT = true;
+                btmFFT.Text = "Iniciar";
+                btmFFT.BackColor = System.Drawing.Color.FromArgb(255, 165, 0);
+            }
+        }
+        
         // Botão conectar
         private void btmConectar_Click(object sender, EventArgs e)
         {
-            this.inicializaVetor();
+            
             if (serialPort2.IsOpen == false)
             {
                 try
                 {
                     serialPort2.PortName = comboBox1.Items[comboBox1.SelectedIndex].ToString();
+
                     serialPort2.Open();
                     serialPort2.Write("ok");
-
                 }
                 catch
                 {
@@ -880,12 +1054,23 @@ namespace interfaceEMG
             {
                 try
                 {
-                    this.showGraphConect = !this.showGraphConect;
+                    this.showGraphBluetooth = !this.showGraphBluetooth;
                     serialPort2.Close();
                     comboBox1.Enabled = true;
                     btmConect.Text = "Conectar";
                     btmConect.BackColor = System.Drawing.Color.FromArgb(255, 165, 0);
                     this.auxGraphs = true;
+
+                    cbCanais.Enabled = true;
+                    cbJanela.Enabled = true;
+                    txtAmostragem.Enabled = true;
+                    txtEnvoltoria.Enabled = true;
+
+                    cbCanais.BackColor = System.Drawing.Color.FromArgb(255, 165, 0);
+                    cbJanela.BackColor = System.Drawing.Color.FromArgb(255, 165, 0);
+                    txtAmostragem.BackColor = System.Drawing.Color.FromArgb(255, 165, 0);
+                    txtEnvoltoria.BackColor = System.Drawing.Color.FromArgb(255, 165, 0);
+                    
                 }
                 catch
                 {
@@ -896,12 +1081,58 @@ namespace interfaceEMG
 
             if (serialPort2.IsOpen == true)
             {
+                Console.WriteLine("iniciado");
+                taxaAmostragem = Convert.ToDouble(txtAmostragem.Text);
+                janENV = Convert.ToInt32(txtEnvoltoria.Text);
+                limiarBird = Convert.ToInt32(txtFlappy.Text);
+                try
+                {
+                    tamanho = Convert.ToInt32(cbJanela.SelectedItem.ToString());
+                }
+                catch
+                {
+                    tamanho = 1000;
+                }
+                try
+                {
+                    canais = Convert.ToInt32(cbCanais.SelectedItem.ToString());
+                }
+                catch
+                {
+                    canais = 8;
+                }
+                try
+                {
+                    canal = Convert.ToInt32(comboBox2.SelectedItem.ToString());
+                }
+                catch
+                {
+                    canal = 1;
+                }
+
+                Console.WriteLine("iniciado");
                 btmConect.BackColor = System.Drawing.Color.FromArgb(255, 0, 0);
                 this.inicializaVetor();
                 this.inicializarDicionarios();
-                this.showGraphConect = !this.showGraphConect;
+                this.showGraphBluetooth = !this.showGraphBluetooth;
                 this.showGraphRead = false;
-                this.showGraphTest = false;
+
+                cbCanais.BackColor = System.Drawing.Color.FromArgb(255, 0, 0);
+                cbCanais.ForeColor = System.Drawing.Color.FromArgb(255, 0, 0);
+                cbJanela.BackColor =  System.Drawing.Color.FromArgb(255, 0, 0);
+                txtAmostragem.BackColor = System.Drawing.Color.FromArgb(255, 0, 0);
+                txtEnvoltoria.BackColor = System.Drawing.Color.FromArgb(255, 0, 0);
+                txtFlappy.BackColor = System.Drawing.Color.FromArgb(255, 0, 0);
+
+                cbCanais.Enabled = false;
+                cbJanela.Enabled = false;
+                txtAmostragem.Enabled = false;
+                txtEnvoltoria.Enabled = false;
+
+                Console.WriteLine("as");
+                this.configurarInterface();
+
+                this.readPoints();
             }
         }
 
@@ -916,7 +1147,7 @@ namespace interfaceEMG
                 btmPlay.BackColor = System.Drawing.Color.FromArgb(255, 0, 0);
                 sinaisFFT.Clear();
                 firstPoints = false;
-                calcFFT = false;
+                //calcFFT = false;
 
                 //exclui o arquivo caso ele exista
                 if (!this.auxWriteCSV && File.Exists(fileName))
@@ -930,7 +1161,7 @@ namespace interfaceEMG
                 this.play = false;
                 btmPlay.Text = "Play";
                 btmPlay.BackColor = System.Drawing.Color.FromArgb(255, 165, 0);
-                calcFFT = true;
+                //calcFFT = true;
             }
 
         }
@@ -939,8 +1170,8 @@ namespace interfaceEMG
         private void readFileButton_Click(object sender, EventArgs e)
         {
             this.readFile = !this.readFile;
-            this.showGraphTest = false;
-            this.showGraphConect = false;
+            
+            this.showGraphBluetooth = false;
 
             if (!this.showGraphRead)
             {
@@ -954,28 +1185,94 @@ namespace interfaceEMG
                 this.showGraphRead = false;
             }
         }
+        
 
-        // Botão para gerar curvas aleatoriamente
-        private void btmTeste_Click(object sender, EventArgs e)
+        private void btmWIFI_Click(object sender, EventArgs e)
         {
-            this.showGraphTest = !this.showGraphTest;
-            this.showGraphConect = false;
-            this.showGraphRead = false;
-            this.readFile = false;
-            this.currentLine = 1;
-
-            if (this.showGraphTest)
+            
+            if (!this.showGraphWIFI)
             {
+                Console.WriteLine("iniciado");
+                taxaAmostragem = Convert.ToDouble(txtAmostragem.Text);
+                janENV = Convert.ToInt32(txtEnvoltoria.Text);
+                limiarBird = Convert.ToInt32(txtFlappy.Text);
+                try
+                {
+                    tamanho = Convert.ToInt32(cbJanela.SelectedItem.ToString());
+                }
+                catch
+                {
+                    tamanho = 1000;
+                }
+                try
+                {
+                    canais = Convert.ToInt32(cbCanais.SelectedItem.ToString());
+                }
+                catch
+                {
+                    canais = 8;
+                }
+                try
+                {
+                    canal = Convert.ToInt32(comboBox2.SelectedItem.ToString());
+                }
+                catch
+                {
+                    canal = 1;
+                }
+
+                cbCanais.Enabled = false;
+                cbJanela.Enabled = false;
+                txtAmostragem.Enabled = false;
+                txtEnvoltoria.Enabled = false;
+
+                cbCanais.BackColor = System.Drawing.Color.FromArgb(255, 0, 0);
+                cbJanela.BackColor = System.Drawing.Color.FromArgb(255, 0, 0);
+                txtAmostragem.BackColor = System.Drawing.Color.FromArgb(255, 0, 0);
+                txtEnvoltoria.BackColor = System.Drawing.Color.FromArgb(255, 0, 0);
+                txtFlappy.BackColor = System.Drawing.Color.FromArgb(255, 0, 0);
+
+                UdpClient udpClientSend = new UdpClient();
+                udpClientSend.Connect(tbIP.Text, Convert.ToInt16(tbPort.Text));
+                Byte[] senddata = Encoding.ASCII.GetBytes("s");
+                udpClientSend.Send(senddata, senddata.Length);
+                btmWIFI.BackColor = System.Drawing.Color.FromArgb(255, 0, 0);
+                btmWIFI.Text = "Desconectar";
+
+                this.showGraphWIFI = true;
+                //AddressFamily a = 8080;
+                udpClient = new UdpClient(8080); //tbPort.Text
+                this.inicializaVetor();
                 this.inicializarDicionarios();
-                btmTest.BackColor = System.Drawing.Color.FromArgb(255, 0, 0);
             }
             else
             {
-                btmTest.BackColor = System.Drawing.Color.FromArgb(255, 165, 0);
-                this.auxGraphs = true;
+                /*
+                UdpClient udpClientSend = new UdpClient();
+                udpClient.Connect(tbIP.Text, Convert.ToInt16(tbPort.Text));
+                Byte[] senddata = Encoding.ASCII.GetBytes("n");
+                udpClientSend.Send(senddata, senddata.Length);*/
+
+                btmWIFI.BackColor = System.Drawing.Color.FromArgb(255, 165, 0);
+                btmWIFI.Text = "Conectar";
+                this.showGraphWIFI = false;
+                udpClient.Close();
+                this.showEnvoltoria = false;
+                
+
             }
+
+
+           
+
+            
+            
+
         }
 
+        #endregion
+
+        #region Flappy bird
         // Timer to Flappy Bird Update the Scenario 
         private void timer1_Tick(object sender, EventArgs e)
         {
@@ -1092,7 +1389,24 @@ namespace interfaceEMG
                     score++;
                 }
             }
+            if (flappyBird == true) {
+                /*
+                for (int i = 0; i < tamanho / janENV; i++)
+                {
+                    double max = 0;
+                    for (int j = 0; j < janENV; j++)
+                    {
+                        if (sinais[canal][i * janENV + j] > max) max = sinais[canal][i * janENV + j];
+                        if (max > limiarBird)
+                        {
+                            bird.Top += -50;
+                            j = janENV;
+                            i = tamanho / janENV;
+                        }
+                    }
 
+                }*/
+            }
         }
 
         void GameOver()
@@ -1119,6 +1433,35 @@ namespace interfaceEMG
                 bird.Top += -50;
             }
         }
+
+        //
+        private void emgFlappyBird(double[] sinal, int can)
+        {
+            double[] output = new double[tamanho];
+            for (int i=0; i < tamanho / janENV; i++)
+            {
+                double max = 0;
+                for(int j=0; j<janENV; j++)
+                {
+                    if (sinal[i * janENV + j] > max) max = sinal[i * janENV + j];
+                    if(max > limiarBird)
+                    {
+                        bird.Top += -50;
+                        j = janENV;
+                        i = tamanho / janENV;
+                    }
+                }
+                
+                //Console.WriteLine(max);
+                //Console.WriteLine("--------------");
+                /*if (max > limiarBird)
+                {
+                    bird.Top += -50;
+                }*/
+            }
+        }
+
+
 
         // Start Button clicked
         private void startButton_Click(object sender, EventArgs e)
@@ -1184,5 +1527,27 @@ namespace interfaceEMG
             h6.Top = 450;
 
         }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cbCanais_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            canais = Convert.ToInt32(cbCanais.Items[cbCanais.SelectedIndex]);
+        }
+
+        private void cbJanela_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            tamanho = Convert.ToInt32(cbJanela.Items[cbJanela.SelectedIndex]);
+        }
+
+        private void flappyBirdcheckBox_CheckedChanged_1(object sender, EventArgs e)
+        {
+            this.flappyBird = true;
+        }
+
+        #endregion
     }
 }

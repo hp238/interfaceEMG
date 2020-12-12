@@ -25,6 +25,7 @@ namespace interfaceEMG
         //offset constante
         public static void offsetNorm(Dictionary<int, Double[]> sinais, int limit, int tamanho, int canais)
         {
+            
             double[] max = new double[canais];
             double aux = 0;
             for (int y = canais; y >= 1; y--)
@@ -38,12 +39,20 @@ namespace interfaceEMG
                 }
                 max[y - 1] = aux;
             }
-            double maxi = max.Max();
+            double maxi = 4000;// max.Max();
+            /*Console.WriteLine(maxi * 8);
+            Console.WriteLine(maxi * 7);
+            Console.WriteLine(maxi * 6);
+            Console.WriteLine(maxi * 5);
+            Console.WriteLine(maxi * 4);
+            Console.WriteLine(maxi * 3);
+            Console.WriteLine(maxi * 2);
+            Console.WriteLine(maxi * 1);*/
             for (int y = canais; y >= 1; y--)
             {
                 for (int i = limit; i < tamanho; i++)
                 {
-                    sinais[y][i] += (maxi+maxi*0.1)*(canais-y);
+                    sinais[y][i] += (maxi)*(canais-y);
                 }
             }
         }
@@ -57,6 +66,14 @@ namespace interfaceEMG
                 {
                     sinais[y][i] = sinais[y][i + taxa];
                 }
+            }
+        }
+
+        public static void shiftEnvoltoria(double[] sinal, int limit, int taxa)
+        {
+            for (int i = 0; i < limit; i++)
+            {
+                sinal[i] = sinal[i + taxa];
             }
         }
 
