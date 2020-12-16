@@ -40,9 +40,9 @@ namespace interfaceEMG
         private bool auxWriteCSV = false;               // para verificar apenas uma vez se o arquivo .csv já existe
         private int limit = 0;                          // variável auxiliar equivalente a tamanho-taxa
         private bool showGraphWIFI = false;
-        private bool showGraphBluetooth = false;           // true para mostrar as curvas lidas pela comunicação serial/bluetooth
+        private bool showGraphBluetooth = false;        // true para mostrar as curvas lidas pela comunicação serial/bluetooth
         private bool showGraphRead = false;             // true para mostrar as curvas lidas do arquivos .cvs
-        private bool showEnvoltoria = false;           // true para mostrar as curvas da aba de biofeedback
+        private bool showEnvoltoria = false;            // true para mostrar as curvas da aba de biofeedback
         private bool showFFT = false;                   // true para mostrar as curvas da aba de FFT (controlado pelo botão Play)
         private bool calcFFT = false;                   // true para calcular o FFT de cada sinal do intervalo selecionado pelo botão Play
         private bool readFile = false;                  // true para iniciar a leitura do arquivo .csv
@@ -51,9 +51,9 @@ namespace interfaceEMG
                                                         // true para indicar que os demais "taxa" pontos lidos devem ser concatenados ao pontos lidos anteriormente
         private string fileName = "Sinais.csv";         // nome padrão do arquivo .csv que será salvo
         private int currentLine = 1;                    // indica a linha que está sendo lida pelo readfile
-        static int tamanho = 500;                      // Tamanho do vetor de teste
-        private double[] x;//= new double[tamanho];       // Eixo x
-        private double taxaAmostragem = 1000;              // Taxa de amostragem do circuito em Hz
+        static int tamanho = 500;                       // Tamanho do vetor de teste
+        private double[] x;                             // Eixo x
+        private double taxaAmostragem = 1000;           // Taxa de amostragem do circuito em Hz
         private int graphIndex = 1;                     // Gráfico que será usado no biofeedback e FFT
         private int canais = 8;                         // Número de canais
         private bool offsetType = false;                // define o tipo de offset
@@ -271,12 +271,7 @@ namespace interfaceEMG
                 stopwatch.Stop();
                 //Console.WriteLine($"tempo: { stopwatch.Elapsed}");
 
-
-
-
                 // double aux = 0;
-
-
                 // Console.WriteLine(returnData);
                 // aux = Convert.ToDouble(returnData);
 
@@ -302,9 +297,6 @@ namespace interfaceEMG
             this.calcFFT = (bool)auxb[1];
             //play = (bool)auxb[1];
 
-
-
-
             //this.configurarCurvas();
             /*for (int i = 0; i < tamanho; i++)
             {
@@ -313,7 +305,6 @@ namespace interfaceEMG
             //}
 
         }
-
 
         #endregion
 
@@ -360,8 +351,6 @@ namespace interfaceEMG
                 this.emgFlappyBird(sinais[canal], canal);
             }*/
 
-
-
         }
 
         // Atualiza listas de portas conectadas
@@ -372,7 +361,6 @@ namespace interfaceEMG
 
             i = 0;
             quantDiferente = false;
-
 
             // Se a quantidade de portas mudou
             if (comboBox1.Items.Count == SerialPort.GetPortNames().Length)
@@ -505,7 +493,7 @@ namespace interfaceEMG
 
                 //this.progressBar1.Visible = true;
                 //this.progressBar1.Maximum = tamanho;
-               // this.progressBar1.Value = 0;
+                // this.progressBar1.Value = 0;
 
                 // Primeiros pontos do arquivo 
                 while (index < tamanho && this.currentLine < tamanho)   // A segunda parte do AND eh necessaria para a 1a iteracao
@@ -607,8 +595,6 @@ namespace interfaceEMG
                         tools.offsetNorm(sinais, limit, tamanho, canais);
                     }
 
-                    
-
                     //Plot
                     this.configurarCurvas();
                 }
@@ -628,8 +614,6 @@ namespace interfaceEMG
 
 
         #region Outras abas
-
-
         private void configBox()
         {
 
@@ -662,7 +646,6 @@ namespace interfaceEMG
 
             }
 
-
         }
 
         // Extracao de envelope 
@@ -685,8 +668,6 @@ namespace interfaceEMG
                 //Console.WriteLine(sinal[i]);
                 output[i] = sinal[i] - 4000 * (canais - can);
                 Console.WriteLine(output[i]);
-
-
             }
 
             for (int i=limit; i < tamanho; i++)
@@ -775,8 +756,6 @@ namespace interfaceEMG
             int hzPerSample = (int)taxaAmostragem / numSamples;
             //Console.WriteLine(hzPerSample);
 
-            
-
             //double[] mag2 = new double[tamanho / 2];
             for (int n = 0; n < samples.Length / p; n++)
             {
@@ -837,8 +816,6 @@ namespace interfaceEMG
 
             return (fftX, fft);*/
         }
-
-        
 
         // Text Box do arquivo a ser lido
         private void fileTextBox_TextChanged(object sender, EventArgs e)
@@ -1004,10 +981,6 @@ namespace interfaceEMG
 
 
         #region Botões
-
-
-
-
         private void btmFFT_Click(object sender, EventArgs e)
         {
             if(this.calcFFT == false)
@@ -1262,15 +1235,10 @@ namespace interfaceEMG
 
             }
 
-
-           
-
-            
-            
-
         }
 
         #endregion
+
 
         #region Flappy bird
         // Timer to Flappy Bird Update the Scenario 
@@ -1460,8 +1428,6 @@ namespace interfaceEMG
                 }*/
             }
         }
-
-
 
         // Start Button clicked
         private void startButton_Click(object sender, EventArgs e)
