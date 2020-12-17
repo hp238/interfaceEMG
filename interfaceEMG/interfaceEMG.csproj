@@ -159,7 +159,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="Maze.cs" />
+    <Compile Include="Tools.cs" />
     <Compile Include="interfaceEMG.cs">
       <SubType>Form</SubType>
     </Compile>

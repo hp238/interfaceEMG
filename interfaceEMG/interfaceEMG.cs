@@ -107,6 +107,8 @@ namespace interfaceEMG
             ScoreLabel.Visible = true;
             ScoreLabel.Text = "Score: 0s";
 
+            this.createMaze();
+
         }
 
         //eixo x
@@ -1514,6 +1516,27 @@ namespace interfaceEMG
             this.flappyBird = true;
         }
 
+        #endregion
+
+        #region Labiriton
+
+        private void createMaze()
+        {
+            int w = 10, h = 10;
+
+            Maze m = new Maze(w, h);
+            int[,] matrix = m.Generate();
+
+            for (int i = 0; i < h; i++)
+            {
+                for (int j = 0; j < w; j++)
+                {
+                    Console.Write(matrix[i, j]);
+                }
+
+                Console.WriteLine();
+            }
+        }
         #endregion
     }
 }
