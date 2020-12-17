@@ -107,7 +107,8 @@ namespace interfaceEMG
             ScoreLabel.Visible = true;
             ScoreLabel.Text = "Score: 0s";
 
-            this.createMaze();
+            this.resetScenario(); // Reseta o cenário do Flappy Bird
+            this.createMaze();    // Teste de criação de labirinto
 
         }
 
@@ -1282,7 +1283,7 @@ namespace interfaceEMG
             }
             else
             {
-                h2.Height = r.Next(300, 400);
+                h2.Height = r.Next(350, 400);
                 h2.Left = 1650;
             }
 
@@ -1322,7 +1323,7 @@ namespace interfaceEMG
             }
             else
             {
-                h6.Height = r.Next(300, 400);
+                h6.Height = r.Next(350, 400);
                 h6.Left = 1650;
             }
 
@@ -1459,7 +1460,7 @@ namespace interfaceEMG
             GameOverLabel.Visible = false;
 
             ScoreLabel.Text = "Score: 0s";
-            resetScenario();
+            this.resetScenario();
             score = 0;
 
         }
@@ -1467,8 +1468,11 @@ namespace interfaceEMG
         // Reset scenario to initial positions
         private void resetScenario()
         {
+
             h1.Height = 280;
             h1.Width = 200;
+
+            int xOffset = tabPage5.Width / 3;
 
             h2.Size = h1.Size;
             h3.Size = h1.Size;
@@ -1484,14 +1488,14 @@ namespace interfaceEMG
             h2.Left = 180;
             h2.Top = 450;
 
-            h3.Left = 860;
+            h3.Left = h1.Right + xOffset;
             h3.Top = 0;
-            h4.Left = 860;
+            h4.Left = h1.Right + xOffset;
             h4.Top = 450;
 
-            h5.Left = 1520;
+            h5.Left = h3.Right + xOffset;
             h5.Top = 0;
-            h6.Left = 1520;
+            h6.Left = h3.Right + xOffset;
             h6.Top = 450;
 
         }
@@ -1536,7 +1540,22 @@ namespace interfaceEMG
 
                 Console.WriteLine();
             }
+
+            PictureBox block = new PictureBox();
+            //Localização
+            block.Location = new Point(10, 100);
+            //Nome
+            block.Name = "MinhaPictureBox";
+            //Tamanho
+            block.Height = 50;
+            block.Width = 50;
+            block.BackColor = System.Drawing.Color.Chocolate;
+
+            //Adiciona o controle ao Form
+            tabPage5.Controls.Add(block);
+         
         }
         #endregion
+
     }
 }
