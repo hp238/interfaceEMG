@@ -1544,7 +1544,7 @@ namespace interfaceEMG
             int rows = rowsText != "" ? Convert.ToInt32(rowsText) : 10;
             int cols = colsText != "" ? Convert.ToInt32(colsText) : 10;
 
-            int blockWidth = 1354 / cols;
+            int blockWidth = (tabPage5.Width - 3*colsMazeTextBox.Right) / cols;
             int blockHeight = tabPage5.Height / rows;
 
             int xStart = 350;
