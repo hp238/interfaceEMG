@@ -1528,27 +1528,23 @@ namespace interfaceEMG
 
             String rowsText = rowsMazeTextBox.Text;
             String colsText = colsMazeTextBox.Text;
-            int h = rowsText != "" ? Convert.ToInt32(rowsText) : 10;
-            int w = colsText != "" ? Convert.ToInt32(colsText) : 10;
+            int rows = rowsText != "" ? Convert.ToInt32(rowsText) : 10;
+            int cols = colsText != "" ? Convert.ToInt32(colsText) : 20;
 
-            Maze m = new Maze(w, h);
+            Maze m = new Maze(cols, rows);
             int[,] matrix = m.Generate();
 
-            this.insertBlocks(matrix);
+            this.insertBlocks(matrix, rows, cols);
         }
 
-        private void insertBlocks(int[,] matrix)
+        private void insertBlocks(int[,] matrix, int rows, int cols)
         {
-            String rowsText = rowsMazeTextBox.Text;
-            String colsText = colsMazeTextBox.Text;
-            int rows = rowsText != "" ? Convert.ToInt32(rowsText) : 10;
-            int cols = colsText != "" ? Convert.ToInt32(colsText) : 10;
-
-            int blockWidth = (tabPage5.Width - 3*colsMazeTextBox.Right) / cols;
-            int blockHeight = tabPage5.Height / rows;
 
             int xStart = 350;
             int yStart = 0;
+
+            int blockWidth = (tabPage5.Width - xStart) / (cols + 1);
+            int blockHeight = (tabPage5.Height - yStart)/ (rows + 1);
 
             for (int i = 0; i < rows; i++)
             {
@@ -1584,7 +1580,7 @@ namespace interfaceEMG
                     else if (matrix[i, j] == 2)
                     {
                         aux = "Player";
-                        int size = Math.Min(block.Width, block.Height);
+                        int size = Math.Min(block.Width, block.Height)/2;
                         Point centeredLocation = new Point(block.Left + (block.Width - size)/2, block.Top + (block.Height - size) / 2);
 
                         block.Width = size;
