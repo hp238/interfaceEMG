@@ -435,7 +435,6 @@ namespace interfaceEMG
             }
             else
             {
-
                 //Console.WriteLine("O arquivo {0} já existe em interfaceEMG\\bin\\Debug\\!", fileName);
             }
 
@@ -1526,14 +1525,34 @@ namespace interfaceEMG
 
         private void createMaze()
         {
-            int w = 10, h = 10;
+
+            String rowsText = rowsMazeTextBox.Text;
+            String colsText = colsMazeTextBox.Text;
+            int h = rowsText != "" ? Convert.ToInt32(rowsText) : 10;
+            int w = colsText != "" ? Convert.ToInt32(colsText) : 10;
 
             Maze m = new Maze(w, h);
             int[,] matrix = m.Generate();
 
-            for (int i = 0; i < h; i++)
+            this.insertBlocks(matrix);
+        }
+
+        private void insertBlocks(int[,] matrix)
+        {
+            String rowsText = rowsMazeTextBox.Text;
+            String colsText = colsMazeTextBox.Text;
+            int rows = rowsText != "" ? Convert.ToInt32(rowsText) : 10;
+            int cols = colsText != "" ? Convert.ToInt32(colsText) : 10;
+
+            int blockWidth = 1354 / cols;
+            int blockHeight = tabPage5.Height / rows;
+
+            int xStart = 350;
+            int yStart = 0;
+
+            for (int i = 0; i < rows; i++)
             {
-                for (int j = 0; j < w; j++)
+                for (int j = 0; j < cols; j++)
                 {
                     Console.Write(matrix[i, j]);
                 }
@@ -1541,20 +1560,51 @@ namespace interfaceEMG
                 Console.WriteLine();
             }
 
-            PictureBox block = new PictureBox();
-            //Localização
-            block.Location = new Point(10, 100);
-            //Nome
-            block.Name = "MinhaPictureBox";
-            //Tamanho
-            block.Height = 50;
-            block.Width = 50;
-            block.BackColor = System.Drawing.Color.Chocolate;
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < cols; j++)
+                {
+                    PictureBox block = new PictureBox();
+                    block.Location = new Point(xStart + blockWidth * j, yStart + blockHeight * i);
+                    block.Width = blockWidth;
+                    block.Height = blockHeight;
 
-            //Adiciona o controle ao Form
-            tabPage5.Controls.Add(block);
-         
+                    string aux = "";
+
+                    if (matrix[i, j] == 0)
+                    {
+                        aux = "Path";
+                        block.BackColor = SystemColors.Control;
+                    }
+                    else if (matrix[i, j] == 1)
+                    {
+                        aux = "Wall";
+                        block.BackColor = System.Drawing.Color.Chocolate;
+                    }
+                    else if (matrix[i, j] == 2)
+                    {
+                        aux = "Player";
+                        int size = Math.Min(block.Width, block.Height);
+                        Point centeredLocation = new Point(block.Left + (block.Width - size)/2, block.Top + (block.Height - size) / 2);
+
+                        block.Width = size;
+                        block.Height = size;
+                        block.Location = centeredLocation;
+                        block.BackColor = System.Drawing.Color.Red;
+                    }
+                    else if (matrix[i, j] == 3)
+                    {
+                        aux = "Target";
+                        block.BackColor = System.Drawing.Color.Green;
+                    }
+                    block.Name = aux;
+
+                    //Adiciona o controle ao Form
+                    tabPage5.Controls.Add(block);
+                }
+            }
         }
+
         #endregion
 
     }

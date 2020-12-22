@@ -60,14 +60,16 @@
             this.tree2 = new System.Windows.Forms.PictureBox();
             this.tree1 = new System.Windows.Forms.PictureBox();
             this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.mazeRightButton = new System.Windows.Forms.Button();
+            this.mazeLeftButton = new System.Windows.Forms.Button();
+            this.mazeDownButton = new System.Windows.Forms.Button();
             this.mazeUpButton = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.label19 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
-            this.ColsMazeTextBox = new System.Windows.Forms.TextBox();
+            this.colsMazeTextBox = new System.Windows.Forms.TextBox();
             this.rowsMazeTextBox = new System.Windows.Forms.TextBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.btmRead = new System.Windows.Forms.Button();
             this.txtRead = new System.Windows.Forms.TextBox();
@@ -111,9 +113,6 @@
             this.label14 = new System.Windows.Forms.Label();
             this.panel5 = new System.Windows.Forms.Panel();
             this.label15 = new System.Windows.Forms.Label();
-            this.mazeDownButton = new System.Windows.Forms.Button();
-            this.mazeLeftButton = new System.Windows.Forms.Button();
-            this.mazeRightButton = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -132,7 +131,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.tree2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tree1)).BeginInit();
             this.tabPage5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -527,15 +525,41 @@
             this.tabPage5.Controls.Add(this.button1);
             this.tabPage5.Controls.Add(this.label19);
             this.tabPage5.Controls.Add(this.label18);
-            this.tabPage5.Controls.Add(this.ColsMazeTextBox);
+            this.tabPage5.Controls.Add(this.colsMazeTextBox);
             this.tabPage5.Controls.Add(this.rowsMazeTextBox);
-            this.tabPage5.Controls.Add(this.pictureBox1);
             this.tabPage5.Location = new System.Drawing.Point(4, 28);
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.Size = new System.Drawing.Size(1704, 768);
             this.tabPage5.TabIndex = 2;
             this.tabPage5.Text = "Labirinto";
             this.tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // mazeRightButton
+            // 
+            this.mazeRightButton.Location = new System.Drawing.Point(253, 620);
+            this.mazeRightButton.Name = "mazeRightButton";
+            this.mazeRightButton.Size = new System.Drawing.Size(97, 23);
+            this.mazeRightButton.TabIndex = 10;
+            this.mazeRightButton.Text = "DIREITA";
+            this.mazeRightButton.UseVisualStyleBackColor = true;
+            // 
+            // mazeLeftButton
+            // 
+            this.mazeLeftButton.Location = new System.Drawing.Point(47, 620);
+            this.mazeLeftButton.Name = "mazeLeftButton";
+            this.mazeLeftButton.Size = new System.Drawing.Size(97, 23);
+            this.mazeLeftButton.TabIndex = 9;
+            this.mazeLeftButton.Text = "ESQUERDA";
+            this.mazeLeftButton.UseVisualStyleBackColor = true;
+            // 
+            // mazeDownButton
+            // 
+            this.mazeDownButton.Location = new System.Drawing.Point(153, 683);
+            this.mazeDownButton.Name = "mazeDownButton";
+            this.mazeDownButton.Size = new System.Drawing.Size(97, 23);
+            this.mazeDownButton.TabIndex = 8;
+            this.mazeDownButton.Text = "DESCER";
+            this.mazeDownButton.UseVisualStyleBackColor = true;
             // 
             // mazeUpButton
             // 
@@ -582,12 +606,12 @@
             this.label18.TabIndex = 3;
             this.label18.Text = "Número de Linhas";
             // 
-            // ColsMazeTextBox
+            // colsMazeTextBox
             // 
-            this.ColsMazeTextBox.Location = new System.Drawing.Point(36, 210);
-            this.ColsMazeTextBox.Name = "ColsMazeTextBox";
-            this.ColsMazeTextBox.Size = new System.Drawing.Size(162, 22);
-            this.ColsMazeTextBox.TabIndex = 2;
+            this.colsMazeTextBox.Location = new System.Drawing.Point(36, 210);
+            this.colsMazeTextBox.Name = "colsMazeTextBox";
+            this.colsMazeTextBox.Size = new System.Drawing.Size(162, 22);
+            this.colsMazeTextBox.TabIndex = 2;
             // 
             // rowsMazeTextBox
             // 
@@ -595,15 +619,6 @@
             this.rowsMazeTextBox.Name = "rowsMazeTextBox";
             this.rowsMazeTextBox.Size = new System.Drawing.Size(162, 22);
             this.rowsMazeTextBox.TabIndex = 1;
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.pictureBox1.Location = new System.Drawing.Point(413, 0);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(1295, 780);
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
             // 
             // timer2
             // 
@@ -1084,33 +1099,6 @@
             this.label15.TabIndex = 34;
             this.label15.Text = "Conexão Serial";
             // 
-            // mazeDownButton
-            // 
-            this.mazeDownButton.Location = new System.Drawing.Point(153, 683);
-            this.mazeDownButton.Name = "mazeDownButton";
-            this.mazeDownButton.Size = new System.Drawing.Size(97, 23);
-            this.mazeDownButton.TabIndex = 8;
-            this.mazeDownButton.Text = "DESCER";
-            this.mazeDownButton.UseVisualStyleBackColor = true;
-            // 
-            // mazeLeftButton
-            // 
-            this.mazeLeftButton.Location = new System.Drawing.Point(47, 620);
-            this.mazeLeftButton.Name = "mazeLeftButton";
-            this.mazeLeftButton.Size = new System.Drawing.Size(97, 23);
-            this.mazeLeftButton.TabIndex = 9;
-            this.mazeLeftButton.Text = "ESQUERDA";
-            this.mazeLeftButton.UseVisualStyleBackColor = true;
-            // 
-            // mazeRightButton
-            // 
-            this.mazeRightButton.Location = new System.Drawing.Point(253, 620);
-            this.mazeRightButton.Name = "mazeRightButton";
-            this.mazeRightButton.Size = new System.Drawing.Size(97, 23);
-            this.mazeRightButton.TabIndex = 10;
-            this.mazeRightButton.Text = "DIREITA";
-            this.mazeRightButton.UseVisualStyleBackColor = true;
-            // 
             // formInterface
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -1152,7 +1140,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.tree1)).EndInit();
             this.tabPage5.ResumeLayout(false);
             this.tabPage5.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
@@ -1241,8 +1228,7 @@
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.TabPage tabPage5;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.TextBox ColsMazeTextBox;
+        private System.Windows.Forms.TextBox colsMazeTextBox;
         private System.Windows.Forms.TextBox rowsMazeTextBox;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button1;
