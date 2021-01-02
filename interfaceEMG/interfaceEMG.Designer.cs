@@ -1,4 +1,4 @@
-﻿namespace interfaceEMG
+namespace interfaceEMG
 {
     partial class formInterface
     {
@@ -64,8 +64,8 @@
             this.mazeLeftButton = new System.Windows.Forms.Button();
             this.mazeDownButton = new System.Windows.Forms.Button();
             this.mazeUpButton = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.cleanMazeButton = new System.Windows.Forms.Button();
+            this.createMazeButton = new System.Windows.Forms.Button();
             this.label19 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
             this.colsMazeTextBox = new System.Windows.Forms.TextBox();
@@ -521,8 +521,8 @@
             this.tabPage5.Controls.Add(this.mazeLeftButton);
             this.tabPage5.Controls.Add(this.mazeDownButton);
             this.tabPage5.Controls.Add(this.mazeUpButton);
-            this.tabPage5.Controls.Add(this.button2);
-            this.tabPage5.Controls.Add(this.button1);
+            this.tabPage5.Controls.Add(this.cleanMazeButton);
+            this.tabPage5.Controls.Add(this.createMazeButton);
             this.tabPage5.Controls.Add(this.label19);
             this.tabPage5.Controls.Add(this.label18);
             this.tabPage5.Controls.Add(this.colsMazeTextBox);
@@ -570,23 +570,25 @@
             this.mazeUpButton.Text = "SUBIR";
             this.mazeUpButton.UseVisualStyleBackColor = true;
             // 
-            // button2
+            // cleanMazeButton
             // 
-            this.button2.Location = new System.Drawing.Point(39, 370);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(159, 50);
-            this.button2.TabIndex = 6;
-            this.button2.Text = "Limpar Labirinto";
-            this.button2.UseVisualStyleBackColor = true;
+            this.cleanMazeButton.Location = new System.Drawing.Point(39, 370);
+            this.cleanMazeButton.Name = "cleanMazeButton";
+            this.cleanMazeButton.Size = new System.Drawing.Size(159, 50);
+            this.cleanMazeButton.TabIndex = 6;
+            this.cleanMazeButton.Text = "Limpar Labirinto";
+            this.cleanMazeButton.UseVisualStyleBackColor = true;
+            this.cleanMazeButton.Click += new System.EventHandler(this.cleanMazeButton_Click);
             // 
-            // button1
+            // createMazeButton
             // 
-            this.button1.Location = new System.Drawing.Point(39, 306);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(159, 50);
-            this.button1.TabIndex = 5;
-            this.button1.Text = "Gerar Labirinto";
-            this.button1.UseVisualStyleBackColor = true;
+            this.createMazeButton.Location = new System.Drawing.Point(39, 306);
+            this.createMazeButton.Name = "createMazeButton";
+            this.createMazeButton.Size = new System.Drawing.Size(159, 50);
+            this.createMazeButton.TabIndex = 5;
+            this.createMazeButton.Text = "Gerar Labirinto";
+            this.createMazeButton.UseVisualStyleBackColor = true;
+            this.createMazeButton.Click += new System.EventHandler(this.createMazeButton_Click);
             // 
             // label19
             // 
@@ -1230,8 +1232,8 @@
         private System.Windows.Forms.TabPage tabPage5;
         private System.Windows.Forms.TextBox colsMazeTextBox;
         private System.Windows.Forms.TextBox rowsMazeTextBox;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button cleanMazeButton;
+        private System.Windows.Forms.Button createMazeButton;
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.Button mazeUpButton;

@@ -1239,6 +1239,17 @@ namespace interfaceEMG
 
         }
 
+        private void cleanMazeButton_Click(object sender, EventArgs e)
+        {
+            this.cleanMaze();
+        }
+
+        private void createMazeButton_Click(object sender, EventArgs e)
+        {
+            this.cleanMaze();
+            this.createMaze();
+        }
+
         #endregion
 
 
@@ -1521,11 +1532,10 @@ namespace interfaceEMG
 
         #endregion
 
-        #region Labiriton
+        #region Labirinto
 
         private void createMaze()
         {
-
             String rowsText = rowsMazeTextBox.Text;
             String colsText = colsMazeTextBox.Text;
             int rows = rowsText != "" ? Convert.ToInt32(rowsText) : 10;
@@ -1539,7 +1549,6 @@ namespace interfaceEMG
 
         private void insertBlocks(int[,] matrix, int rows, int cols)
         {
-
             int xStart = 350;
             int yStart = 0;
 
@@ -1570,7 +1579,7 @@ namespace interfaceEMG
                     if (matrix[i, j] == 0)
                     {
                         aux = "Path";
-                        block.BackColor = SystemColors.Control;
+                        block.BackgroundImage = Properties.Resources.floorMaze;
                     }
                     else if (matrix[i, j] == 1)
                     {
@@ -1599,6 +1608,22 @@ namespace interfaceEMG
                     tabPage5.Controls.Add(block);
                 }
             }
+        }
+
+        private void cleanMaze()
+        {
+            while (tabPage5.Controls.ContainsKey("Path"))
+            {
+                tabPage5.Controls.RemoveByKey("Path");
+            }
+
+            while (tabPage5.Controls.ContainsKey("Wall"))
+            {
+                tabPage5.Controls.RemoveByKey("Wall");
+            }
+
+            tabPage5.Controls.RemoveByKey("Player");
+            tabPage5.Controls.RemoveByKey("Target");
         }
 
         #endregion
