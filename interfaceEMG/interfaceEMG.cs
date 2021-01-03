@@ -1573,34 +1573,70 @@ namespace interfaceEMG
                     block.Location = new Point(xStart + blockWidth * j, yStart + blockHeight * i);
                     block.Width = blockWidth;
                     block.Height = blockHeight;
-
+                    block.SizeMode = PictureBoxSizeMode.StretchImage;
                     string aux = "";
+
 
                     if (matrix[i, j] == 0)
                     {
+                       
+                        if(i != rows - 1 && matrix[i+1, j] == 1)
+                        {
+                            block.Image = Properties.Resources.HalfFloorMaze;
+
+                        }
+                        else
+                        {
+                            block.Image = Properties.Resources.FloorMaze;
+                        }
                         aux = "Path";
-                        block.BackgroundImage = Properties.Resources.floorMaze;
+                        
                     }
                     else if (matrix[i, j] == 1)
                     {
+                        if(i == rows - 1 && matrix[i - 1, j] == 1)
+                        {
+                            block.Image = Properties.Resources.BorderMaze;
+                        }
+                        else if (i == rows - 1 && matrix[i - 1, j] == 0)
+                        {
+                            block.Image = Properties.Resources.Border2Maze;
+                        }
+                        else if (i != rows - 1 && matrix[i+1, j] == 1)
+                        {
+                            block.Image = Properties.Resources.TopWallMaze;
+                        }
+                        else
+                        {
+                            block.Image = Properties.Resources.WallMaze;
+                        }
+
                         aux = "Wall";
-                        block.BackColor = System.Drawing.Color.Chocolate;
                     }
                     else if (matrix[i, j] == 2)
                     {
+                        if(i != rows - 1 && matrix[i+1, j] == 1)
+                        {
+                            block.Image = Properties.Resources.HalfPlayerMaze;
+                        }
+                        else
+                        {
+                            block.Image = Properties.Resources.PlayerMaze;
+                        }
                         aux = "Player";
-                        int size = Math.Min(block.Width, block.Height)/2;
-                        Point centeredLocation = new Point(block.Left + (block.Width - size)/2, block.Top + (block.Height - size) / 2);
-
-                        block.Width = size;
-                        block.Height = size;
-                        block.Location = centeredLocation;
-                        block.BackColor = System.Drawing.Color.Red;
                     }
                     else if (matrix[i, j] == 3)
                     {
+                        if(i != rows - 1 && matrix[i+1, j] == 1)
+                        {
+                            block.Image = Properties.Resources.HalfTargetMaze;
+                        }
+                        else
+                        {
+                            block.Image = Properties.Resources.TargetMaze;
+                        }
                         aux = "Target";
-                        block.BackColor = System.Drawing.Color.Green;
+                        
                     }
                     block.Name = aux;
 

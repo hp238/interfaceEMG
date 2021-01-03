@@ -63,9 +63,99 @@ namespace interfaceEMG.Properties {
         /// <summary>
         ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap floorMaze {
+        internal static System.Drawing.Bitmap Border2Maze {
             get {
-                object obj = ResourceManager.GetObject("floorMaze", resourceCulture);
+                object obj = ResourceManager.GetObject("Border2Maze", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap BorderMaze {
+            get {
+                object obj = ResourceManager.GetObject("BorderMaze", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap FloorMaze {
+            get {
+                object obj = ResourceManager.GetObject("FloorMaze", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap HalfFloorMaze {
+            get {
+                object obj = ResourceManager.GetObject("HalfFloorMaze", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap HalfPlayerMaze {
+            get {
+                object obj = ResourceManager.GetObject("HalfPlayerMaze", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap HalfTargetMaze {
+            get {
+                object obj = ResourceManager.GetObject("HalfTargetMaze", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap PlayerMaze {
+            get {
+                object obj = ResourceManager.GetObject("PlayerMaze", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap TargetMaze {
+            get {
+                object obj = ResourceManager.GetObject("TargetMaze", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap TopWallMaze {
+            get {
+                object obj = ResourceManager.GetObject("TopWallMaze", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap WallMaze {
+            get {
+                object obj = ResourceManager.GetObject("WallMaze", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -201,6 +201,32 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Maze Assets\HalfTargetMaze.png" />
+    <None Include="Maze Assets\Border2Maze.png" />
+    <None Include="Maze Assets\HalfPlayerMaze.png" />
+    <None Include="Maze Assets\WallMaze.png" />
+    <None Include="Maze Assets\TopWallMaze.png" />
+    <None Include="Maze Assets\TargetMaze.png" />
+    <None Include="Maze Assets\PlayerMaze.png" />
+    <None Include="Maze Assets\HalfFloorMaze.png" />
+    <None Include="Maze Assets\FloorMaze.png" />
+    <None Include="Maze Assets\BorderMaze.png" />
+    <None Include="Resources\wallStone 1.png" />
+    <None Include="Resources\TopWallMaze.png" />
+    <None Include="Resources\TargetMaze.png" />
+    <None Include="Resources\PlayerMaze.png" />
+    <None Include="Resources\HalfFloorMaze.png" />
+    <None Include="Resources\wallStone 2.png" />
+    <None Include="Resources\FloorMaze %281%29.png" />
+    <None Include="Resources\TopWallMaze %281%29.png" />
+    <None Include="Resources\FloorMaze.png" />
+    <None Include="Resources\wallStone.png" />
+    <None Include="Resources\wallBreakable_small.png" />
+    <None Include="Resources\hero_idleA_0000.png" />
+    <None Include="Resources\gem01_0000.png" />
+    <None Include="Maze Assets\Wall.png" />
+    <None Include="Maze Assets\Player.png" />
+    <None Include="Maze Assets\Floor.png" />
     <None Include="Resources\floorImage.png" />
     <None Include="bin32\libiomp5md.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
