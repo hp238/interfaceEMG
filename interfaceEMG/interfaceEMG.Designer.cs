@@ -113,6 +113,7 @@ namespace interfaceEMG
             this.label14 = new System.Windows.Forms.Label();
             this.panel5 = new System.Windows.Forms.Panel();
             this.label15 = new System.Windows.Forms.Label();
+            this.movementsLabel = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -517,6 +518,7 @@ namespace interfaceEMG
             // 
             // tabPage5
             // 
+            this.tabPage5.Controls.Add(this.movementsLabel);
             this.tabPage5.Controls.Add(this.mazeRightButton);
             this.tabPage5.Controls.Add(this.mazeLeftButton);
             this.tabPage5.Controls.Add(this.mazeDownButton);
@@ -538,41 +540,45 @@ namespace interfaceEMG
             // 
             this.mazeRightButton.Location = new System.Drawing.Point(253, 620);
             this.mazeRightButton.Name = "mazeRightButton";
-            this.mazeRightButton.Size = new System.Drawing.Size(97, 23);
+            this.mazeRightButton.Size = new System.Drawing.Size(113, 23);
             this.mazeRightButton.TabIndex = 10;
             this.mazeRightButton.Text = "DIREITA";
             this.mazeRightButton.UseVisualStyleBackColor = true;
+            this.mazeRightButton.Click += new System.EventHandler(this.mazeRightButton_Click);
             // 
             // mazeLeftButton
             // 
             this.mazeLeftButton.Location = new System.Drawing.Point(47, 620);
             this.mazeLeftButton.Name = "mazeLeftButton";
-            this.mazeLeftButton.Size = new System.Drawing.Size(97, 23);
+            this.mazeLeftButton.Size = new System.Drawing.Size(113, 23);
             this.mazeLeftButton.TabIndex = 9;
             this.mazeLeftButton.Text = "ESQUERDA";
             this.mazeLeftButton.UseVisualStyleBackColor = true;
+            this.mazeLeftButton.Click += new System.EventHandler(this.mazeLeftButton_Click);
             // 
             // mazeDownButton
             // 
             this.mazeDownButton.Location = new System.Drawing.Point(153, 683);
             this.mazeDownButton.Name = "mazeDownButton";
-            this.mazeDownButton.Size = new System.Drawing.Size(97, 23);
+            this.mazeDownButton.Size = new System.Drawing.Size(113, 23);
             this.mazeDownButton.TabIndex = 8;
             this.mazeDownButton.Text = "DESCER";
             this.mazeDownButton.UseVisualStyleBackColor = true;
+            this.mazeDownButton.Click += new System.EventHandler(this.mazeDownButton_Click);
             // 
             // mazeUpButton
             // 
             this.mazeUpButton.Location = new System.Drawing.Point(153, 554);
             this.mazeUpButton.Name = "mazeUpButton";
-            this.mazeUpButton.Size = new System.Drawing.Size(97, 23);
+            this.mazeUpButton.Size = new System.Drawing.Size(113, 23);
             this.mazeUpButton.TabIndex = 7;
             this.mazeUpButton.Text = "SUBIR";
             this.mazeUpButton.UseVisualStyleBackColor = true;
+            this.mazeUpButton.Click += new System.EventHandler(this.mazeUpButton_Click);
             // 
             // cleanMazeButton
             // 
-            this.cleanMazeButton.Location = new System.Drawing.Point(39, 370);
+            this.cleanMazeButton.Location = new System.Drawing.Point(36, 344);
             this.cleanMazeButton.Name = "cleanMazeButton";
             this.cleanMazeButton.Size = new System.Drawing.Size(159, 50);
             this.cleanMazeButton.TabIndex = 6;
@@ -582,11 +588,11 @@ namespace interfaceEMG
             // 
             // createMazeButton
             // 
-            this.createMazeButton.Location = new System.Drawing.Point(39, 306);
+            this.createMazeButton.Location = new System.Drawing.Point(36, 280);
             this.createMazeButton.Name = "createMazeButton";
             this.createMazeButton.Size = new System.Drawing.Size(159, 50);
             this.createMazeButton.TabIndex = 5;
-            this.createMazeButton.Text = "Gerar Labirinto";
+            this.createMazeButton.Text = "Novo Labirinto";
             this.createMazeButton.UseVisualStyleBackColor = true;
             this.createMazeButton.Click += new System.EventHandler(this.createMazeButton_Click);
             // 
@@ -1101,6 +1107,16 @@ namespace interfaceEMG
             this.label15.TabIndex = 34;
             this.label15.Text = "Conexão Serial";
             // 
+            // movementsLabel
+            // 
+            this.movementsLabel.AutoSize = true;
+            this.movementsLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.movementsLabel.Location = new System.Drawing.Point(42, 454);
+            this.movementsLabel.Name = "movementsLabel";
+            this.movementsLabel.Size = new System.Drawing.Size(140, 25);
+            this.movementsLabel.TabIndex = 11;
+            this.movementsLabel.Text = "Movimentos: 0";
+            // 
             // formInterface
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -1240,5 +1256,6 @@ namespace interfaceEMG
         private System.Windows.Forms.Button mazeLeftButton;
         private System.Windows.Forms.Button mazeDownButton;
         private System.Windows.Forms.Button mazeRightButton;
+        private System.Windows.Forms.Label movementsLabel;
     }
 }
