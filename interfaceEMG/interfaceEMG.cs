@@ -80,6 +80,15 @@ namespace interfaceEMG
 
         private Dictionary<int, Double[]> sinaisFFT = new Dictionary<int, double[]>();           // Dados para o cálculo da FFT
 
+        // Maze Variabels 
+        int numberOfRows = 10;
+        int numberOfCols = 20;
+        int[,] mazeMatrix;
+        int currentRow = 0;
+        int currentCol = 0;
+        int movements = 0;
+        PictureBox[,] blockMatrix;
+
         #endregion
 
 
@@ -96,7 +105,7 @@ namespace interfaceEMG
             //timer2.Interval = 1;
             timer2.Enabled = true;
             
-            // Setando botões e labels do Flappy Bird
+            // Flappy Bird
             startButton.Visible = true;
             startButton.Enabled = true;
 
@@ -106,6 +115,13 @@ namespace interfaceEMG
             GameOverLabel.Visible = false;
             ScoreLabel.Visible = true;
             ScoreLabel.Text = "Score: 0s";
+
+            this.resetScenario();
+
+            // Labirinto
+            this.rowsMazeTextBox.Text = String.Format("{0}", this.numberOfRows);
+            this.colsMazeTextBox.Text = String.Format("{0}", this.numberOfCols);
+
 
         }
 
@@ -432,7 +448,6 @@ namespace interfaceEMG
             }
             else
             {
-
                 //Console.WriteLine("O arquivo {0} já existe em interfaceEMG\\bin\\Debug\\!", fileName);
             }
 
@@ -1231,10 +1246,39 @@ namespace interfaceEMG
                 this.showGraphWIFI = false;
                 udpClient.Close();
                 this.showEnvoltoria = false;
-                
-
             }
 
+        }
+
+        private void cleanMazeButton_Click(object sender, EventArgs e)
+        {
+            this.cleanMaze();
+        }
+
+        private void createMazeButton_Click(object sender, EventArgs e)
+        {
+            this.cleanMaze();
+            this.createMaze();
+        }
+
+        private void mazeLeftButton_Click(object sender, EventArgs e)
+        {
+            this.moveLeft();
+        }
+
+        private void mazeRightButton_Click(object sender, EventArgs e)
+        {
+            this.moveRight();
+        }
+
+        private void mazeUpButton_Click(object sender, EventArgs e)
+        {
+            this.moveUp();
+        }
+
+        private void mazeDownButton_Click(object sender, EventArgs e)
+        {
+            this.moveDown();
         }
 
         #endregion
@@ -1280,7 +1324,7 @@ namespace interfaceEMG
             }
             else
             {
-                h2.Height = r.Next(300, 400);
+                h2.Height = r.Next(350, 400);
                 h2.Left = 1650;
             }
 
@@ -1320,7 +1364,7 @@ namespace interfaceEMG
             }
             else
             {
-                h6.Height = r.Next(300, 400);
+                h6.Height = r.Next(350, 400);
                 h6.Left = 1650;
             }
 
@@ -1457,7 +1501,7 @@ namespace interfaceEMG
             GameOverLabel.Visible = false;
 
             ScoreLabel.Text = "Score: 0s";
-            resetScenario();
+            this.resetScenario();
             score = 0;
 
         }
@@ -1465,8 +1509,11 @@ namespace interfaceEMG
         // Reset scenario to initial positions
         private void resetScenario()
         {
+
             h1.Height = 280;
             h1.Width = 200;
+
+            int xOffset = tabPage5.Width / 3;
 
             h2.Size = h1.Size;
             h3.Size = h1.Size;
@@ -1482,14 +1529,14 @@ namespace interfaceEMG
             h2.Left = 180;
             h2.Top = 450;
 
-            h3.Left = 860;
+            h3.Left = h1.Right + xOffset;
             h3.Top = 0;
-            h4.Left = 860;
+            h4.Left = h1.Right + xOffset;
             h4.Top = 450;
 
-            h5.Left = 1520;
+            h5.Left = h3.Right + xOffset;
             h5.Top = 0;
-            h6.Left = 1520;
+            h6.Left = h3.Right + xOffset;
             h6.Top = 450;
 
         }
@@ -1512,6 +1559,225 @@ namespace interfaceEMG
         private void flappyBirdcheckBox_CheckedChanged_1(object sender, EventArgs e)
         {
             this.flappyBird = true;
+        }
+
+        #endregion
+
+        #region Labirinto
+
+        private void createMaze()
+        {
+            String rowsText = this.rowsMazeTextBox.Text;
+            String colsText = this.colsMazeTextBox.Text;
+            int rows = rowsText != "" ? Convert.ToInt32(rowsText) : 10;
+            int cols = colsText != "" ? Convert.ToInt32(colsText) : 20;
+
+            Maze m = new Maze(cols, rows);
+            int[,] matrix = m.Generate();
+
+            this.numberOfRows = rows;
+            this.numberOfCols = cols;
+            this.mazeMatrix = matrix;
+            this.currentRow = 0;
+            this.currentCol = 0;
+            this.blockMatrix = new PictureBox[rows, cols];
+
+            this.insertBlocks(matrix, rows, cols);
+        }
+
+        private void insertBlocks(int[,] matrix, int rows, int cols)
+        {
+            int xStart = 350;
+            int yStart = 0;
+
+            int blockWidth = (tabPage5.Width - xStart) / (cols + 1);
+            int blockHeight = (tabPage5.Height - yStart)/ (rows + 1);
+
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < cols; j++)
+                {
+                    Console.Write(matrix[i, j]);
+                }
+
+                Console.WriteLine();
+            }
+
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < cols; j++)
+                {
+                    PictureBox block = new PictureBox();
+                    block.Location = new Point(xStart + blockWidth * j, yStart + blockHeight * i);
+                    block.Width = blockWidth;
+                    block.Height = blockHeight;
+                    block.SizeMode = PictureBoxSizeMode.StretchImage;
+                    string aux = String.Format("block-[{0},{1}]", i, j);
+                    block.Name = aux;
+
+                    // Define imagem do bloco de acordo com a matriz
+                    setBlockDetails(block, i, j);
+
+                    // Matriz de PictureBox dos blocos
+                    this.blockMatrix[i, j] = block;
+
+                    //Adiciona o controle ao Form
+                    tabPage5.Controls.Add(block);
+                }
+            }
+        }
+
+        private void setBlockDetails(PictureBox block, int i, int j)
+        {
+
+            if (this.mazeMatrix[i, j] == 0)
+            {
+
+                if (i != this.numberOfRows - 1 && this.mazeMatrix[i + 1, j] == 1)
+                {
+                    block.Image = Properties.Resources.HalfFloorMaze;
+
+                }
+                else
+                {
+                    block.Image = Properties.Resources.FloorMaze;
+                }
+
+            }
+            else if (this.mazeMatrix[i, j] == 1)
+            {
+                if (i == this.numberOfRows - 1 && this.mazeMatrix[i - 1, j] == 1)
+                {
+                    block.Image = Properties.Resources.BorderMaze;
+                }
+                else if (i == this.numberOfRows - 1 && this.mazeMatrix[i - 1, j] == 0)
+                {
+                    block.Image = Properties.Resources.Border2Maze;
+                }
+                else if (i != this.numberOfRows - 1 && this.mazeMatrix[i + 1, j] == 1)
+                {
+                    block.Image = Properties.Resources.TopWallMaze;
+                }
+                else
+                {
+                    block.Image = Properties.Resources.WallMaze;
+                }
+
+            }
+            else if (this.mazeMatrix[i, j] == 2)
+            {
+                if (i != this.numberOfRows - 1 && this.mazeMatrix[i + 1, j] == 1)
+                {
+                    block.Image = Properties.Resources.HalfPlayerMaze;
+                }
+                else
+                {
+                    block.Image = Properties.Resources.PlayerMaze;
+                }
+            }
+            else if (this.mazeMatrix[i, j] == 3)
+            {
+                if (i != this.numberOfRows - 1 && this.mazeMatrix[i + 1, j] == 1)
+                {
+                    block.Image = Properties.Resources.HalfTargetMaze;
+                }
+                else
+                {
+                    block.Image = Properties.Resources.TargetMaze;
+                }
+
+            }
+
+        }
+
+        private void cleanMaze()
+        {
+
+            int rows = this.numberOfRows;
+            int cols = this.numberOfCols;
+
+            for(int i = 0; i < rows; i++)
+            {
+                for(int j = 0; j < cols; j++)
+                {
+                    string aux = String.Format("block-[{0},{1}]", i, j);
+                    tabPage5.Controls.RemoveByKey(aux);
+                }
+            }
+
+            //this.mazeMatrix = new int[numberOfRows,numberOfCols];
+            //this.blockMatrix = new PictureBox[numberOfRows, numberOfCols];
+        }
+
+        private bool isValidPosition(int nextRow, int nextCol)
+        {
+
+            if (nextRow > this.numberOfRows || nextRow < 0) return false;
+            
+            if (nextCol > this.numberOfCols || nextCol < 0) return false;
+
+            if (this.mazeMatrix[nextRow, nextCol] == 1) return false;
+
+            return true;
+        }
+
+        private void moveLeft()
+        {
+            int nextRow = this.currentRow;
+            int nextCol = this.currentCol - 1;
+
+            if(isValidPosition(nextRow, nextCol))
+            {
+                this.changeBlock(nextRow, nextCol);
+            }
+        }
+
+        private void moveRight()
+        {
+            int nextRow = this.currentRow;
+            int nextCol = this.currentCol + 1;
+
+            if (isValidPosition(nextRow, nextCol))
+            {
+                this.changeBlock(nextRow, nextCol);
+            }
+        }
+
+        private void moveDown()
+        {
+            int nextRow = this.currentRow + 1;
+            int nextCol = this.currentCol;
+
+            if (isValidPosition(nextRow, nextCol))
+            {
+                this.changeBlock(nextRow, nextCol);
+            }
+        }
+
+        private void moveUp()
+        {
+            int nextRow = this.currentRow - 1;
+            int nextCol = this.currentCol;
+
+            if (isValidPosition(nextRow, nextCol))
+            {
+                this.changeBlock(nextRow, nextCol);
+            }
+        }
+
+        private void changeBlock(int nextRow, int nextCol)
+        {
+            this.mazeMatrix[this.currentRow, this.currentCol] = 0;
+            this.mazeMatrix[nextRow, nextCol] = 2;
+            setBlockDetails(this.blockMatrix[this.currentRow, this.currentCol], this.currentRow, this.currentCol);
+            setBlockDetails(this.blockMatrix[nextRow, nextCol], nextRow, nextCol);
+
+            this.currentRow = nextRow;
+            this.currentCol = nextCol;
+
+            this.movements += 1;
+            this.movementsLabel.Text = String.Format("Movimentos: {0}", this.movements);
+
         }
 
         #endregion
